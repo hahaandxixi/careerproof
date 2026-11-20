@@ -1,0 +1,78 @@
+{
+  "runId": "audit-20261005",
+  "scenario": "viewport390",
+  "startedAt": "2026-10-05T04:48:39.049Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T04:48:39.051Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=viewport390 runId=audit-20261005"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T04:48:39.307Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise-390 dynamic port 52319 profile=profile-enterprise-390"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T04:48:39.333Z",
+      "name": "viewport",
+      "status": "fail",
+      "detail": "innerWidth=980 innerHeight=2121"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T04:48:39.511Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\viewport390-2026-10-05T04-48-39-049Z\\04-login-page-empty.png"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T04:48:41.424Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T04:48:42.010Z",
+      "name": "screenshot:board-390",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\viewport390-2026-10-05T04-48-39-049Z\\06-board-390.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T04:48:42.887Z",
+      "name": "screenshot:report-390",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\viewport390-2026-10-05T04-48-39-049Z\\07-report-390.png"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T04:48:42.889Z",
+      "name": "key-chain-390",
+      "status": "pass",
+      "detail": "login+board+report at 390px; reportOpen=true; pageWidth=390 vs viewport=390"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T04:48:42.974Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise-390 exitCode=0"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T04:48:42.974Z",
+      "name": "scenario-complete",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-05T04:48:42.974Z"
+}

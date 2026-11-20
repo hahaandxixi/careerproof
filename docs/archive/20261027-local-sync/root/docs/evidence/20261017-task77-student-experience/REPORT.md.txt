@@ -1,0 +1,104 @@
+# 传智杯77 第一阶段 · 任务页真实处理进度 — 交棒
+
+HEAD `33ba713`（未变，未提交推送）。本轮为第一阶段收尾：事件语义核对、连接状态核对、目标测试与 lint、任务清单状态更新。
+未改后端/API 契约，未动 `CareerRecommendations`/`StudentFlowGuide`/`FlowSteps`/`ApplicationList`，未安装依赖，未跑全量回归。
+
+## 一、事件语义（对照后端实际生成处）
+
+### A. 步骤事件 `AgentStep.event_type`（任务页历史列表展示的就是它）
+
+| eventType | 产生条件（生成处） | 是否打勾 | 说明 |
+| --- | --- | --- | --- |
+| `tool.completed` | `agents/match_agent.py:41/48/58`——规则链依次完成"解析简历 / 扫描项目 / 可追溯匹配"，每步成功追加 | **是** | 该阶段确实跑完 |
+| `task.completed` | `agents/match_agent.py:86`——"生成结论"追加，`payload` 含 `provider` 与 `fallbackUsed` | **是** | 结论已生成；**降级不代表没完成**，降级由处理方式文案单独表达 |
+| `tool.completed` | `services/analysis.py:1175`——匹配任务的**每一条**持久化步骤统一写此类型（含"模型证据分析""校验模型引用""保存可追溯报告"及插入的检索步骤） | **是** | 见下方语义注意 |
+| `verification.completed` | `services/application_verification.py:746`——`successful` 为真 | **是** | 核验成功 |
+| `verification.unavailable` | 同文件 `:748`——`successful` 为假 | **否** | 明确表示该阶段未完成，不得打勾 |
+
+**发现的语义不符（已最小修复）**：`analysis.py:1175` 对"模型证据分析"也写 `tool.completed`，即使
+`skippedReason`（未同意外发/额度停止等）或 `fallbackUsed=true` 也照写。仅凭 `.completed` 打勾会让
+"阶段结束"被读成"AI 分析成功"。
+修复：新增 `modelStepQualifier(payload)`——`skippedReason` 非空 → 标注"未调用模型"；`fallbackUsed===true`
+→ 标注"模型已降级"；否则不标注。仅作用于模型步骤（`模型证据分析`/`千问证据分析`），勾选规则本身不变。
+
+### B. SSE 事件名（`api/v1/analysis.py:135-178`，与步骤事件不同命名空间）
+
+| SSE event | 产生条件 |
+| --- | --- |
+| `task.progress` | 状态变化且为 pending / running（以及 cancelled 的最终帧也走此分支） |
+| `task.completed` | 状态为 completed |
+| `task.failed` | 状态为 failed；或任务不存在；或核验任务授权失效 |
+流每 1 秒比对 `(status, progress, current_step)`，变化才推送；终态推送后关闭。
+
+## 二、连接提示：五种情形与实际结论
+
+原逻辑（本轮之前就存在，未改）：`connection` 状态机 `connecting → live ↔ polling → idle`，
+以及 `onerror`/解析失败/请求失败时 `schedulePoll()`、终态时 `stopStream()+idle`。
+
+| 情形 | 触发点 | 状态变化 | 显示文案 |
+| --- | --- | --- | --- |
+| 首次连接 | effect 起始 | `connecting` | 正在连接实时进度 |
+| 连接建立 | `EventSource.onopen` | `live` | 实时更新中 |
+| `onerror` | `source.onerror` → `stopStream()`+`schedulePoll()` | `polling` | 实时连接已中断，正在定时刷新 |
+| 解析失败 | `applyEvent` JSON 解析异常 → `stopStream()`+`schedulePoll()` | `polling` | 同上（流已被主动关闭，与 onerror 同一转移） |
+| 重连成功 | 轮询后 `loadTask` → `openStream()` → 新流 `onopen` | `live` | **实时更新中**（不残留"中断"） |
+| 任务终态 | SSE 终态负载或 API 返回终态 | `idle` | 任务已结束，状态不再变化 |
+
+**本轮新增（纯展示，不改转移）**：
+- `streamSupported`：区分"环境无 EventSource"与"流被断开"；
+- `streamOpened`：记录是否曾真正 `onopen` 过，避免首次连接失败就说"已中断"；
+对应文案新增一档"实时进度暂未建立，正在定时刷新"。
+
+**核对结论**：
+1. **重连成功不会继续显示中断**——`onopen` 必置 `live`，文案随之为"实时更新中"。
+2. **连接异常不改变业务终态**——`connection` 只由流/请求信号驱动；`task.status` 只由 SSE 负载或
+   `GET /analysis-tasks/{id}` 写入，二者无交叉写入。断线后仅切到轮询，不标失败、不推进进度。
+3. 说明一处原逻辑特性（非本轮引入、未改）：`loadTask` 内判断 `connection === "polling"` 时闭包捕获的是
+   effect 建立时的值，因此轮询后仍会尝试 `openStream()`，这实际构成重连；本轮未动它，仅记录。
+
+## 三、环境记录与检查结果
+
+| 项 | 值 |
+| --- | --- |
+| node.exe | `C:\Users\江博\AppData\Local\hermes\node\node.exe`（v22.23.1） |
+| 源码目录 | `D:\jbcode\web ai\jianli\jianli` |
+| 依赖目录 | `D:\jbcode\web ai\jianli\jianli\node_modules`——**无 eslint**，故默认无法 lint |
+| 只读复用环境 | `backend\.tmp\task62-lint\stage\jianli\node_modules`（Z62 既有安装，含 eslint 与 Next 插件） |
+
+复用方式：建独占 stage `backend/.tmp/task77-lint/stage/jianli`，`node_modules` 以 junction 指向上述既有
+依赖（零安装），复制 `eslint.config.mjs`/`package.json`/`tsconfig.json` 与本轮 3 个文件，在其中执行 lint。
+
+| 检查 | 命令 | 结果 |
+| --- | --- | --- |
+| 目标测试 | `node --experimental-strip-types --test tests/process-trace.test.mjs` | **9 passed / 0 failed** |
+| 类型检查 | `node node_modules/typescript/bin/tsc --noEmit` | **exit 0** |
+| lint（本轮 3 文件） | stage 内 `eslint src/components/TaskView.tsx src/lib/process-trace.ts tests/process-trace.test.mjs --format json` | **3 文件，errors=0 warnings=0，exit 0** |
+
+lint 的 stderr 有一行 Next 插件提示"Pages directory cannot be found"，源于最小 stage 未复制 `src/app`；
+该提示不影响规则结果，errorCount/warningCount 均为 0（`lint.json` 可核）。
+
+未跑全量回归（按要求）。
+
+## 四、改动文件（本轮增量）
+
+| 文件 | 变化 |
+| --- | --- |
+| `jianli/src/lib/process-trace.ts` | 新增 `modelStepQualifier`；`connectionLabel` 增加 `streamOpened` 参数与"暂未建立"分支；事件语义注释补生成处 |
+| `jianli/src/components/TaskView.tsx` | 模型步骤补"未调用模型/模型已降级"标注；新增 `streamOpened` 状态并传入文案 |
+| `jianli/tests/process-trace.test.mjs` | 新增生产事件逐条断言、连接三态区分、模型步骤标注；共 9 条 |
+| `docs/任务清单.md` | 77 状态改为"第一阶段已交棒，页面与集成待验"；78/79 仍为等待 |
+
+## 五、页面待验（保留）
+
+有 Chrome 二进制但无 playwright/puppeteer，既有 stage 早于本轮改动且无预览服务；按要求不尝试新浏览器方案。
+
+1. 桌面 1280 / 390px：进行态脉冲、终态无脉冲；历史默认收起可展开；长 `currentStep`/长 `detail` 折行、整页无横向溢出。
+2. `prefers-reduced-motion: reduce`：脉冲消失但阶段文字仍可辨。
+3. 真实失败任务：状态"处理失败"、无完成勾；`verification.unavailable` 步骤无勾。
+4. 模型降级/未调用数据：步骤旁出现"模型已降级/未调用模型"，且处理方式文案与之一致。
+5. 断线恢复：中断后文案为"实时连接已中断，正在定时刷新"，恢复后回到"实时更新中"。
+6. 键盘与展开语义（`<details>` Enter/Space）。
+
+## 六、证据
+
+`lint.raw.out`、`lint.json`、本 REPORT。

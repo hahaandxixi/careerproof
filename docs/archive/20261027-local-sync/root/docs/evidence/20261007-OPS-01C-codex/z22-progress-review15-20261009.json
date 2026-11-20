@@ -1,0 +1,93 @@
+{
+  "observedAtUtc": "2026-10-09T10:54:56.221875+00:00",
+  "taskNumber": 22,
+  "task": {
+    "workspace_path": "D:\\jbcode",
+    "task_id": "sess_05d2ef94-b7db-477a-9625-ce38e40b3c32",
+    "task_status": "completed",
+    "provider": "glm",
+    "model": "account:bigmodel-individual-coding-plan/GLM-5.3",
+    "created_at": 1791541701365,
+    "updated_at": 1791543254402,
+    "deleted": 0,
+    "archived": 0
+  },
+  "scope": "read-only metadata for this exact task; no input, message, credential or database mutation",
+  "caution": "An indexed running flag alone is not a live execution proof; inspect recent call timestamps and repeated observations.",
+  "recentModels": [
+    {
+      "id": "usage_model_main_turn_msg_mv0um3fn_bf1d95a5-b814-472c-9075-f7cc2604d048_0",
+      "status": "completed",
+      "provider_id": "account:bigmodel-individual-coding-plan",
+      "model_id": "GLM-5.3",
+      "variant": "max",
+      "started_at": 1791543281891,
+      "first_token_at": null,
+      "completed_at": 1791543285801,
+      "output_tokens": 90,
+      "error_type": null,
+      "finish_reason": "tool-calls"
+    },
+    {
+      "id": "usage_model_main_turn_msg_mv0ulin8_f33868f1-3c53-47ac-a757-e100b439b5cf_0",
+      "status": "completed",
+      "provider_id": "account:bigmodel-individual-coding-plan",
+      "model_id": "GLM-5.3",
+      "variant": "max",
+      "started_at": 1791543254948,
+      "first_token_at": 1791543261759,
+      "completed_at": 1791543281848,
+      "output_tokens": 1298,
+      "error_type": null,
+      "finish_reason": "tool-calls"
+    },
+    {
+      "id": "usage_model_main_turn_msg_mv0ukon1_3ad94da5-98b7-4ad7-80e8-fa10c92fd03b_0",
+      "status": "completed",
+      "provider_id": "account:bigmodel-individual-coding-plan",
+      "model_id": "GLM-5.3",
+      "variant": "max",
+      "started_at": 1791543216062,
+      "first_token_at": null,
+      "completed_at": 1791543222845,
+      "output_tokens": 52,
+      "error_type": null,
+      "finish_reason": "tool-calls"
+    }
+  ],
+  "recentTools": [
+    {
+      "tool_name": "Read",
+      "status": "completed",
+      "started_at": 1791543285784,
+      "completed_at": 1791543285807,
+      "exit_code": 0,
+      "error_type": null
+    },
+    {
+      "tool_name": "Read",
+      "status": "completed",
+      "started_at": 1791543285510,
+      "completed_at": 1791543285528,
+      "exit_code": 0,
+      "error_type": null
+    },
+    {
+      "tool_name": "TaskStop",
+      "status": "completed",
+      "started_at": 1791543281857,
+      "completed_at": 1791543281877,
+      "exit_code": 0,
+      "error_type": null
+    }
+  ],
+  "latestAssistantMetadata": [
+    {
+      "time_created": 1791543285821,
+      "time_updated": 1791543285821,
+      "role": "assistant",
+      "finish": null,
+      "completed_at": null
+    }
+  ]
+}

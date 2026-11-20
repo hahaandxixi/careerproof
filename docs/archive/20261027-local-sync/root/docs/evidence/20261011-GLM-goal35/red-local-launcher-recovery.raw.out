@@ -1,0 +1,38 @@
+FAIL A1 first write creates the record :: 无法将“Save-LocalRunManifest”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAIL A2 second write replaces the record atomically :: 无法将“Save-LocalRunManifest”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAIL A3 failed save keeps the previous complete record :: 找不到路径“D:\jbcode\web ai\jianli\backend\.tmp\local-launcher-recovery-146fe142c7424dbd86b1f0901afa23ad\processes.json”，因为该路径不存在。
+FAIL A4 reparse-point manifest paths are refused :: 无法将“Save-LocalRunManifest”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAIL A5 corrupt JSON reports the file location and is not deleted :: error lacks the file path: 无法将“Read-LocalRunManifest”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAIL A6 empty record file is refused with the file location :: error lacks the file path: 无法将“Read-LocalRunManifest”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAIL B1 valid owned roots are stopped through the extracted stop path :: 无法将“Stop-ValidatedLocalProcesses”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAIL B2 a record with missing fields stops nothing :: error lacks the manifest path: 无法将“Stop-ValidatedLocalProcesses”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+PASS B3 a changed command on the second root stops nothing
+PASS B4 a reused PID stops nothing
+FAIL B5 reuse is refused for incomplete or legacy manifests with the file location :: error lacks the file path: 无法将“Assert-LocalReusableManifest”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+PASS C1 digest is stable across repeated calls
+FAIL C2 changed migration content invalidates the digest :: migration edit did not change the digest
+FAIL C3 added and removed migrations are detectable :: added migration did not change the digest
+FAIL C4 alembic config changes invalidate the digest :: alembic.ini edit did not change the digest
+PASS C5 bytecode cache and unrelated scratch do not affect the digest
+PASS C6 app source changes still invalidate; tests still do not
+FAIL D1 safe cleanup swallows cleanup failures with a warning :: 无法将“Invoke-LocalCleanupSafely”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAIL D2 safe cleanup still runs a healthy cleanup :: 无法将“Invoke-LocalCleanupSafely”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAIL D3 original error survives a failing cleanup in the catch pattern :: original error was masked: 无法将“Invoke-LocalCleanupSafely”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAIL D4 AST: start/stop scripts parse and wire the new seams :: Start-Local still writes the manifest without the atomic helper
+5/21 launcher-recovery assertions passed; no live processes, locks, real manifests, containers or databases touched.
+FAILED: A1 first write creates the record :: 无法将“Save-LocalRunManifest”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAILED: A2 second write replaces the record atomically :: 无法将“Save-LocalRunManifest”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAILED: A3 failed save keeps the previous complete record :: 找不到路径“D:\jbcode\web ai\jianli\backend\.tmp\local-launcher-recovery-146fe142c7424dbd86b1f0901afa23ad\processes.json”，因为该路径不存在。
+FAILED: A4 reparse-point manifest paths are refused :: 无法将“Save-LocalRunManifest”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAILED: A5 corrupt JSON reports the file location and is not deleted :: error lacks the file path: 无法将“Read-LocalRunManifest”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAILED: A6 empty record file is refused with the file location :: error lacks the file path: 无法将“Read-LocalRunManifest”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAILED: B1 valid owned roots are stopped through the extracted stop path :: 无法将“Stop-ValidatedLocalProcesses”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAILED: B2 a record with missing fields stops nothing :: error lacks the manifest path: 无法将“Stop-ValidatedLocalProcesses”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAILED: B5 reuse is refused for incomplete or legacy manifests with the file location :: error lacks the file path: 无法将“Assert-LocalReusableManifest”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAILED: C2 changed migration content invalidates the digest :: migration edit did not change the digest
+FAILED: C3 added and removed migrations are detectable :: added migration did not change the digest
+FAILED: C4 alembic config changes invalidate the digest :: alembic.ini edit did not change the digest
+FAILED: D1 safe cleanup swallows cleanup failures with a warning :: 无法将“Invoke-LocalCleanupSafely”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAILED: D2 safe cleanup still runs a healthy cleanup :: 无法将“Invoke-LocalCleanupSafely”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAILED: D3 original error survives a failing cleanup in the catch pattern :: original error was masked: 无法将“Invoke-LocalCleanupSafely”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+FAILED: D4 AST: start/stop scripts parse and wire the new seams :: Start-Local still writes the manifest without the atomic helper

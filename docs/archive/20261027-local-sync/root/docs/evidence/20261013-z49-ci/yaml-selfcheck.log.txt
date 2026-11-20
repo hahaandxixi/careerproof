@@ -1,0 +1,1 @@
+YAML-SELFCHECK PASS: 3 jobs, pinned SHAs, gates, envs, order, uploads all verified

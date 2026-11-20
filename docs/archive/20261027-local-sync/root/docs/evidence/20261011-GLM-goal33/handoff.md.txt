@@ -1,0 +1,38 @@
+# 传智杯33 交棒：AI来源与运行结论边界修复（GLM-5.3-Flash / Start Plan）
+
+2026-10-11。Git根 `D:\jbcode\web ai\jianli`，基线 HEAD `80d4253`（main）。全程零 provider 调用/零联网/零 DB/零服务/零浏览器/零安装；未 Git 提交/推送；basetemp 均在 `backend/.tmp-*`。命令与 hash 见 [commands.out](commands.out)、[manifest.json](manifest.json)；三文件 diff 存档 [diff-goal33-backend.patch](diff-goal33-backend.patch)。
+
+## 一屏结论
+
+30审计§4-A/§4-B两项守卫已按"先红后实现"落地并全绿：目标测试 18 passed（含6例先红复现），受影响合同/计划/评测 142 passed，受影响消费方+工作流 158 passed（合计 318 passed / 0 failed / 0 skipped）；ruff 通过；冻结评测计数（referenceDraftAccepted 6/6、盲评回放、strict pass 3/8）实测未变。来源缺失残余如实保留：来源不可见时共用账号矛盾仍不可拦截（生产管线中 group_report.md 行不进入上下文，evidence=[]，行为与30探针一致）。
+
+## 写入范围（唯一）
+
+- `backend/app/agents/contracts.py`：新增 `plan_deployment_outcome_error`（规则A：①显式"源码/代码存在→已部署/稳定运行"因果主张，全计划文本逐步句子扫描，否定/条件豁免；②交付物或验收断言"已部署/已上线/线上…稳定运行"而步骤无"动作+记录"配对（运行/调用…保存/记录，25字窗口）；裸"运行"插入不构成记录步骤）+ `validate_grounded_analysis` 在 `execution_plan_skips…` 后挂接。错误消息英文、可执行替代路径，进入既有一次repair→整体回退链路（链路零改动）。
+- `backend/app/tools/task_boundaries.py`：新增双门规则B `shared_history_attribution_impossible` + `_shared_account_extraction_error`：来源行显式写"共用账号+未区分作者/无法区分/不能归属"（历史/条件/否定/现已解决行豁免），且计划含"从既有历史提取归属"形状（筛出本人署名/具名提交清单/提交记录包含作者…可定位为本人，计划侧否定/转述豁免）才拒；消息给出合法路径（独立具名贡献证明或分工确认+注明待核验）。单纯"共用账号"不触发；与既有"本人具名提交记录"豁免分工已在注释写明。
+- `backend/app/agents/provider.py`（仅提示词）：计划须具体对应 information_gap、写明具名材料/动作/可观察核验、对应不上返回null；共用账号来源引导改走独立证明；缓存失效/写路径须写明失效机制与期望观测（30审计C，纯引导无validator）；gap/claimed_only 计划显式对应要求标题各要素或说明不覆盖理由（30审计D，同）。
+- 新增 `backend/app/tests/test_weekend_plan_boundaries.py`（18用例）+ 本证据目录。**未动**：既有测试/样例/盲评标签分数、检索/rating/verdict、抽取器、快照/已存报告、repair与fallback链路、费用/预算/P2。
+
+## 测试覆盖对照（卡面正反例→实测）
+
+- 明确拒绝（红→绿）：e2fd中性变体"已部署接口证明+整理源码+源码存在即证明线上接口稳定运行"（先 DID NOT RAISE 复现30，现拒）；步骤插"运行一次"不救因果验收；步骤含真记录（调用接口并保存响应）也不救因果验收；步骤内因果主张；仅验收断言"服务器上稳定运行"无记录步骤；共用账号来源+冻结09fb提取计划（task_boundary_error 与全合同两层，probe2形状复现）。
+- 合法放行：未来部署取证计划（调用接口并保存响应与时间戳）；"已部署接口证明"+真记录步骤；否定"源码存在不代表…"；条件"是否稳定运行"；Codex正例（独立具名分工证明+待核验，两层）；无"未区分"事实/单纯共用账号/历史/条件/否定来源 × 提取计划；来源不可见残余（evidence=[] 冻结草稿仍接受——诚实边界钉死）。
+- 旧合同行为：e2fd原稿仍由既有词面守卫拒（消息不变）；b294控制组、853只运行变体拒；全合同与既有钉死测试（test_task_boundaries 等十文件）全绿。
+
+## 失败与自审记录
+
+- 唯一实现前失败：red-run.out 6 failed（=30审计两类缺口的复现，预期红）。
+- Codex独立探针重跑按设计翻转：`assert bad is None` 现失败（exit=1，见 codex-probe-after-fix.out）——这正是修复生效证据；其"独立具名正例仍放行"半边由 postfix-boundary-verify.py 等价验证 exit=0（未改Codex文件）。
+- 自审返修2处（范围内）：①因果主张原本只扫交付物+验收，步骤内因果会漏——扩到全部计划文本并补测试；②结果主张需覆盖"仅验收断言、交付物中性"形状并补测试。修复后目标18/18与全部受影响套件重跑全绿。
+
+## 未验证项（诚实边界，不冒充）
+
+1. **模型真实输出未测**：提示词新增四句仅静态落盘，未运行任何真实模型验证其对生成行为的影响；ruff/pytest 只证明契约层。
+2. **人工语义仍未验证**：两条新规则均为词面形状守卫（与既有守卫同族），"源码存在≠部署"的语义边界、共用账号下哪种贡献证明诚实可得，仍归人工核对与Codex终审；无关键词规则冒充语义保证（C/D 未做validator）。
+3. **规则A负例面**：已做对抗扫描（未来部署取证、条件句、"部署版本稳定"类非源码因果、b4完成态限定防误伤"作为部署记录对照"），但无法穷举自然语言；误拒会进一次repair→回退，不阻塞规则报告。
+4. **来源可见性系统性差异未动**：matcher对无rubric技能的markdown仅行级候选、fastembed关闭时共用账号行同样不可见——30审计§2既定抽取设计，本轮不改；规则B只在行进入上下文时生效。
+5. 工作树含34/35的未提交改动（Start-Local.ps1、scripts/local-runtime.ps1、jianli/src/private-answer*、docs/当前接力.md），非本次产物、未触碰、未纳入hash。
+
+## 交棒 Codex
+
+终审两项守卫的词表与豁免面、提示词四句、来源不可见残余声明；可加独立反例；验收后由你提交。建议回归对照：manifest.json 的 hash 与 probe-results.json/probe2-source-visible.json 基线。

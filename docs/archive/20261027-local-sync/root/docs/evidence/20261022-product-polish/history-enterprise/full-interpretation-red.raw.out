@@ -1,0 +1,112 @@
+TAP version 13
+# Subtest: full saved requirement uses the same interpretation guard (status=invalid_citations, fallback=false)
+not ok 1 - full saved requirement uses the same interpretation guard (status=invalid_citations, fallback=false)
+  ---
+  duration_ms: 9.1775
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\jianli\\tests\\history-enterprise.test.mjs:164:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /规则解释/. Input:
+    
+    '<li class="rounded-lg border border-slate-200 p-3 text-sm"><strong>持久化事务</strong><p>有证据支持 · 材料支持度 65</p><p>实践证据：待评估 · 规则或复核结果</p><p></p><p class="mt-2 break-words">MODEL_FULL_EXPLANATION</p><p class="mt-2 text-amber-800">待核验：MODEL_FULL_GAP</p><details class="mt-2"><summary class="cursor-pointer text-indigo-700">查看本次授权引用片段</summary><div class="mt-2 text-xs"><p class="break-all">R1-E1 · <span class="break-all">version-a/storage.py</span> · 第20—25行</p><pre class="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">connection.rollback()</pre><details class="mt-3 text-xs leading-6 text-slate-600"><summary class="cursor-pointer">完整来源与校验信息</summary><p class="mt-2 break-all">保存路径：version-a/storage.py<br/>材料版本ID：version-a<br/>原文范围：第 20–25 行<br/>引用编号：R1-E1<br/>证据类型：project_code<br/>内容摘要：fixed-hash</p></details></div></details></li>'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<li class="rounded-lg border border-slate-200 p-3 text-sm"><strong>持久化事务</strong><p>有证据支持 · 材料支持度 65</p><p>实践证据：待评估 · 规则或复核结果</p><p></p><p class="mt-2 break-words">MODEL_FULL_EXPLANATION</p><p class="mt-2 text-amber-800">待核验：MODEL_FULL_GAP</p><details class="mt-2"><summary class="cursor-pointer text-indigo-700">查看本次授权引用片段</summary><div class="mt-2 text-xs"><p class="break-all">R1-E1 · <span class="break-all">version-a/storage.py</span> · 第20—25行</p><pre class="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">connection.rollback()</pre><details class="mt-3 text-xs leading-6 text-slate-600"><summary class="cursor-pointer">完整来源与校验信息</summary><p class="mt-2 break-all">保存路径：version-a/storage.py<br/>材料版本ID：version-a<br/>原文范围：第 20–25 行<br/>引用编号：R1-E1<br/>证据类型：project_code<br/>内容摘要：fixed-hash</p></details></div></details></li>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/product-polish-20261022/source/jianli/tests/history-enterprise.test.mjs:179:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: full saved requirement uses the same interpretation guard (status=rejected, fallback=false)
+not ok 2 - full saved requirement uses the same interpretation guard (status=rejected, fallback=false)
+  ---
+  duration_ms: 0.6082
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\jianli\\tests\\history-enterprise.test.mjs:164:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /规则解释/. Input:
+    
+    '<li class="rounded-lg border border-slate-200 p-3 text-sm"><strong>持久化事务</strong><p>有证据支持 · 材料支持度 65</p><p>实践证据：待评估 · 规则或复核结果</p><p></p><p class="mt-2 break-words">MODEL_FULL_EXPLANATION</p><p class="mt-2 text-amber-800">待核验：MODEL_FULL_GAP</p><details class="mt-2"><summary class="cursor-pointer text-indigo-700">查看本次授权引用片段</summary><div class="mt-2 text-xs"><p class="break-all">R1-E1 · <span class="break-all">version-a/storage.py</span> · 第20—25行</p><pre class="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">connection.rollback()</pre><details class="mt-3 text-xs leading-6 text-slate-600"><summary class="cursor-pointer">完整来源与校验信息</summary><p class="mt-2 break-all">保存路径：version-a/storage.py<br/>材料版本ID：version-a<br/>原文范围：第 20–25 行<br/>引用编号：R1-E1<br/>证据类型：project_code<br/>内容摘要：fixed-hash</p></details></div></details></li>'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<li class="rounded-lg border border-slate-200 p-3 text-sm"><strong>持久化事务</strong><p>有证据支持 · 材料支持度 65</p><p>实践证据：待评估 · 规则或复核结果</p><p></p><p class="mt-2 break-words">MODEL_FULL_EXPLANATION</p><p class="mt-2 text-amber-800">待核验：MODEL_FULL_GAP</p><details class="mt-2"><summary class="cursor-pointer text-indigo-700">查看本次授权引用片段</summary><div class="mt-2 text-xs"><p class="break-all">R1-E1 · <span class="break-all">version-a/storage.py</span> · 第20—25行</p><pre class="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">connection.rollback()</pre><details class="mt-3 text-xs leading-6 text-slate-600"><summary class="cursor-pointer">完整来源与校验信息</summary><p class="mt-2 break-all">保存路径：version-a/storage.py<br/>材料版本ID：version-a<br/>原文范围：第 20–25 行<br/>引用编号：R1-E1<br/>证据类型：project_code<br/>内容摘要：fixed-hash</p></details></div></details></li>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/product-polish-20261022/source/jianli/tests/history-enterprise.test.mjs:179:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: full saved requirement uses the same interpretation guard (status=validated, fallback=true)
+not ok 3 - full saved requirement uses the same interpretation guard (status=validated, fallback=true)
+  ---
+  duration_ms: 0.5383
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\jianli\\tests\\history-enterprise.test.mjs:164:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /规则解释/. Input:
+    
+    '<li class="rounded-lg border border-slate-200 p-3 text-sm"><strong>持久化事务</strong><p>有证据支持 · 材料支持度 65</p><p>实践证据：待评估 · 规则或复核结果</p><p></p><p class="mt-2 break-words">MODEL_FULL_EXPLANATION</p><p class="mt-2 text-amber-800">待核验：MODEL_FULL_GAP</p><details class="mt-2"><summary class="cursor-pointer text-indigo-700">查看本次授权引用片段</summary><div class="mt-2 text-xs"><p class="break-all">R1-E1 · <span class="break-all">version-a/storage.py</span> · 第20—25行</p><pre class="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">connection.rollback()</pre><details class="mt-3 text-xs leading-6 text-slate-600"><summary class="cursor-pointer">完整来源与校验信息</summary><p class="mt-2 break-all">保存路径：version-a/storage.py<br/>材料版本ID：version-a<br/>原文范围：第 20–25 行<br/>引用编号：R1-E1<br/>证据类型：project_code<br/>内容摘要：fixed-hash</p></details></div></details></li>'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<li class="rounded-lg border border-slate-200 p-3 text-sm"><strong>持久化事务</strong><p>有证据支持 · 材料支持度 65</p><p>实践证据：待评估 · 规则或复核结果</p><p></p><p class="mt-2 break-words">MODEL_FULL_EXPLANATION</p><p class="mt-2 text-amber-800">待核验：MODEL_FULL_GAP</p><details class="mt-2"><summary class="cursor-pointer text-indigo-700">查看本次授权引用片段</summary><div class="mt-2 text-xs"><p class="break-all">R1-E1 · <span class="break-all">version-a/storage.py</span> · 第20—25行</p><pre class="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">connection.rollback()</pre><details class="mt-3 text-xs leading-6 text-slate-600"><summary class="cursor-pointer">完整来源与校验信息</summary><p class="mt-2 break-all">保存路径：version-a/storage.py<br/>材料版本ID：version-a<br/>原文范围：第 20–25 行<br/>引用编号：R1-E1<br/>证据类型：project_code<br/>内容摘要：fixed-hash</p></details></div></details></li>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/product-polish-20261022/source/jianli/tests/history-enterprise.test.mjs:179:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: full saved requirement uses the same interpretation guard (status=validated, fallback=false)
+not ok 4 - full saved requirement uses the same interpretation guard (status=validated, fallback=false)
+  ---
+  duration_ms: 0.3277
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\jianli\\tests\\history-enterprise.test.mjs:164:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /AI解释/. Input:
+    
+    '<li class="rounded-lg border border-slate-200 p-3 text-sm"><strong>持久化事务</strong><p>有证据支持 · 材料支持度 65</p><p>实践证据：待评估 · 规则或复核结果</p><p></p><p class="mt-2 break-words">MODEL_FULL_EXPLANATION</p><p class="mt-2 text-amber-800">待核验：MODEL_FULL_GAP</p><details class="mt-2"><summary class="cursor-pointer text-indigo-700">查看本次授权引用片段</summary><div class="mt-2 text-xs"><p class="break-all">R1-E1 · <span class="break-all">version-a/storage.py</span> · 第20—25行</p><pre class="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">connection.rollback()</pre><details class="mt-3 text-xs leading-6 text-slate-600"><summary class="cursor-pointer">完整来源与校验信息</summary><p class="mt-2 break-all">保存路径：version-a/storage.py<br/>材料版本ID：version-a<br/>原文范围：第 20–25 行<br/>引用编号：R1-E1<br/>证据类型：project_code<br/>内容摘要：fixed-hash</p></details></div></details></li>'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<li class="rounded-lg border border-slate-200 p-3 text-sm"><strong>持久化事务</strong><p>有证据支持 · 材料支持度 65</p><p>实践证据：待评估 · 规则或复核结果</p><p></p><p class="mt-2 break-words">MODEL_FULL_EXPLANATION</p><p class="mt-2 text-amber-800">待核验：MODEL_FULL_GAP</p><details class="mt-2"><summary class="cursor-pointer text-indigo-700">查看本次授权引用片段</summary><div class="mt-2 text-xs"><p class="break-all">R1-E1 · <span class="break-all">version-a/storage.py</span> · 第20—25行</p><pre class="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">connection.rollback()</pre><details class="mt-3 text-xs leading-6 text-slate-600"><summary class="cursor-pointer">完整来源与校验信息</summary><p class="mt-2 break-all">保存路径：version-a/storage.py<br/>材料版本ID：version-a<br/>原文范围：第 20–25 行<br/>引用编号：R1-E1<br/>证据类型：project_code<br/>内容摘要：fixed-hash</p></details></div></details></li>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/product-polish-20261022/source/jianli/tests/history-enterprise.test.mjs:175:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1023.4858

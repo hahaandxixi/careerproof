@@ -1,0 +1,28 @@
+$ node scripts/e2e/private-recovery-notice-runner.mjs []
+Invalid --run arguments; only --run question-chain-20261010 is accepted; no files were written.
+exit=3
+
+$ node scripts/e2e/private-recovery-notice-runner.mjs [--run closure-20261005]
+Invalid --run arguments; only --run question-chain-20261010 is accepted; no files were written.
+exit=3
+
+$ node scripts/e2e/private-recovery-notice-runner.mjs [--run question-chain-20261010 --scenario x]
+Invalid --run arguments; only --run question-chain-20261010 is accepted; no files were written.
+exit=3
+
+$ node scripts/e2e/private-recovery-notice-runner.mjs [--run 127.0.0.1:9999]
+Invalid --run arguments; only --run question-chain-20261010 is accepted; no files were written.
+exit=3
+
+$ node scripts/e2e/private-recovery-notice-runner.mjs [--run QUESTION-CHAIN-20261010]
+Invalid --run arguments; only --run question-chain-20261010 is accepted; no files were written.
+exit=3
+
+--- no files were written by the invalid-argument runs (evidence prep dir listing follows)
+docs/evidence/20261011-GLM-goal41/:
+prep
+
+docs/evidence/20261011-GLM-goal41/prep:
+prep-args-closure.raw.out
+prep-static-tests.raw.out
+prep-syntax-check.raw.out

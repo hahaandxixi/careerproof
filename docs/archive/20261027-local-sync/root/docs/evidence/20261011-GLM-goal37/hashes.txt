@@ -1,0 +1,14 @@
+f1128736877b0c3b10971ee380eaf55fe50a549c24f6811fc0c8769236e03d62 *docs/evidence/20261011-GLM-goal37/runtime-goal37.diff
+430c6f224455d473726b803199121063ce877b439142dbe53a70b719e28fb926 *docs/evidence/20261011-GLM-goal37/recovery-test-goal37.diff
+32cc49fe7a8e9d1cadcbd36f138500b381305660bbb487bbb1de05d20d049b24 *docs/evidence/20261011-GLM-goal37/red-local-launcher-recovery.raw.out
+b8201db38952608301de283be15dad28273a813b2b4d3447c62cf54a47458b55 *docs/evidence/20261011-GLM-goal37/green-local-launcher-recovery.raw.out
+b8201db38952608301de283be15dad28273a813b2b4d3447c62cf54a47458b55 *docs/evidence/20261011-GLM-goal37/green2-rerun.raw.out
+1f0a63c625bfa44ed76603c1739bd65f633c8923590399d028c97d0a14250a47 *docs/evidence/20261011-GLM-goal37/green-local-runtime-test.raw.out
+26fbd1cc1ad4337f9516f524cd1708f50ea4d953b21d1fb0beeda998bb0fb019 *docs/evidence/20261011-GLM-goal37/green-local-build-cache-test.raw.out
+e44e4d9116e55f9b145e79c987237e8c8d1ba9c3ff83c43b597da255f09194aa *docs/evidence/20261011-GLM-goal37/ast-all-scripts.raw.out
+00886574fdc1f83038a2ee666e6ce5a7d66b9d273ea4758e0f3ebfeee0d8aacf *scripts/local-runtime.ps1
+087dff6f823d61f57effbb80421021dd2a73b46e78926e5984bd7e1b05b291a8 *scripts/local-launcher-recovery.test.ps1
+--- untouched frozen consumers (unchanged this round):
+a5834c9ae52ea8b3e5ff6d1d8286ba46d2a05e387f3afe8d3aab6ff38feb62d1 *Start-Local.ps1
+025ed42126162d6934f8068b19a1a14ab6ff0bc99f1f6c0daf7a59c84a86a6b2 *Stop-Local.ps1
+10d1075e03b6f4f9fbcdf5e0aa4c408d6424272f9b910f14ea0bf7cb02cdaeaf *scripts/local-runtime.test.ps1

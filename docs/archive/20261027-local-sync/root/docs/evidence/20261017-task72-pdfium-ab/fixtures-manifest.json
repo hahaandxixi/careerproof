@@ -1,0 +1,51 @@
+[
+  {
+    "fixture": "chinese_text",
+    "file": "chinese_text.pdf",
+    "note": "CJK CID font, 2 lines",
+    "bytes": 2450,
+    "sha256": "c998a582a1f912c78fad74f77120679df64f8ba5ec6c66bd26663f0fe6b501bb"
+  },
+  {
+    "fixture": "english_text",
+    "file": "english_text.pdf",
+    "note": "2 text lines, 1 page",
+    "bytes": 1426,
+    "sha256": "d078da7c035cb8e0264653b6a81606f6c068a10e795812952412abf707e0988d"
+  },
+  {
+    "fixture": "multi_page",
+    "file": "multi_page.pdf",
+    "note": "3 pages, page number in text",
+    "bytes": 2247,
+    "sha256": "6f15e04221832ac21310b3f5e0d7983d8f3370d5f06f6aae66bd629a76e4c611"
+  },
+  {
+    "fixture": "over_char_cap",
+    "file": "over_char_cap.pdf",
+    "note": "3000 pages x 200 chars",
+    "bytes": 1075227,
+    "sha256": "90a650b6b644a565008ea53240ea85bc8a2c3cc8e7fd2465e790596c6d34762d"
+  },
+  {
+    "fixture": "plain_lines",
+    "file": "plain_lines.pdf",
+    "note": "3 separated text lines",
+    "bytes": 1372,
+    "sha256": "b3c18f385ff9d42774ad171069eaa0480020f4c9a11b455aca74edd54abaa0c8"
+  },
+  {
+    "fixture": "rotated_90",
+    "file": "rotated_90.pdf",
+    "note": "1 page, /Rotate 90",
+    "bytes": 784,
+    "sha256": "93de21f238cc8f43f7465098770330e96f76045980c0d8c1c8bf48ea0e428a59"
+  },
+  {
+    "fixture": "scanned_image_only",
+    "file": "scanned_image_only.pdf",
+    "note": "image-only page, no text layer",
+    "bytes": 39506,
+    "sha256": "11e993c3b270df42f9a8a55b40df46d0e4a85e26ab28f4f4107fae05e3c43ee9"
+  }
+]

@@ -1,0 +1,32 @@
+# 传智杯67 · 材料上传反馈与失败恢复 · 交棒（ZCode，2026-10-17）
+
+HEAD 33ba713，未提交未推送。**生产代码零改动**（三件套核查无缺陷），新增 1 个超时场景测试到允许的 `tests/portfolio-upload.test.mjs`（sha256 见 `hashes.txt`）。
+
+## 逐项核查（卡检查单）
+
+| 卡要求 | 核查结论（依据） |
+| --- | --- |
+| 复用原项目上传新版时项目身份 | `selectProject` 建带 `project` 的 attempt；`submitProjectAttempt` 有 `project` 即跳过创建、按 `project.id` 上传；attempt 存 sessionStorage 且挂载时恢复（name/description 一并回填）；黄条明示"正在上传到“X”，重试不会重复创建项目" |
+| 已选择文件显示 | 失败路径不动 `projectFile` state 也不清 `input.value`（page.tsx:290-292 仅成功后清空）——按卡提醒，不以 `input.files` 判丢失：**成功前提交路径以 state 为准**，state 在失败后保留；刷新后 File 不可恢复由黄条如实告知"刷新后需重新选择文件" |
+| 解析状态 | UploadProgress：progressbar（aria）+状态文案+currentStep+1.8s 轮询活跃任务；无 taskId 的历史版本显式提示无法恢复实时进度 |
+| 失败后重试 | 错误即时显示；catch 内 `loadHistory()` 让"建成功但上传失败"的项目立即现形；重试复用同 attempt（同 createRequestId/uploadRequestId 幂等键），不重建项目 |
+| 返回补证任务 | GrowthUploadReturn 校验 growthTask UUID，合法才渲染返回链接 `/growth/{id}`；文案说明"上传具名新版，旧材料与企业投递不被覆盖" |
+| 禁止自动重复上传 | `projectSubmitting` ref 防重入 + busy 期间按钮/字段禁用；无任何自动重试 |
+| 禁止创建同名项目 | 重试路径永不重复 create（幂等键 + attempt.project 短路）；"改为创建另一个项目"需显式点击 |
+| 禁止清空已选材料 | 失败路径保留文件与表单；成功才清空（语义正确） |
+
+上传表单本体在 `src/app/portfolio/page.tsx`（卡外，只读确认）——**无需修改**，故无需向总控申请扩范围。
+
+## 测试（mock 成功/明确失败/超时，不重复 POST，保留可重试输入）
+
+**证据类型**：以下为 node --test 直调**真实 lib 逻辑**（`submitProjectAttempt` 等，非实现复制），API 边界以 mock client 注入——属真实逻辑+合成 API，非真实网络/后端。
+
+既有 5 测（成功计数、明确失败重试不重建、创建响应丢失同键重试、按用户恢复不留文件字节、reference 角色存续）+ **超时测（第二轮重命名重释）**：`client timeout keeps the attempt retryable without inferring upload failure`——AbortError 表示**结果不确定**（服务端未收到 / 已收到并提交两种情形客户端不可区分），客户端的安全反应对两者一致：保留 attempt、沿用同一 uploadRequestId 重试、不再次创建项目（creates 恒为 1、两次上传同键同项目 id）；mock 的第二次响应同时兼容"服务端已按幂等键去重回传已提交版本"的语义。`portfolio-upload.test.mjs` **6/6 通过**（`portfolio-upload-tests.txt`），eslint 0 警告。
+
+**两情形区分与未覆盖项（供 68 号接手）**：「服务端已接受但客户端超时」的完整验证需要**后端幂等去重测试**——同一 `requestId` 重复 `POST /project-versions/{id}/files` 必须回传同一版本而非新建（反例风险：若后端未按 requestId 去重，客户端超时重试会产生重复版本）。所需文件在后端域（上传端点/服务与对应测试，均非本卡允许范围），本轮按指示未扩写。
+
+## 未验证 / 移交
+
+- **真实上传链路未跑**（需后端+合成环境）：mock 仅覆盖 lib 层协议；页面级"失败后输入框仍显示原文件名"为代码级核实（真实浏览器文件选择受本会话 IAB 指针事件限制，且 IAB 明确不支持文件上传）。
+- 后端幂等去重（如上，建议并入 68 号或后续后端卡）。
+- fetch 无客户端超时上限：极端挂起依赖浏览器自身超时；是否加 AbortController.timeout 属新决策，未动。

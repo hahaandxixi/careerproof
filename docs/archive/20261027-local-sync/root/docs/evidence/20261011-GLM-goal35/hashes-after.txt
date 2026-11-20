@@ -1,0 +1,8 @@
+a5834c9ae52ea8b3e5ff6d1d8286ba46d2a05e387f3afe8d3aab6ff38feb62d1 *Start-Local.ps1
+025ed42126162d6934f8068b19a1a14ab6ff0bc99f1f6c0daf7a59c84a86a6b2 *Stop-Local.ps1
+eea68ba8eb40d9f8b896671cf4f7995a6e5e95bc0270d18669331c2500e81e93 *scripts/local-runtime.ps1
+fcbd77cb1e1c917f93b3a064efd12275263f05f5aeb8900cc0406b0d6332459a *scripts/local-launcher-recovery.test.ps1
+ Start-Local.ps1           | 18 +++++-----
+ Stop-Local.ps1            | 29 ++--------------
+ scripts/local-runtime.ps1 | 87 ++++++++++++++++++++++++++++++++++++++++++++---
+ 3 files changed, 95 insertions(+), 39 deletions(-)

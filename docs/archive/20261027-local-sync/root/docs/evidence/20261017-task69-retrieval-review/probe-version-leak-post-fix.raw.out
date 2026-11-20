@@ -1,0 +1,17 @@
+﻿
+admission path used: retrieval._allowed_source_ids (post-fix helper)
+admitted ids: 3
+[PASS] D1 superseded resume v1 section excluded from admitted set :: admitted=False
+[PASS] D2 current resume v2 section retained
+[PASS] D3 superseded project portfolio v1 file excluded :: admitted=False
+[PASS] D4 current project portfolio v2 file retained
+[PASS] D5 current reference-role work at v3 retained (legitimate recall kept)
+[PASS] D6 other owner's resume excluded
+[PASS] D7 other owner's project file excluded
+
+replayed ranking (limit=2) over 3 admitted chunks:
+   distance=0.244987 source_id=64009043-e5ad-47bb-9d93-ab00eef73a5f content='RESUME-V2-��ǰ�汾����'
+   distance=0.249436 source_id=a6348525-00d4-4021-997a-74d9b8d477ff content='A-PROJECT-V2-��ǰ��Ŀ�ļ�'
+[PASS] D8 superseded v1 section does not occupy a result slot :: stale_in_top=False
+
+--- summary: 8 checks, 0 failed ---

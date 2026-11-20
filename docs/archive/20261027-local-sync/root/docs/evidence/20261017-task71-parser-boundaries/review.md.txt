@@ -1,0 +1,61 @@
+# task71 · 解析器超限与失败边界复核 — 交棒
+
+> **本轮状态更新（2026-10-17 晚）**：P1 已获授权复现并做窄范围异常转换，见同目录
+> `fix-record.md`。修复后 `document_parser.py` SHA256 = `2b109489…01a72`（原 `8bf855a0…5974`），
+> 新增回归 `app/tests/test_document_parser_unreadable.py`（9 passed）。
+> P2（字符上限不由解析器执行）**仍未处理**，仍是信息级记录。下文保留原始只读结论。
+
+HEAD `33ba7136bd5f516360e5d2d59bacfb4c4e4f39ce`。未改生产解析器；只写本目录 + `backend/.tmp/task71-*`。
+
+## 结论
+
+已被既有测试覆盖的边界（旋转、像素预算先于位图分配）**未重复**。本轮针对卡片点名的其余边界做独立探针，
+发现 **5 类输入以未捕获的库异常逃出 `parse_document`**，即调用方会看到 500 而不是约定的 4020/4024。
+
+### P1 — 中：5 类损坏/加密输入逃出 AppError 边界（`document_parser.py:57,91`）
+| 输入（合成） | 实际抛出 | 期望 |
+| --- | --- | --- |
+| 零字节 `.pdf` | `EmptyFileError: Cannot open empty file` | 4020/4024 用户可读拒绝 |
+| 纯文本改名 `.pdf` | `FileDataError: Failed to open file` | 同上 |
+| 损坏 `.pdf`（头合法、体乱码） | `FileDataError` | 同上 |
+| 用户口令加密 PDF | `ValueError: document closed or encrypted` | 同上（应提示需去密码） |
+| 损坏 `.docx`（伪 zip） | `BadZipFile: File is not a zip file` | 4020/4024 |
+
+机制：`fitz.open(path)`（`:57`）与 `Document(path)`（`:91`）的异常未在 `parse_document` 内捕获，
+`AppError` 只在**成功打开之后**的语义分支抛出。`task_runner` 的隔离进程虽会把崩溃转成 4025，
+但那已是"处理异常退出"，不是"文件不被支持"的用户语义。
+
+### P2 — 低/信息：字符上限不由解析器执行，超限文档被接受
+- 探针构造 9 页、**抽取 506,203 字符**（上限 500,000）的文本 PDF → `parse_document` **正常接受**（9 sections）。
+- `max_document_characters` 仅在 `services/matching_materials.py:131`、`services/portfolio.py:427,519` 下游比较，
+  解析器本身不做截断或拒绝（`app/core/config.py:43` 只有定义）。
+- 影响：可解析但后续在下游被拒/截断；若下游有分支未检查，则存在超长文本进入后续流程的可能。
+  本卡只记录"解析器不执行此上限"，未声称下游有漏检。
+
+### 已验证通过
+- 零页 PDF（手工构造 `/Count 0`）→ `AppError(4024)`，用户可读。
+- 页数语义：`ocr_max_pages=10` 时 12 页全扫描件最多 OCR 10 页、余 2 页无 OCR 文本（`:64` 的
+  `ocr_pages < settings.ocr_max_pages` 门控），与卡片"记录 OCR 页数语义"一致。
+- 被拒页在 `get_pixmap` 前停止：既有 `test_pdf_pixel_limit_rejects_before_bitmap_allocation`（哨兵替换
+  `fitz.Page.get_pixmap`）已覆盖，本轮未重复；`test_document_ocr.py` 全套 **11 passed**。
+- 隔离子进程超时：`run_isolated(..., timeout_seconds=1)` 上 5 秒函数 → `AppError(4025)` 抛出，调用方不挂起，
+  进程未残留（`task_runner.py:66` 的 4026 是另一条"超时"路径，本探针实际命中 4025 异常退出分支）。
+
+## 命令 / 结果
+
+- `python docs/evidence/20261017-task71-parser-boundaries/probe_boundaries.py`
+  → exit 0，`unhandled cases: 5`（`probe.raw.out` 全文含逐项分类）
+- `python -m pytest app/tests/test_document_ocr.py -q --basetemp=backend/.tmp/task71-pytest -p no:cacheprovider`
+  → **11 passed, 5 warnings**（既有套件，非本轮新增）
+
+## 未验证项
+
+1. **原生崩溃用例未做**：未构造真正触发 MuPDF 段错误的文件（卡片要求"无法安全执行原生崩溃用例就标未验"）。
+2. 未在真实 HTTP 上传链路上验证这 5 类输入的实际状态码（需服务与合成账号，本卡不放行）。
+3. 未测超大页数（如 5000 页）的时间/内存上界；仅验证了 OCR 页数门控算术。
+4. 未改生产解析器，故 P1/P2 均**只是缺陷报告，未修复**。
+
+## 证据
+
+`probe_boundaries.py`、`probe.raw.out`、`source-hashes.txt`（本目录）；合成样本在
+`backend/.tmp/task71-scratch/`（可删）。

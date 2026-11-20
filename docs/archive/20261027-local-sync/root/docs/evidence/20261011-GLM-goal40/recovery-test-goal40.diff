@@ -1,0 +1,110 @@
+--- docs/evidence/20261011-GLM-goal40/recovery-test.goal37-final.ps1	2026-10-11 21:11:11.309179800 +0800
++++ scripts/local-launcher-recovery.test.ps1	2026-10-11 21:01:47.271280600 +0800
+@@ -320,6 +320,107 @@
+         if (!$rejected) { throw 'the failing second root was absorbed' }
+         if ($script:goal37StopCalls.Count -ne 0) { throw "the first root was stopped before the second root finished pre-check: $($script:goal37StopCalls -join ',')" }
+     }
++
++    # ---------- F. goal40: CIM microsecond grid and temp cleanup ownership ----------
++    # Real measurement (Codex process 102808 and this repo's own PS 5.1 runs):
++    # CIM CreationDate floors the kernel 100ns creation time onto its
++    # microsecond grid while Get-Process keeps the full 100ns ticks, so the
++    # same process legitimately differs across the two APIs by up to 9 ticks
++    # (observed UTC ticks 639273191745370010 vs 639273191745370012). Cross-API
++    # identity checks must compare both sides on the CIM grid with integer
++    # arithmetic only; a full microsecond (10 ticks) or any .NET-to-.NET
++    # difference still means PID reuse.
++    Assert-Goal 'F1 the real cross-API tick gap is a legal identity that gets stopped' {
++        # Codex measured CIM ...5370010 vs .NET StartTime ...5370012 (2 ticks).
++        $cimUtc = [datetime]::new(639273191745370010, [DateTimeKind]::Utc)
++        $netUtc = [datetime]::new(639273191745370012, [DateTimeKind]::Utc)
++        $script:goal37ProcTimes = @{ 900 = $netUtc }
++        $script:goal37CimRows = @(@{ ProcessId = 900; ParentProcessId = 90; CreationDate = $cimUtc; CommandLine = 'owned-python uvicorn owned' })
++        $script:goal37StopCalls = @()
++        $manifest = @{ schemaVersion = 2; processes = @(@{ Id = 900; Started = $netUtc.ToString('o'); Needle = 'owned-python'; Invocation = 'uvicorn owned' }) }
++        $live = @(Stop-ValidatedLocalProcesses $manifest (Join-Path $scratch 'unused.json'))
++        if ($live.Count -ne 1 -or [int]$live[0].Id -ne 900) { throw 'the legal 2-tick-gap process was rejected' }
++        if ($script:goal37StopCalls -notcontains 900) { throw 'the accepted legal process was not stopped' }
++    }
++    Assert-Goal 'F2 a full microsecond of cross-API drift is still a reused PID' {
++        $cimUtc = [datetime]::new(639273191745370010, [DateTimeKind]::Utc)
++        $netUtc = [datetime]::new(639273191745370020, [DateTimeKind]::Utc)
++        $script:goal37ProcTimes = @{ 901 = $netUtc }
++        $script:goal37CimRows = @(@{ ProcessId = 901; ParentProcessId = 90; CreationDate = $cimUtc; CommandLine = 'owned-python uvicorn owned' })
++        $script:goal37StopCalls = @()
++        $manifest = @{ schemaVersion = 2; processes = @(@{ Id = 901; Started = $netUtc.ToString('o'); Needle = 'owned-python'; Invocation = 'uvicorn owned' }) }
++        $rejected = $false
++        try { Stop-ValidatedLocalProcesses $manifest (Join-Path $scratch 'unused.json') | Out-Null } catch { $rejected = $true }
++        if (!$rejected) { throw 'a full microsecond of drift was accepted' }
++        if ($script:goal37StopCalls.Count -ne 0) { throw 'the drifted PID was stopped' }
++    }
++    Assert-Goal 'F3 a .NET start-time change after sampling is still refused before any stop' {
++        # Guard: normalizing the CIM comparison must not weaken the strict
++        # .NET-to-.NET check between sampling and the stop itself.
++        $script:realGetProcess40 = ${function:Get-Process}
++        $script:f40Calls = 0
++        function Get-Process { param($Id, $ErrorAction)
++            $script:f40Calls++
++            $start = [datetime]::new(639273191745370012, [DateTimeKind]::Utc)
++            if ($script:f40Calls -ge 3) { $start = [datetime]::new(639273191745370013, [DateTimeKind]::Utc) }
++            return @{ StartTime = $start }
++        }
++        try {
++            $script:goal37ProcTimes = @{ 903 = $null }
++            $script:goal37CimRows = @(@{ ProcessId = 903; ParentProcessId = 90; CreationDate = [datetime]::new(639273191745370010, [DateTimeKind]::Utc); CommandLine = 'owned-python uvicorn owned' })
++            $script:goal37StopCalls = @()
++            $manifest = @{ schemaVersion = 2; processes = @(@{ Id = 903; Started = ([datetime]::new(639273191745370012, [DateTimeKind]::Utc)).ToString('o'); Needle = 'owned-python'; Invocation = 'uvicorn owned' }) }
++            $rejected = $false
++            try { Stop-ValidatedLocalProcesses $manifest (Join-Path $scratch 'unused.json') | Out-Null } catch { $rejected = $true }
++            if (!$rejected) { throw 'a sub-tick .NET identity change after sampling was accepted' }
++            if ($script:goal37StopCalls.Count -ne 0) { throw 'the drifted descendant was stopped' }
++        } finally { ${function:Get-Process} = $script:realGetProcess40 }
++    }
++    Assert-Goal 'F4 every root with the real tick gap is pre-checked and stopped' {
++        $cimUtc = [datetime]::new(639273191745370010, [DateTimeKind]::Utc)
++        $netUtc = [datetime]::new(639273191745370012, [DateTimeKind]::Utc)
++        $script:goal37ProcTimes = @{ 905 = $netUtc; 906 = $netUtc }
++        $script:goal37CimRows = @(
++            @{ ProcessId = 905; ParentProcessId = 90; CreationDate = $cimUtc; CommandLine = 'owned-python uvicorn owned' },
++            @{ ProcessId = 906; ParentProcessId = 90; CreationDate = $cimUtc; CommandLine = 'owned-python uvicorn owned' })
++        $script:goal37StopCalls = @()
++        $manifest = @{ schemaVersion = 2; processes = @(
++            @{ Id = 905; Started = $netUtc.ToString('o'); Needle = 'owned-python'; Invocation = 'uvicorn owned' },
++            @{ Id = 906; Started = $netUtc.ToString('o'); Needle = 'owned-python'; Invocation = 'uvicorn owned' }) }
++        $live = @(Stop-ValidatedLocalProcesses $manifest (Join-Path $scratch 'unused.json'))
++        if ($live.Count -ne 2) { throw "expected 2 live roots with the real tick gap, got $($live.Count)" }
++        if ($script:goal37StopCalls.Count -ne 2 -or $script:goal37StopCalls -notcontains 905 -or $script:goal37StopCalls -notcontains 906) { throw "not every gap-carrying root was stopped: $($script:goal37StopCalls -join ',')" }
++    }
++    $script:realTempStream40 = ${function:New-LocalExclusiveTempStream}
++    $script:f40TempPath = $null
++    function New-LocalExclusiveTempStream([string]$Temporary) {
++        # Simulate the lost race: an unknown foreign object appears at the temp
++        # path and the exclusive creation is refused.
++        Set-Content -LiteralPath $Temporary -Value 'foreign-sentinel-goal40' -Encoding utf8
++        $script:f40TempPath = $Temporary
++        throw [System.IO.IOException]::new('exclusive creation refused: the path is occupied')
++    }
++    Assert-Goal 'F5 a refused exclusive creation never deletes the object that won the temp path' {
++        $statePath = Join-Path $scratch 'goal40-owner.json'
++        $rejected = $false
++        try { Save-LocalRunManifest $statePath $firstManifest } catch { $rejected = $true; if ($_.Exception.Message -notlike '*goal40-owner.json*') { throw "failure message lacks the file path: $($_.Exception.Message)" } }
++        if (!$rejected) { throw 'save over an occupied temp path did not fail' }
++        if (!$script:f40TempPath) { throw 'the exclusive-creation seam was never exercised' }
++        if (!(Test-Path -LiteralPath $script:f40TempPath)) { throw 'the unowned object at the temp path was deleted by the failed save' }
++        if ((Get-Content -LiteralPath $script:f40TempPath -Raw).Trim() -ne 'foreign-sentinel-goal40') { throw 'the unowned object content was modified' }
++        if (Test-Path -LiteralPath $statePath) { throw 'a failed first save created a record' }
++    }
++    ${function:New-LocalExclusiveTempStream} = $script:realTempStream40
++    Assert-Goal 'F6 a CIM time above the .NET start is still a reused PID' {
++        $script:goal37ProcTimes = @{ 904 = [datetime]::new(639273191745370009, [DateTimeKind]::Utc) }
++        $script:goal37CimRows = @(@{ ProcessId = 904; ParentProcessId = 90; CreationDate = [datetime]::new(639273191745370010, [DateTimeKind]::Utc); CommandLine = 'owned-python uvicorn owned' })
++        $script:goal37StopCalls = @()
++        $manifest = @{ schemaVersion = 2; processes = @(@{ Id = 904; Started = ([datetime]::new(639273191745370009, [DateTimeKind]::Utc)).ToString('o'); Needle = 'owned-python'; Invocation = 'uvicorn owned' }) }
++        $rejected = $false
++        try { Stop-ValidatedLocalProcesses $manifest (Join-Path $scratch 'unused.json') | Out-Null } catch { $rejected = $true }
++        if (!$rejected) { throw 'a CIM time above the .NET start was accepted' }
++        if ($script:goal37StopCalls.Count -ne 0) { throw 'the mismatched root was stopped' }
++    }
+ } finally {
+     # PS 5.1 Remove-Item throws NullReferenceException on junctions; delete the
+     # link itself first so the scratch recursion cannot follow it either.

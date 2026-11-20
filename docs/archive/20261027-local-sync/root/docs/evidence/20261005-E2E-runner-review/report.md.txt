@@ -1,0 +1,61 @@
+# E2E-R2 独立只读审查报告（运行器与隔离启停脚本）
+
+日期：2026-10-05。仓库 `D:\jbcode\web ai\jianli`。开发任务独占运行器/数据库/浏览器：本次**未运行**页面、数据库、构建、服务或浏览器，未修改任何被审文件、既有证据或正式文档。唯一写入位置为本目录。review-agent 技能已按任务卡许可沿用本会话已加载的只读流程（完整读目标文件 + 调用点核对 + P0-P3 分级），探针为该技能外按卡补充。
+
+## 读取快照（SHA256）与并行修订过期预警
+
+| 文件 | SHA256 | 说明 |
+| --- | --- | --- |
+| scripts/e2e/enterprise-browser-runner.mjs @ 审查时 | ca12d956eb891d82c8ed7aaa4c13b8703dfb7c1c11bff5be1c5b7e830190e356 | 1294 行，本报告全部发现所绑定的快照 |
+| scripts/e2e/enterprise-browser-runner.mjs @ 交棒复核 | **68bcc83d62c1a3cbaea0e38e77ba365dbaca7282051d1d17a295e19f1bc4db29** | **审查期间被并行修订**（1291 行，参数解析改写）；旧内容未入 Git 无法 diff |
+| scripts/e2e/runner-input.mjs（新增） | aea0e0281cd7b8554e463d2220f42b44de749e0a52e85c80cf11a7d5105978b8 | 并行修订引入的参数校验模块，修复两个路径越界发现 |
+| scripts/Start-E2E.ps1 | 6d36b71aa078eb97d9074dbe0b401e107f16cfd8a74079fb6495c1aab8d5b78d | 审查前后一致 |
+| scripts/Stop-E2E.ps1 | dce1f7dd4094d00cef3a122f5d1e4e5f07c8f75e0d2001db57cc71f0751b0d8a | 审查前后一致 |
+
+**过期风险**：runner 为开发任务独占的未跟踪文件且审查期间已实际改版。下文每条发现标注其适用的哈希；对 68bcc83d 已逐项快查（pidStillOurs、聚合过滤、凭据互锁、no-notice-no-report 均原样保留，行号偏移 -3）。行动前必须重跑 sha256sum，不把旧发现当当前事实。运行器行为结论全部来自代码推导 + 离线探针，CDP 实际交互未验证。
+
+## 发现（review-agent 格式，无 P0/P1 级）
+
+**[P2] `--scenario` 完全未校验，STAGE_DIR 路径包含失效（越界写）— enterprise-browser-runner.mjs:30,42,43 @ca12d956 —— ✅ 已并行修复（68bcc83d）**
+`SCENARIO` 直接拼入 `STAGE_DIR = path.join(EVIDENCE_DIR, `${SCENARIO}-${RUN_STAMP}`)` 并在模块顶层 `mkdirSync`（旧 L43）；场景合法性检查在 `main()` 才发生，顶层副作用早已落地。触发输入：`node runner.mjs --scenario ..\..\..\..\evil --run audit-20261005`。探针实证：STAGE_DIR 解析为 `D:\jbcode\web ai\evil-2026-10-05T00-00-00-000Z`（仓库外），目录被创建；未知场景随后抛错进入 catch → `record` → `persist()` 把 results.json 写进该越界目录。**交棒复核（68bcc83d）**：新增 runner-input.mjs 在任何 mkdir 之前校验（`ENTERPRISE_SCENARIOS` 白名单，失败 exit 2 "no files were written"），此发现已修复。Codex 独立检查亦确认为有效发现。
+
+**[P2] runner 的 RUN_ID 字符集与 ps1 不一致，放行 `..`/`.`/前导连字符；argValue 可吞参数 — runner:25-31 @ca12d956 对照 Start-E2E.ps1:27 / Stop-E2E.ps1:9 —— ✅ 已并行修复（68bcc83d）**
+runner 旧用 `/^[\w.-]+$/`，ps1 用 `^[a-z0-9][a-z0-9-]{0,31}$`。探针实证：`..`、`.`、`--scenario`、`-x` 均过 runner 旧正则、均被 ps1 拒绝。`RUNTIME_DIR` 对 `..` 塌缩一级到 `backend\.tmp`、对 `.` 塌缩到 `e2e-browser` 根（跨 run 共享 profile 目录）。当时可达影响有限且如实降级：凭据互锁（旧 L604 `raw.runId !== RUN_ID`）使 `..`/`.` 无法实际执行（对应凭据文件名 `...json`/`..json` 通常不存在）；顶层 mkdir 仅产生已有目录或垃圾目录。另实证参数吞噬：argv `--run --scenario skeleton` → RUN_ID=`"--scenario"`、SCENARIO=`skeleton`。**交棒复核（68bcc83d）**：runner-input.mjs 改用与 ps1 相同的 `^[a-z0-9][a-z0-9-]{0,31}$`，且成对解析拒绝重复键与以 `--` 开头的值，此发现已修复。
+
+**[P2] 聚合退出码把"未定论"当成功 — enterprise-browser-runner.mjs:1101,1105,1279（当前哈希 68bcc83d 实测仍在）**
+聚合仅统计 `status==="fail"||"blocked"`（L1279，探针复现：fail→1、blocked→1、**warn→0**）。download-withdraw 场景第 5 步：点开 A 的旧通知锚点后，既未见"投递已不可访问"提示、也未出现报告（`no-notice-no-report`，L1101）时记为 `warn`（L1105）→ **整个 run 退出 0**。这是撤回后隐私核验的"未定论"结果，不是通过。其余 warn（force-kill、overlay 诊断）作为提示合理。最小修复：把 `no-notice-no-report` 映射为 `blocked`（或 fail），保留装饰性 warn。
+
+**[P3] Stop-E2E 子孙进程击杀无逐个复验（PID 复用窗口）— Stop-E2E.ps1:32-39**
+快照（L32）与 `Stop-Process -Force`（L39）之间按 ParentProcessId 行走出的子孙 PID 若恰好被复用，会被误杀；根进程本身有 Ticks+命令行双校验（L29,31）无此问题。窗口毫秒级、理论性强。对照：runner 的 `taskkill /T /F`（L240）由操作系统在执行时原子重建进程树，结构上更安全。最小修复：根进程校验通过后改用 `taskkill /PID <root> /T /F`，或对每个子孙在击杀前复验 CreationDate 与父链。
+
+**[P3] 凭据 JSON 解析错误原文进入日志路径 — runner:603 @ca12d956（当前 68bcc83d ~L599，实测仍未修）**
+`JSON.parse` 抛错时消息经 catch → `record` → 控制台 + results.json；此时 SCRUB 尚未填充（成功解析后才建），scrub 不生效。探针实测 node v22.23.1 的 SyntaxError 仅含 position、**不回显内容**（三种畸形输入均验证），故本机无实际泄漏；但头部不变量"secrets never reach console, even inside unexpected exception text"（L6-7）依赖 V8 消息格式这一偶然事实。最小修复：try/catch 包裹解析并抛不含原文的 `CdpError("credential file is not valid JSON")`。
+
+**[P3] Start 硬崩溃早于首次 manifest 写入时无清理句柄 — Start-E2E.ps1:163-178, Stop-E2E.ps1:12-15**
+Stop 在 manifest 缺失时 `exit 0`（"nothing to stop"）。Start 自身 catch 已兜底（L248-256），仅 SIGKILL/断电残留孤儿 uvicorn 占 8001，会被下次 Start 的端口预检（L58-62）发现。残余风险，接受或由 Stop 在 8001/3001 有监听且无 manifest 时给出显式警告。
+
+## 通过项（探针或代码实证，非推测）
+
+- **runner 误杀防护有效**（68bcc83d L214-224 实测原样保留）：force-kill 前经 `pidStillOurs()` 以 Win32_Process CommandLine 包含本实例 profileDir 为准，探针失败/超时/进程消失一律 `done(false)` 放弃击杀（err-safe）。**关键实证**（v3 探针，CIM 退出码 0、stderr 空）：本仓库路径含空格（`web ai`），libuv 把含空格参数整体加引号，观测命令行 `"--user-data-dir=D:\jbcode\web ai\...` ——引号在参数起始处、不落在 needle 跨度内，`out.includes(needle)` 仍为 **true**，防护在本仓库布局下有效（我最初"引号夹在 = 与路径之间致守卫失效"的假设被探针否定）。
+- **ps1 误杀防护有效**：Stop 根进程 Ticks 等值 + 命令行 needle 双校验，不符即抛错并保留 run record；Start 的 catch 直停同样 Ticks 等值、不符静默跳过（err-safe）。**探针实证** manifest 时间戳 `...Z` 经 `[datetime]` 转换（Kind=Local）后 `ToUniversalTime().Ticks` 与真实 UTC ticks 相等，Ticks 判等不会因格式往返系统性误报"PID reused"。
+- **Start 端口所有权核验**（L72-101,195-197,239-241）：OwningProcess + 进程族行走 + 命令行 needle + 创建时间窗，防 bind 竞争劫持，健康 200 不作为身份证据。
+- **Start 存储包含**（L45-56）：`GetFullPath` 归一化后 OrdinalIgnoreCase 前缀于 `backend\.tmp\`（带尾分隔符），显式拒绝业务 storage 目录；`..` 越界被拒。
+- **fail/blocked 聚合主链路正确**：fail/blocked → exit 1（探针复现）；`blocked` 步骤（L819-820）记录后同时抛错，双重覆盖；main catch 置 exitCode=1。
+- **凭据脱敏主链路正确**：密码注入 SCRUB 后逐条 detail 清洗（L49-54,59）；密码 DOM 值永不读取/回显（FINDER 跳过 password 输入 L361-363，fillText 失配只报长度 L449-451）；登录截图先于输入（L618）；networkLog/injector 日志仅 url/method/type/status，无头/体；Start-E2E 从不打印 E2E_DATABASE_URL（L34,36 通用文案，L39 仅回显库名非口令），AI 强制 mock（L138-142）。
+
+## 探针证据（本目录，完全离线无副作用）
+
+- `probe-paths-exitcodes.mjs` / `probe-paths-exitcodes-output.txt` — 纯字符串/路径/正则/聚合复现，零进程零写入（写出仅限本目录输出文件）。命令：`node docs/evidence/20261005-E2E-runner-review/probe-paths-exitcodes.mjs`，退出码 0。**Codex 独立检查已确认 runId 与 scenario 路径越界为有效发现**，待本报告交棒后修复。
+- `probe-pid-ownership.mjs` / 输出三版，证据修正史如实记录：
+  - **v1（已失效）**：Date.parse→.NET Ticks 误用 FILETIME 纪元偏移 116444736000000000（1601 基准）而非 621355968000000000（0001 基准）且未用 BigInt——据此对 Start/Stop 时区判等做出的任何判断无效；CIM 查询空输出被当作 includes=false 的证据——实际上空输出只能标**不可核验**。v1 探针与输出在 Codex 反馈送达前已被 v2 原地覆盖，原件未保留（如实记录，不再重建）。
+  - **v2（原件保留：`probe-pid-ownership-output-original.txt`）**：纪元已改 `621355968000000000n + BigInt(Date.parse)*10000n`，且 CIM 观测到非空命令行（includes=true）；但仍有两处不合规范：未记录 CIM/PS 子进程的 stderr 与退出码（本轮 Codex 实际遭遇沙箱 Get-CimInstance 拒绝访问，说明必须记录），并对目标执行了无条件 taskkill——违背 verify-before-kill 原则。
+  - **v3（现行：`probe-pid-ownership-output-v3.txt`，文件 probe-pid-ownership.mjs）**：记录两个探针子进程的退出码与 stderr；CIM 退出码非 0 / 超时 / 输出为空时一律标 UNVERIFIED，不作为 includes=false 的任何证明；目标进程自终止（~3s），taskkill 仅在观测命令行核验含本探针 needle 后执行（复刻运行器自身的 verify-before-kill 守卫）；Ticks 转换用 0001 纪元 + BigInt。
+  - 命令：`node docs/evidence/20261005-E2E-runner-review/probe-pid-ownership.mjs`，v3 退出码 0；CIM 探针退出码 0、stderr 空、观测命令行非空 → `out.includes(needle)=true` 为**已核验**结论；taskkill 仅在核验后执行（exit 0）。
+- v2/v3 对两项产品结论一致且证据链完整：(1) libuv 对含空格参数整体加引号，引号位于参数起始处、不落在 `--user-data-dir=<path>` needle 跨度内，pidStillOurs 在本仓库布局（路径含空格）下可返回 true；(2) `[datetime]'...Z'` 转换 Kind=Local 后 `ToUniversalTime().Ticks` 与真实 UTC ticks 相等，Stop-E2E 的 Ticks 判等稳定。
+
+## 未验证项
+
+1. 运行器/脚本被执行时的真实行为（开发任务独占运行权）：CDP 交互、Chrome 实际命令行编码、manifest 实际内容均未实测。
+2. `scripts/e2e/` 与两 ps1 可能被并行修订；发现仅绑定本报告 SHA256 快照。
+3. Stop-E2E 子孙 PID 复用竞态为理论推演，未做复现实验。
+4. uvicorn/next 运行日志（backend-$RunId.err.log 等）是否回显敏感配置属后端日志职责，未在本次范围。

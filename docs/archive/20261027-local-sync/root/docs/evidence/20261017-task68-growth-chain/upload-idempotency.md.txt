@@ -1,0 +1,85 @@
+# 67→68 上传幂等验证（顺序重试）— 交棒
+
+HEAD `33ba7136bd5f516360e5d2d59bacfb4c4e4f39ce`，未提交未推送。**生产源码零改动**；仅新增 1 个后端端点回归测试。本轮验证的是**顺序重试**（服务端已提交、客户端未收到响应后重发），**不等同于并发幂等验证**。
+
+## 端点与服务实现（只读核对）
+
+- `POST /api/v1/projects/{project_id}/versions`，表单字段 `requestId`（alias `requestId`），返回 202 + `ProjectVersionUploadData`：`backend/app/api/v1/portfolio.py:167-199`（字段定义 `:176`）。
+- `PortfolioService.create_project_version`：`backend/app/services/portfolio.py:310-401`。
+  - 先按 `project_id + student_id` 做 owner 校验并加行锁（`:322-326`）。
+  - 计算原始字节 SHA-256（`:348`）。
+  - 有 `requestId` 时按 `(project_id, upload_request_id)` 查已有版本（`:349-357`）：内容 hash 与 `materialRole` 都相同才回放现有 `versionId/taskId` 且 `created=False`；任一不同返回 `4092`（`:352-357`）。
+  - 回放时端点不重复提交后台扫描任务（`:192-198` 仅在 `created` 时提交）。
+- 唯一约束为 `(project_id, upload_request_id)`：`backend/app/models/portfolio.py:77-80`；查询同样按项目限定：`backend/app/repositories/portfolio.py:54-60`。
+
+## 先查重：已有真实端点覆盖
+
+`backend/app/tests/test_portfolio_api.py:232-292` 的
+`test_failed_upload_retry_keeps_project_and_replays_version` 已覆盖：
+
+- 第一次 ZIP 上传成功提交后，注释明确“Simulate lost response”，用同 owner、同 `requestId`、同字节重发；
+- 第二次 202，`versionId`、`taskId` 与第一次相同；后台扫描仅调用 1 次；项目版本数仍为 1；
+- 同键改 `materialRole` → 409；同键改内容字节 → 409。
+
+因此需求 1、2 及需求 4 的“不同内容/归属”部分已有覆盖；缺口是**同 `requestId` 跨 owner、跨目标项目**。
+
+## 新增最小回归（本轮唯一源码改动）
+
+`backend/app/tests/test_portfolio_api.py:295-379`
+`test_upload_request_key_is_scoped_to_owner_and_project`
+
+复用该文件既有的**独占临时 SQLite** fixture（`tmp_path`，仅建本测试所需表），走真实 HTTP 路由、真实 service/repository，不连接正常数据库。断言：
+
+1. Bob 用 Alice 的 `requestId` 直接 POST 到 Alice 的项目 → **404**；Alice 项目仍只有 1 个 `alice.zip` 版本，版本 id 不变。
+2. Bob 在自己新建的项目复用同一 `requestId` → 202，得到**自己的新 versionId/taskId**（均与 Alice 不同），历史里只有 `bob.zip`，没有取得 Alice 的结果。
+3. Alice 把同一 `requestId` 用于**另一个自己的项目**且内容不同 → 202，在新项目生成 `second.zip` 新版本；原项目仍是 `alice.zip`，未把旧材料静默挂到新项目。
+4. 回到原项目，用原 `requestId` + 原字节重放 → 202，`projectId/versionId/taskId` 与首次完全一致。
+
+说明：第 3 条符合**现有契约**（键按目标项目唯一），但不是全局 owner 级幂等；若协议希望跨项目复用同键也拒绝，属于协议决策，见“剩余问题”。
+
+## 命令与结果
+
+```text
+python -m pytest app/tests/test_portfolio_api.py::test_failed_upload_retry_keeps_project_and_replays_version \
+  app/tests/test_portfolio_api.py::test_upload_request_key_is_scoped_to_owner_and_project -q
+# 2 passed, exit 0
+
+python -m pytest app/tests/test_portfolio_api.py -q
+# 9 passed, exit 0
+
+ruff check app/tests/test_portfolio_api.py
+# All checks passed!, exit 0
+```
+
+隔离目录使用 `D:\jbcode\.probe\t68-upload-idem\*`（`backend/.tmp` 在本会话不可写）。未启动 3000/3001、未连正常数据库、未跑完整 68 链路或 76 打包。
+
+### 环境备注（测试运行器，不是产品代码）
+
+pytest 的 tmpdir 使用 `pathlib.Path.mkdir(mode=0o700)`；当前 Windows 沙箱下该模式创建的目录随后 `WinError 5` 无法再打开。仅本次运行加载 `D:\jbcode\.probe\t68-upload-idem\pytest_mkdir_mode_plugin.py`，把 mode 归一为 `0o777` 以继承工作区 ACL；未改 ACL、未提权、未改产品源码。
+
+### 首次失败留档
+
+第一次运行新测试失败于**测试自身**：两次分别生成 ZIP，zip 时间戳导致字节不同，回放命中 `4092`。改为复用同一字节后通过。这同时证明服务端按**原始字节**而非“逻辑上同一个压缩包”判等；真实客户端重试持有同一 File 对象，与该语义一致。
+
+## 未验证 / 剩余问题
+
+- **并发同键未验证**：临时 SQLite 不验证 PostgreSQL 行锁；未分配专属 PG，未做并发请求。顺序重试验证 ≠ 并发幂等验证。生产路径依赖 `SELECT ... FOR UPDATE` 串行化，建议有 PG 时补一条并发同键测试（参考现有 `test_visual_postgres_concurrency.py` 的夹具方式）。
+- **未跑真实网络/浏览器**：测试为 ASGITransport + 隔离 SQLite，不是独立服务或页面证据。
+- **跨项目复用同键**：当前生成新版本而不拒绝。符合现有 `(project_id, request_id)` 约束，也不会串材料；但若产品协议要求“一个 owner 内 requestId 全局唯一”，需协议层确认，最小改法是增加 owner 级幂等记录/唯一键并在目标不匹配时拒绝，而不是只靠项目内唯一约束。
+- `create_project_version` 与 `create_project` 不同，未捕获插入时的 `IntegrityError`；在项目行锁下预期不会触发，但 PG 并发测试可确认是否需要在唯一键冲突时回放/返回 409。
+
+## 文件与 hash（SHA-256）
+
+| 文件 | SHA-256 | 说明 |
+| --- | --- | --- |
+| `backend/app/tests/test_portfolio_api.py` | `22C4DDC338F05AACBA998B14292E7C2E53CEE9F2337BE40587B6B61C4F859E93` | 本轮唯一改动 |
+| `backend/app/services/portfolio.py` | `66DCEABEBF381E7AC831E7796DCB441713BD96F8D710F104DF304ED492BCA917` | 只读 |
+| `backend/app/api/v1/portfolio.py` | `3CD1F4962EA221BB46B819ED238F8F85F2D305A28669250BB433A03B164E8876` | 只读 |
+| `backend/app/repositories/portfolio.py` | `3702D44F42A145BFCF1DC11EB83CEB599B39FB28C3C6189A51EEF38F4086C012` | 只读 |
+| `backend/app/models/portfolio.py` | `6B1654CFA1A566F08D11B752BFF2A4306DF00B2F5283B35FB20F4217B71C50E7` | 只读 |
+
+## 证据
+
+- `t68-upload-idempotency.raw.out`：2 个最相关测试通过。
+- `t68-upload-idempotency-file-all.raw.out`：整个 `test_portfolio_api.py` 9 passed。
+- `t68-upload-idempotency-first-failure.raw.out`：首次测试构造失败摘录（控制台中文编码有乱码，已保留关键调用与 4092）。

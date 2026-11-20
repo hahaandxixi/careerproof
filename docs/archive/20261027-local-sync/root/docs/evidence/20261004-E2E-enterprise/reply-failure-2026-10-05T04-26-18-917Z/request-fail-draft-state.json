@@ -1,0 +1,9 @@
+{
+  "variant": "request-fail",
+  "draftPreserved": true,
+  "draftReadOnly": true,
+  "editProbeBlocked": true,
+  "probeLength": 42,
+  "errorAlertShown": true,
+  "draftText": "E2E-02请求失败变体audit-20261005：具名正文，服务器不应收到此条。"
+}

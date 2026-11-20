@@ -1,0 +1,65 @@
+{
+  "runId": "audit-20261005",
+  "scenario": "download-withdraw",
+  "startedAt": "2026-10-05T04:40:31.641Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T04:40:31.642Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=download-withdraw runId=audit-20261005"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T04:40:31.913Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise dynamic port 63605 profile=profile-enterprise"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T04:40:32.104Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\download-withdraw-2026-10-05T04-40-31-640Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T04:40:33.462Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T04:40:42.805Z",
+      "name": "click-no-post-diagnostics",
+      "status": "warn",
+      "detail": "{\"found\":true,\"disabled\":false,\"rect\":{\"x\":167,\"y\":862,\"w\":144,\"h\":40},\"center\":{\"cx\":239,\"cy\":882},\"topElement\":null,\"topIsButton\":false,\"scrollY\":0}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T04:40:42.897Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise exitCode=0"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T04:40:42.897Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=n/a"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T04:40:42.898Z",
+      "name": "scenario-aborted",
+      "status": "fail",
+      "detail": "Error: click on download A resume did not trigger POST containing /resume-download |     at clickAndExpectPost (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:1020:9) |     at async scenarioDownloadWithdraw (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:1045:5)"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-05T04:40:42.898Z"
+}

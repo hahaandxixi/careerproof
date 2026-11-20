@@ -1,0 +1,28 @@
+{
+  "observedAtUtc": "2026-10-09T10:28:30.367956+00:00",
+  "taskNumber": 22,
+  "task": {
+    "workspace_path": "D:\\jbcode",
+    "task_id": "sess_05d2ef94-b7db-477a-9625-ce38e40b3c32",
+    "task_status": "running",
+    "provider": "glm",
+    "model": "account:bigmodel-individual-coding-plan/GLM-5.3$max",
+    "created_at": 1791541701365,
+    "updated_at": 1791541701365,
+    "deleted": 0,
+    "archived": 0
+  },
+  "scope": "read-only metadata for this exact task; no input, message, credential or database mutation",
+  "caution": "An indexed running flag alone is not a live execution proof; inspect recent call timestamps and repeated observations.",
+  "recentModels": [],
+  "recentTools": [],
+  "latestAssistantMetadata": [
+    {
+      "time_created": 1791541702462,
+      "time_updated": 1791541702462,
+      "role": "assistant",
+      "finish": null,
+      "completed_at": null
+    }
+  ]
+}

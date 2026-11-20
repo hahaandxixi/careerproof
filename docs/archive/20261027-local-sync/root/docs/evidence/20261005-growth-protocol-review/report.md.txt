@@ -1,0 +1,64 @@
+# E2E-03-PROTOCOL 独立只读审查报告（岗位要求变化协议对照当前实现）
+
+日期：2026-10-05。仓库 `D:\jbcode\web ai\jianli`。只读产品源码与合同，唯一写入位置为本目录。未运行数据库/浏览器/构建/服务/Git 写操作/.env/凭据/真实模型；探针为纯内存合成对象。**审查期间后端实现以未提交工作区形式中途落地**（下述哈希有前后两组），所有结论绑定当前哈希并逐项标注。
+
+## 读取快照（SHA256）
+
+| 文件 | 当前 SHA256 | 备注 |
+| --- | --- | --- |
+| backend/app/services/evidence_growth.py | 507a2ef3cc06673e3ab6cc7347cc98944d7b07e0bf9d3a2a2cce44d4212bc624 | 审查前读到的 e5c5e839（287行）中途变为 507a2ef3（310行），本文引用行号均属 507a2ef3 |
+| backend/app/models/evidence_growth.py | 2e7174b78dc71bab06e2af80eeca0912d7bc6f4681fcb614aa2bc00ad936c808 | 由 d4e595a4 变更（新增 target_job_id 列） |
+| backend/app/schemas/evidence_growth.py | 8c1636aa80d5cc1ed7103f330c08f57111ee8ab518dd1154533a3c60ba34bf1f | GrowthMaterials.targetJobId 可省略 |
+| backend/app/api/v1/evidence_growth.py | 56d35984e48d488bec40d3404bac2d8bbd0a37aa6c714cad25afd72b6b0869c5 | 全程未变 |
+| backend/app/services/report_comparison.py | ee7df0814c03b3a35908f9b77c2ab9aca2052f2f90cd60803b035f782fbd7ef1 | 由 803ef17b 变更；git diff 确认即合同的比较侧改动（allow_job_change 门/context job/岗位身份字段），工作区未提交（HEAD bfe2e65） |
+| backend/app/schemas/report_comparison.py | 244374f47f0950a43caac8caaf636142778cc852e25b1d6b0b422893a9a5061d | base/target JobId/Title 已加 |
+| backend/app/services/analysis.py | c0b3388bdd05cf7dc8deb61bbd11a13a02b195d169b4013d624cfde14d145be7 | 全程未变 |
+| backend/app/models/analysis.py | b757e36269ece4b05fc4e3becb0533ab012ffe63775cbf5afc7f7ab820221f58 | AnalysisTask 无 job_id 列（input_snapshot JSON，L48） |
+| backend/alembic/versions/0014_growth_target_job.py | 43e724e1cebaeb928cf969ebe16b61374b6268b82f151456487c2c21da3be81b | batch_alter 只加可空列+FK RESTRICT |
+
+**过期风险**：实现正在进行中，行号与行为绑定上表哈希；任何行动前重跑 sha256sum。老哈希内容未持久化（除 git 可 diff 部分），无法逐字节回溯中途版本。
+
+## 合同五项核对（对照 20261005-E2E-requirement-change-design.md 已收敛合同）
+
+1. **显式目标岗位持久保存 ✓**：`EvidenceGrowthTask.target_job_id` 可空 FK RESTRICT（models L22-24；迁移 0014 batch 加列+FK，不触快照/报告/投递）；attach 单短事务内锁岗位行（`Job.status=="published" with_for_update`，L169-173）并保存目标+材料版本（L180-184）；view 回退 `row.target_job_id or base.job_id`（L221），响应 `targetJobId/targetJobTitle`（L282-283），目标岗位不可用时标题回退文案（L223-225）。岗位校验谓词与 create_match_task 完全一致（analysis.py:191-195）——今日无漂移。
+2. **同材料异岗位许可 ✓**：attach 的同材料拒绝收窄为 `material_key相同 AND target==base`（L174-179）；`GrowthMaterials.targetJobId` 可省略默认原岗位（schema L21-23）。材料相同+显式同岗位仍 409——"不让原同岗位空补证通关"达成。
+3. **默认跨岗位比较仍拒绝 ✓（探针 P1 复现）**：`compare_views(*, allow_job_change=False)` 默认拒 4097（report_comparison L73-77）；compare_reports/previous_comparison 均不传旗标（L182,200）；growth 仅在 `target_job_id != base.job_id` 时放行（evidence_growth L271）。
+4. **同一 candidate 与旧投递快照不变 ✓（探针 P2 复现）**：candidate_id 相等校验在 allow_job_change 之外无条件执行（L74）；跨岗位 items 严格按 requirementId 新增/移除、同技能不合并（探针 P3：0 existing / 1 added / 2 removed）；迁移仅加可空列；growth 服务不写 Application；get_report/get_task 授权只看任务所有权（analysis.py:296-299,362-366），岗位下架不会使旧任务/报告不可读。AnalysisTask 目标确在 `input_snapshot.jobId`（MatchCreate by_alias camelCase，探针 P5 实证键名 jobId），view L250 对其做防漂移一致性校验。
+5. **分析开始后锁定与失败人工重存 ✓/⚠**：attach 对"材料与目标岗位"统一锁（L158-165，非失败即 409）；analyze 失败后再发起 409、需 attach 人工重存（L182 清 analysis_task_id；L189-197）；analyze 无临时目标覆盖（GrowthAnalyze 仅 external_ai_consent，extra=forbid）。⚠ 旁路见发现1。
+
+## 发现（按可行动优先级；区分已复现/设计建议）
+
+**[发现1 · 合同漏洞，代码路径完整可达（未执行，需DB）] 通用 retry 端点绕过"失败后人工重存"门**
+`POST /analysis-tasks/{task_id}/retry`（api/v1/analysis.py:87-100）→ `retry_match`（analysis.py:288-294，job_match 且所有权通过）→ `reset_failed_task`（task_lifecycle.py:130-155，owner-only CAS FAILED→PENDING）。growth 行引用的失败分析可被学生经通用端点直接重置重跑，不经 growth attach——与 409 文案"请重新核对并保存材料后再发起"及合同"失败后人工重新保存才可重试"冲突；view 侧（L250）会照常接受该任务（jobId 一致）并最终可比对。收敛二选一：retry_match 检测 `EvidenceGrowthTask.analysis_task_id` 引用并拒绝（引导 attach），或合同明文将"通用重试"定义为合规人工重试。必配回归：失败后直接 retry → 按现合同期望 409。
+
+**[发现2 · 探针已复现的不一致，需产品裁决] 两处 material_key 定义不同**
+attach 键 `(kind, contentHash, materialRole)` 忽略版本 id（evidence_growth.py:26-28，注释明言同内容新版本≠材料变化）；compare 键 `(kind, id, contentHash)` 计版本 id（report_comparison.py:85-87）。探针 P3e：同内容新版本跨岗位对照的 contextChanges 含 "materials"，而 attach 语义认定材料未变。展示层会同时出现"材料未变（attach 放行原因）"与"材料版本变化（context）"。合同要求显式展示"材料版本"——compare 现行为可辩护，但建议统一口径或对仅 id 不同、hash 相同的情形加注。
+
+**[发现3 · 设计建议] limitations[3] 位置耦合**：growth.view 按索引覆写 `comparison.limitations[3]`（evidence_growth.py:273-275）。今天 [3] 恰是复核状态行（探针 P4），跨岗位流程日后在 compare_views 增删 limitation 会静默覆写错行。建议按内容前缀匹配替换。
+
+**[发现4 · 设计建议] attach 不预检目标岗位要求**：attach 只验 published（L169-173）；"岗位尚未设置能力要求"仅在 analyze 时由 create_match_task 拒（analysis.py:203-204）→ 空要求岗位晚失败进 FAILED/人工重存。可并入 attach 或作为既定路径加测试。
+
+**[发现5 · 设计建议/测试点] 去重与缓存绑定**：create_match_task 对同输入 pending/running 幂等返回（analysis.py:205-218）、同 cacheKey 完成任务返回缓存（L255-272）——growth.analyze 可能绑定早于 growth 任务创建的既有报告（jobId/materials 校验均过）。合同未禁止；建议测试固化，且前端不得把复用报告宣称为本次生成。
+
+**[发现6 · 测试点] SQLite 外键强制**：迁移回归与"岗位删除→标题回退"路径（L223-225）在 SQLite 需 `PRAGMA foreign_keys=ON` 才有意义（FK RESTRICT 在 model L22-24 / 迁移 0014）。
+
+**[发现7 · 合同留白] 单行约束**：`(created_by, base_report_id, requirement_id)` 唯一（model L12）保留——同一基准要求仅一个 growth 行；已 compared（锁定）后换新目标只能"从新报告创建后续任务"链式推进（要求身份随之指向新报告，原企业问题关联按合同留在原任务）。建议合同明文此限制并补链式回归。
+
+**[发现8 · 观察项] 防漂移 409 的列表副作用**：view 的 input_snapshot.jobId 不一致 409（L250-251）会让 list 静默跳过该行（L142-152 仅 warning 日志）——防御检查失败模式是任务从学生列表消失。建议 list 层降级标记或更醒目告警。
+
+## 必要测试清单（最小集）
+
+1. attach：同材料+无 target→409；同材料+target=原岗位→409；同材料+不同 target→持久化成功且 targetJobId 回读正确；非 published 目标→404 与 create_match_task 同谓词（测试钉住同源）。
+2. 锁：analyzing 中改材料或改 target 均 409；analyze 幂等重复点击返回同视图；行锁串行化并发 attach/analyze。
+3. 失败链：analyze 失败→再 analyze 409→attach 重存（同新版本材料可）→新 AnalysisTask；**通用 retry 对 growth 失败任务→期望 409（发现1）**。
+4. 状态变化：attach 后目标 unpublish→analyze 失败→人工重存；运行中 unpublish→报告仍生成、比较可用（合同未定义，需先定语义）。
+5. 比较：探针 P1/P2/P3/P3b 固化为回归（默认拒、candidate 恒拒、按 requirementId 增移、contextChanges=job）；旧任务响应 targetJobId=原岗位；input_snapshot.jobId 漂移→409。
+6. 迁移：SQLite(+PRAGMA)+PG 上 0014 只加可空列+FK，旧行三 JSON 字段字节不变；原企业投递/报告快照字节级签收（等企业任务交棒）。
+
+## 探针证据（本目录）
+
+`probe-compare-protocol.py`（25ff99aee98a1e01b87b01ee724446ef4aa5931fdd952e822c3b43142340903c）+ `probe-compare-protocol-output.txt`：10 项全符（退出码 0）——P1 默认拒跨岗位、P2 candidate 恒拒、P3/P3b/P3c/P3d 按 requirementId 增移+job context+岗位身份+同材料不标 materials、P3e 键定义差异、P4 索引耦合现状、P5 jobId 键名、P6 自比较拒。命令：`cd backend && PYTHONIOENCODING=utf-8 .venv/Scripts/python.exe ../docs/evidence/20261005-growth-protocol-review/probe-compare-protocol.py`。撰写中两次修正探针自身建模（共享材料实例的 uuid4 误建），最终 10/10，中间输出未保留（非产品行为差异）。
+
+## 未验证项
+
+发现1 重试旁路未实际执行（需 DB）；运行中岗位下架语义未定义亦未验证；enterprise 快照字节级不变属企业任务交棒后的签收范围；实现仍在进行，报告仅绑定上表哈希快照。

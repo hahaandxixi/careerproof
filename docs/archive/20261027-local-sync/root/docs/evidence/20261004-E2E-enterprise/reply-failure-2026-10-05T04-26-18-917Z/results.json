@@ -1,0 +1,139 @@
+{
+  "runId": "audit-20261005",
+  "scenario": "reply-failure",
+  "startedAt": "2026-10-05T04:26:18.917Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T04:26:18.918Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=reply-failure runId=audit-20261005"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T04:26:19.182Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise dynamic port 52168 profile=profile-enterprise"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T04:26:19.337Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\reply-failure-2026-10-05T04-26-18-917Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T04:26:20.691Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T04:26:22.434Z",
+      "name": "screenshot:reply-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\reply-failure-2026-10-05T04-26-18-917Z\\05-reply-filled.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T04:26:23.021Z",
+      "name": "request-fail-failure-draft",
+      "status": "evidence",
+      "detail": "preserved=true readOnly=true editBlocked=true alert=true"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T04:26:23.075Z",
+      "name": "screenshot:request-fail-failure-draft",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\reply-failure-2026-10-05T04-26-18-917Z\\07-request-fail-failure-draft.png"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T04:26:23.076Z",
+      "name": "request-fail-post-count",
+      "status": "pass",
+      "detail": "reply POSTs=1 (expect 1, no auto-retry)"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T04:26:24.119Z",
+      "name": "request-fail-server-state",
+      "status": "pass",
+      "detail": "after refresh server shows replied=false"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T04:26:24.191Z",
+      "name": "screenshot:request-fail-after-refresh",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\reply-failure-2026-10-05T04-26-18-917Z\\10-request-fail-after-refresh.png"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-05T04:26:24.828Z",
+      "name": "screenshot:reply-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\reply-failure-2026-10-05T04-26-18-917Z\\11-reply-filled.png"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-05T04:26:25.422Z",
+      "name": "response-loss-failure-draft",
+      "status": "evidence",
+      "detail": "preserved=true readOnly=true editBlocked=true alert=true"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-05T04:26:25.484Z",
+      "name": "screenshot:response-loss-failure-draft",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\reply-failure-2026-10-05T04-26-18-917Z\\13-response-loss-failure-draft.png"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-05T04:26:25.484Z",
+      "name": "response-loss-post-count",
+      "status": "pass",
+      "detail": "reply POSTs total=2 (expect 2, one per variant, no auto-retry)"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-05T04:26:26.539Z",
+      "name": "response-loss-server-state",
+      "status": "pass",
+      "detail": "serverDelivered=true editableReplyForms=0 (delivered reply must not be re-sendable)"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-05T04:26:26.608Z",
+      "name": "screenshot:response-loss-after-refresh",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\reply-failure-2026-10-05T04-26-18-917Z\\16-response-loss-after-refresh.png"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-05T04:26:26.717Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise exitCode=0"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-05T04:26:26.718Z",
+      "name": "scenario-complete",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261004-E2E-enterprise\\reply-failure-2026-10-05T04-26-18-917Z\\request-fail-draft-state.json",
+    "docs\\evidence\\20261004-E2E-enterprise\\reply-failure-2026-10-05T04-26-18-917Z\\request-fail-refresh-dom.json",
+    "docs\\evidence\\20261004-E2E-enterprise\\reply-failure-2026-10-05T04-26-18-917Z\\response-loss-draft-state.json",
+    "docs\\evidence\\20261004-E2E-enterprise\\reply-failure-2026-10-05T04-26-18-917Z\\response-loss-refresh-dom.json"
+  ],
+  "finishedAt": "2026-10-05T04:26:26.718Z"
+}

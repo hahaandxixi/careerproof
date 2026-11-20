@@ -1,0 +1,67 @@
+- link "跳到主要内容":
+  - /url: "#main-content"
+- banner:
+  - link "职证 CareerProof":
+    - /url: /
+  - navigation "主导航":
+    - link "岗位发现":
+      - /url: /jobs
+    - link "职业推荐":
+      - /url: /recommendations
+    - link "我的匹配报告":
+      - /url: /reports
+    - generic "学生账户 · 合成首版验收学生 8 未读":
+      - generic: 合
+      - generic: 学生账户 · 合成首版验收学生
+      - generic: 8 未读
+      - generic: ▾
+- main:
+  - heading "通知中心" [level=1]
+  - paragraph: 在这里查看投递进度与企业回应。查看或下载不代表面试或录用。
+  - generic "通知说明"
+  - button "全部" [pressed]
+  - button "未读"
+  - button "刷新通知"
+  - button "全部标为已读"
+  - paragraph: 未读 8 条 · 当前筛选共 9 条
+  - list:
+    - heading "平台已交付简历下载响应；不证明对方保存或阅读" [level=2]
+    - paragraph: 2026/10/13 10:21:04 · 未读
+    - button "核对授权并打开投递"
+    - button "标为已读"
+    - heading "企业已回复，请在投递详情核对正文" [level=2]
+    - paragraph: 2026/10/13 10:20:29 · 未读
+    - button "核对授权并打开投递"
+    - button "标为已读"
+    - heading "企业已请求查看报告；不代表进入面试或录用" [level=2]
+    - paragraph: 2026/10/13 10:19:01 · 未读
+    - button "核对授权并打开投递"
+    - button "标为已读"
+    - heading "投递已提交" [level=2]
+    - paragraph: 2026/10/12 23:31:58 · 未读
+    - button "核对授权并打开投递"
+    - button "标为已读"
+    - heading "投递授权已撤回；已下载副本无法追回" [level=2]
+    - paragraph: 2026/10/12 23:31:58 · 未读
+    - button "核对授权并打开投递"
+    - button "标为已读"
+    - heading "平台已交付简历下载响应；不证明对方保存或阅读" [level=2]
+    - paragraph: 2026/10/12 23:31:54 · 已读
+    - button "核对授权并打开投递"
+    - heading "企业已回复，请在投递详情核对正文" [level=2]
+    - paragraph: 2026/10/12 23:31:54 · 未读
+    - button "核对授权并打开投递"
+    - button "标为已读"
+    - heading "企业已请求查看报告；不代表进入面试或录用" [level=2]
+    - paragraph: 2026/10/12 23:31:54 · 未读
+    - button "核对授权并打开投递"
+    - button "标为已读"
+    - heading "投递已提交" [level=2]
+    - paragraph: 2026/10/12 23:31:54 · 未读
+    - button "核对授权并打开投递"
+    - button "标为已读"
+  - button "上一页" [disabled]
+  - generic: 第 1 页
+  - button "下一页" [disabled]
+- contentinfo: 规则检索 + AI 证据解释 · 模型不可用时自动降级 · 不执行上传的代码
+- alert

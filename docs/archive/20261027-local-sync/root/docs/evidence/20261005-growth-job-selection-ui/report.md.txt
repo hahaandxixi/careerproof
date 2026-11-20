@@ -1,0 +1,38 @@
+# E2E-03-UI：学生补证目标岗位选择 UI 交棒报告
+
+日期：2026-10-05。基线：学生准备已交棒（preflight 见 `../20261005-E2E-student-preflight/`）。实现依据 `docs/task-cards/20261005-E2E-requirement-change-design.md` 末尾"已收敛的实现合同"。后端未实现，本任务仅前端最小接口与状态实现 + 纯函数回归；未构建/未写 .next/未类型检查工程/未开浏览器/未动数据库/未 Git 操作。Backend 下新出现的 `app/tests/test_growth_target_job.py` 为 Codex 并行后端工作，未触碰。首轮证据保留：`*-console.txt`（无 R2 后缀），历史输出未覆盖。
+
+## R2：Codex 首轮审查后的两处边界修复
+
+1. **分离公开列表 guard 与私有任务 guard**（首轮缺陷：`loadJobList` 共用任务 `guard.start()` 会废弃进行中的 perform/自动查询回执；任务操作反过来会让列表 `jobBusy` 永久 true；details summary 又不受 fieldset disabled 可靠限制，放大了风险）。修复：新增 `jobGuard`，`loadJobList` 只用它判定收尾；手动刷新（revision effect）、visibility 隐藏、组件卸载/换身份（key 重挂载）同时 `clear()` 两个 guard 并复位列表 items/busy/error；保存/分析回执与列表回执互不影响；过期列表不得复活隐藏页（两个 guard 同步清除后回执一律被拒）。
+2. **保存载荷恒携带显式目标 UUID**（首轮缺陷：清除改选把草稿设空后 PUT 省略 targetJobId，后端按合同选原岗位，与界面"恢复已保存目标"不一致）。修复：新增 `growthSaveMaterialsPayload(task, draft, materials)`，保存按钮改用它——载荷 `targetJobId = growthTargetJobState().effectiveTargetJobId`（空/非法草稿回落已保存目标，旧任务=原岗位），恒为有效 UUID；"清除改选=保持已保存跨岗位目标"与"明确选择原岗位并保存"是两条不同路径，分别有回归。
+
+## 改动文件（全部在授权清单内）
+
+1. `jianli/src/lib/api/domain.ts`：`GrowthTask` 新增可选 `targetJobId`/`targetJobTitle`（后端未升级前缺失安全）；`ReportComparison` 新增可选 `baseJobId`/`targetJobId`/`baseJobTitle`/`targetJobTitle`。
+2. `jianli/src/lib/api/client.ts`：`growthMaterials` 载荷新增可选 `targetJobId`；未选时字段整体不出现在 PUT body（可省略=原岗位），已选时携带 UUID。
+3. `jianli/src/lib/growth-workflow.ts`：新增纯函数 `growthTargetJobState(task, selectedTargetJobId)`（savedTarget/crossJob/selectionChanged/locked 状态机：空或非 UUID 草稿回落已保存目标；非失败分析锁定岗位与材料）、`growthSaveMaterialsPayload`（保存载荷恒携带显式目标 UUID）、`growthJobListQuery`（page/pageSize=10/q 修剪，分页不受前 100 条限制）、`growthJobPageBounds`；`GROWTH_CHANGES` 新增 `job: "目标岗位变化"`。
+4. `jianli/src/components/GrowthWorkspace.tsx`：第 1 节展示已保存目标岗位（跨岗位时标注"企业问题与基准引用仍关联原岗位要求"）；第 2 节在同一 fieldset 内新增目标岗位选择器（`<details>` 懒加载公开 `api.listJobs`，可搜索/上一页/下一页，标注"任务原岗位/已保存目标"，支持清除改选），保存按钮经 `growthSaveMaterialsPayload` 携带显式目标并以服务器响应回填草稿；草稿≠已保存时显示"未保存，生成不使用它"警示（role=status）；第 3 节明示"生成只使用已保存目标岗位「X」的当前要求"；任务列表显示原岗位→已保存目标。岗位选择与材料共用 `disabled={busy || !growthCanSelect(task)}` 锁定（分析开始后同时锁定，失败后解锁可人工重存）；公开列表读取使用独立 `jobGuard`（R2），与任务读写互不废弃回执、互不卡死 busy；刷新/隐藏/换身份同时清除两个 guard 与列表状态；既有 visibility 隐藏清理扩展覆盖岗位选择草稿与列表缓存。
+5. `jianli/src/components/GrowthComparison.tsx`：跨岗位对比（comparison 携带 targetJobId≠baseJobId）显示"对比岗位：基准 → 目标"与醒目提醒——不同 requirementId 按"原要求不再展示/新要求新增展示"逐条列出、不按技能名合并；原企业问题/缺口/引用仍关联基准要求，目标岗位更换不能认定原问题已回答、也不能当作原岗位核验结论；比较条目标题新增"目标报告新增要求/基准要求不再展示"角标（仅跨岗位或要求增删时出现，同岗位默认比较渲染不变）；底部新增目标岗位核对链接。
+
+合同对应关系：analyze 不传任何临时目标（仅已保存目标）；无自动勾选 AI/投递（consent 每次成功操作后重置为未勾选）；旧投递与原报告快照零改动（纯前端）。
+
+## 验证证据（本目录，UTF-8 完整原始输出+退出码）
+
+| 文件 | 结果 |
+| --- | --- |
+| `target-growth-job-selection-console.txt`（首轮新增回归 14 用例） | 14 pass / 0 fail，退出 0 |
+| `full-frontend-suite-console.txt`（首轮全量） | 145 tests / 145 pass / 0 fail，退出 0 |
+| `syntax-parse-inmemory-console.txt`（首轮内存语法解析 5 文件） | syntax-ok ×5，退出 0 |
+| `target-growth-job-selection-r2-console.txt`（R2 回归 22 用例，含时间线行为模型） | 22 pass / 0 fail，退出 0 |
+| `full-frontend-suite-r2-console.txt`（R2 全量） | 153 tests / 153 pass / 0 fail，退出 0 |
+| `syntax-parse-inmemory-r2-console.txt`（R2 改动文件内存语法解析） | syntax-ok ×2，退出 0 |
+
+回归覆盖合同要点：旧任务/未升级后端的回落语义；跨岗位已保存目标展示；未保存改选不误示为已保存；非 UUID 草稿不作数；跨岗位任务改选回原岗位也需再保存；分析开始岗位+材料同锁、失败解锁；公开列表参数与分页边界（250 条翻到第 25 页，防"只支持前 100 条"）；`job` 背景标签翻译；PUT body 中 targetJobId 的省略（client 层契约）/显式携带（组件实际路径）两种形态；R2 时间线行为模型（镜像组件双 guard 接线）覆盖：保存与列表交错读取两个回执都生效、列表 busy 正常收尾不卡死、隐藏页后过期回执不得复活任务/列表/忙碌状态、手动刷新清除在途列表并复位 busy、更新请求作废旧列表后 busy 仍复位；R2 保存载荷回归：清除改选=保持已保存跨岗位目标、明确选择原岗位=显式原岗位 UUID、旧任务无草稿=显式原岗位、有效改选=使用改选，并经真实 client fetch 桩验证 body。
+
+## 已知边界与未验项（需 Codex 注意）
+
+1. **当前后端兼容性**：现有 `GrowthMaterials` schema `extra="forbid"`，选中目标岗位后点保存会被现后端 422 拒绝（错误经 role=alert 展示，任务状态不受损）；Codex 后端落地前，页面默认不选目标=原岗位流程完全不受影响。
+2. 未做浏览器页面验证（按禁令等 Codex 统一重建后执行）；TSX 仅通过内存语法解析，工程级类型检查/构建由 Codex 协调（本任务改动按 strict: true 书写，`task` 判空后经 IIFE 收窄，无可空性错误）。
+3. `growthTargetJobState` 的目标校验是格式级 UUID 校验；"岗位已发布/有权读取"等由后端 attach 校验承担（合同）。
+4. 跨岗位比较的 added/removed 条目渲染依赖后端 `compare_views` 的跨岗位许可实现；前端已按合同先行支持，不做技能名映射。

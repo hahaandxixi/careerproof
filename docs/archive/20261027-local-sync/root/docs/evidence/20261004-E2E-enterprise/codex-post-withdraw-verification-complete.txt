@@ -1,0 +1,45 @@
+COMMAND: python -m evals.seed_e2e --run-id audit-20261005 --base-url http://127.0.0.1:8001/api/v1 --storage-dir <isolated-run-storage> --verify-only
+{
+  "runId": "audit-20261005",
+  "credentialsStateFile": "<written next to the run state; never printed>",
+  "jobs": {
+    "A": "e215c9e2-5d0b-4fdd-9dc2-1963a0cf1acb",
+    "B": "df0b9602-8d34-4832-b6c2-84f937d3aa6c"
+  },
+  "reports": {
+    "A": "73fe7225-d925-4543-afc9-39853adb1f44",
+    "B": "5af9c8c5-d0de-4465-995b-4a4bbf3ab689",
+    "A2": "ebff72b0-86a6-4b43-b932-e3fada204f54"
+  },
+  "materials": {
+    "student": "c56d8f84-83a7-46b9-99c7-ae639e431941",
+    "studentA2": "a48690f7-a1f4-44c1-a4d1-5bf63b6ed383"
+  },
+  "applications": {
+    "A": {
+      "id": "dfff7065-80ac-447e-95fb-0838e1bf3789",
+      "student": "student",
+      "status": "withdrawn",
+      "enterpriseBoardVisible": false,
+      "snapshotSha256": "96d1cfb4333e12a392927ffb1da4e32b3c4c3043457b177a1eb34705f0784adf"
+    },
+    "B": {
+      "id": "d9c64113-203c-4f83-ba79-907f28c782c1",
+      "student": "student",
+      "status": "downloaded",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "ce8b0ef5499f807e39f892213252f29d6f8c4ef7523581b80b2021246423e379"
+    },
+    "A2": {
+      "id": "8032fdb1-37fc-4cbd-84fd-d32f5c893ebd",
+      "student": "studentA2",
+      "status": "viewed",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "73222f78ec3e1dee738c56b2f69d622fc4152ee1d9db8c223dda0d62086213f9"
+    }
+  },
+  "withdrawnRestored": false,
+  "mode": "verified"
+}
+withdrawn deliveries remain withdrawn and were not restored: A; use a new run id for a fresh fixture
+EXIT=0

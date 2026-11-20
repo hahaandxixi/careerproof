@@ -1,0 +1,82 @@
+# P0 复现与最小修复 · task71 异常边界（P1）
+
+HEAD `33ba7136bd5f516360e5d2d59bacfb4c4e4f39ce`。授权范围：`document_parser.py` + 直接相关解析测试。
+**未改进程协议**（`task_runner` 的 4025/4026 与子进程隔离未动）。
+
+## 1. 四类失败的区分（本轮要求逐项区分）
+
+| 类别 | 本次界定 | 处理策略 | 证据 |
+| --- | --- | --- | --- |
+| **预期输入拒绝** | 文件不可读：损坏/截断 PDF、零字节、改名假 PDF、口令加密 PDF、损坏 DOCX、无可析文字 | `AppError`（4024 / 4026），用户可读 | 既有 4024/4026 保留；本轮新增转换 |
+| **底层解析异常** | 上面这些输入由 PyMuPDF / python-docx 抛出的具体异常 | **窄元组转换**为 `AppError(4024)`，`from error` 保留原始异常链 | 下表 |
+| **程序错误** | `RuntimeError`、`TypeError`、`AttributeError`、`ImportError` 等 | **必须继续抛出**，不转换为"文件损坏" | `test_programming_error_...`、`test_missing_ocr_dependency_...` |
+| **进程故障** | 隔离子进程崩溃/超时 | 仍由 `task_runner` 负责（4025/4026），本轮不改 | 探针复测仍为 `AppError(4025)` |
+
+## 2. 红：转换前 5 类输入逃出边界
+
+`probe_boundaries.py` 修复前 `unhandled cases: 5`：
+
+| 输入（合成） | 修复前抛出 | 修复后 |
+| --- | --- | --- |
+| 零字节 `.pdf` | `EmptyFileError` | `AppError(4024)` |
+| 纯文本改名 `.pdf` | `FileDataError` | `AppError(4024)` |
+| 损坏 `.pdf` | `FileDataError` | `AppError(4024)` |
+| 口令加密 PDF | `ValueError: document closed or encrypted` | `AppError(4024)`，文案含"密码" |
+| 损坏 `.docx` | `BadZipFile` | `AppError(4024)` |
+
+修复后探针：**`unhandled cases: 0`**（`probe-post-fix.raw.out`）。
+
+## 3. 修复（`backend/app/tools/document_parser.py`）
+
+- 新增两个窄元组，**不使用 `except Exception`**：
+
+```python
+_UNREADABLE_PDF = (fitz.FileDataError, fitz.FileNotFoundError, ValueError)
+_UNREADABLE_DOCX = (BadZipFile, KeyError, ValueError)
+```
+
+  - `fitz.EmptyFileError` 是 `fitz.FileDataError` 子类，故零字节文件被第一个元组覆盖；
+  - 加密 PDF 的 `ValueError` 发生在**遍历页面**时（`fitz.open` 本身成功），所以 `try` 包住了
+    open + 遍历，不是只包 open；
+  - `_UNREADABLE_DOCX` 中的 `KeyError` 对应损坏 OOXML 缺关键部件。
+- 两处 `raise AppError(...) from error`：保留原始异常链，便于日志区分，但对外统一为可读拒绝。
+- **未吞掉的**：既有 `AppError`（4024 无可析文字 / 4026 像素上限）在 `try` 内抛出但**不在元组中**，
+  原样穿透——`test_existing_no_text_rejection_keeps_its_own_message` 与
+  `test_pixel_budget_rejection_still_reports_its_own_code` 守住这一点。
+- **资源清理**：`with fitz.open(...)` 保持原样，异常路径下上下文管理器仍负责关闭文档。
+  （第二轮复核更正：第一轮用 `path.unlink()` 证明"已释放"是**假测试**——引用计数会兜底关闭。
+  现已改为开/关计数相等断言，并如实声明"无法区分显式 with 关闭与 GC 终结器关闭"。
+  详见 `review-round2.md` 第 2 节。）
+
+## 4. 绿：永久回归测试
+
+新增 `backend/app/tests/test_document_parser_unreadable.py` → **9 passed**：
+
+- 6 条输入拒绝（参数化 3 + 加密 + DOCX + 保留原 4024/4026 语义）；
+- 2 条**不得转换**：程序错误（`RuntimeError`）与缺 OCR 依赖（`ModuleNotFoundError`）仍原样传播；
+- 1 条像素上限仍报 4026。
+
+**红绿互证**：临时只回退两处转换 → **5 failed / 4 passed**；恢复后 **9 passed**。
+关键点：回退时 4 条守边界用例仍绿，说明它们检验的是"不得吞错"而不是重复断言修复本身。
+
+合并运行：`test_document_parser_unreadable.py` + `test_document_ocr.py` → **20 passed**；
+含检索套件的联合运行 → **36 passed, 5 skipped**；`ruff check` 通过。
+
+## 5. 文件与哈希
+
+| 文件 | SHA256 | 状态 |
+| --- | --- | --- |
+| `backend/app/tools/document_parser.py` | `2b1094899cae26e064a89ff1dd30ab7f244bf57fc78ddc5a6a857e8e4f401a72` | 已改（M） |
+| `backend/app/tests/test_document_parser_unreadable.py` | `cf0af82f98ca06981f496c7a5921406d0309d85ab6c539e70592a3c3902e86cb` | 新增 |
+
+## 6. 未验证项
+
+1. **原生崩溃用例仍标未验**：未构造真正触发 MuPDF 段错误的文件。
+2. **真实 HTTP 上传链路未验**：5 类输入的实际状态码未在服务上确认（不放行 3000/3001）。
+3. **字符上限仍未由解析器执行**（原 P2）：`max_document_characters` 只在
+   `matching_materials.py:131` / `portfolio.py:427,519` 下游比较；本轮**未改**，仍属信息级。
+4. 未测超大页数的时间/内存上界。
+
+## 7. 证据
+
+`probe_boundaries.py`、`probe.raw.out`（修复前）、`probe-post-fix.raw.out`（修复后，本目录）。

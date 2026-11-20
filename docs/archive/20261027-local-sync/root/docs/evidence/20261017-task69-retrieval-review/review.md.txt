@@ -1,0 +1,65 @@
+# task69 · 61号过滤检索修复独立审查（只读）
+
+> **本轮状态更新（2026-10-17 晚）**：V1 已获授权复现并做最小修复，见同目录
+> `fix-record.md`。修复后 `retrieval.py` SHA256 = `e060d1f9…ade23`（原 `62d53a64…8e62`），
+> 新增回归 `app/tests/test_retrieval_version_scope.py`（3 passed / 1 PG-skipped）。
+> 下文为**只读审查当时**的记录，保留原始结论不改写。
+
+HEAD `33ba7136bd5f516360e5d2d59bacfb4c4e4f39ce`（= 任务卡基线）。Z61 交棒 hash 复核**一致**：
+`retrieval.py 62d53a64…8e62`、`test_retrieval_filtered_recall.py bac255b7…5f6b`。未改 61 号任何文件。
+
+## 判定
+
+Z61 的核心修复**成立**：过滤先于排序（`WITH owned_chunks AS MATERIALIZED` + 外层余弦排序），
+`count(*) OVER ()` 在 CTE 内、外层 LIMIT 之前取值，故 `owned_matches` 是预截断的自有命中总数。
+编译后的 PG 语句实测（`probe_version_dimension.raw.out` A 段）：
+
+```sql
+WITH owned_chunks AS MATERIALIZED (
+  SELECT …, count(*) OVER () AS owned_matches
+  FROM knowledge_chunks
+  WHERE knowledge_chunks.source_id IN (__[POSTCOMPILE_source_id_1]))
+SELECT … FROM owned_chunks ORDER BY owned_chunks.embedding <=> %(embedding_1)s LIMIT …
+```
+
+**发现 1 处可复现缺陷（1 项，已停止继续深挖）**
+
+### V1 — 中：自有过滤缺少「版本」维度，被新版取代的简历/项目内容仍可被检索到
+
+- 位置：`backend/app/services/retrieval.py:255-296`（`allowed_ids` 构造 + `WHERE source_id IN allowed_ids`）。
+- 反例（独立 SQLite 拓扑，非复制 Z61 自证）：
+  - 同一 `Resume` 下 v1、v2 各一个 `ResumeSection`；同一 `Project` 下 v1、v2 各一个 `ProjectFile`；
+    均未归档。
+  - 用 `retrieval.py:255-267` 的**原样谓词**求 `allowed_ids` → **4 条全部入选**；
+    `probe_version_dimension.py` 的 B1/B2 均 FAIL：`superseded resume v1 section admitted: True`、
+    `superseded project v1 file admitted: True`。
+  - 即用户上传简历/项目 v2 后，`/knowledge/search` 仍可能返回 v1 旧段落与 v1 旧文件内容。
+- 机制：`allowed_ids` 只按 `Resume.student_id` / `Project.student_id` 与 `is_archived` 过滤，
+  **没有 `resume_version_id` / `project_version_id` 条件**；`delete_source_chunks` 只在
+  *同一版本重解析* 时清理（`services/portfolio.py:432-437`、`524-529`），新版本上传不清理旧版本，
+  `ResumeVersion`/`ProjectVersion` 也没有 `is_archived` 列可让旧版本退出。`KnowledgeChunk` 查询同样
+  不带 `source_type` 判别式（A2 实测无），仅靠 UUID 全局唯一性兜底，不构成版本隔离。
+- **真实可达路径（项目侧）**：`POST /api/v1/projects/{project_id}/versions`
+  （`services/portfolio.py:369` `next_project_version` → 新建 `ProjectVersion` 与其 `ProjectFile`）。
+  既有测试 `app/tests/test_real_matching.py:763-774` 即走该端点造出 v2；此后 v1 的 `ProjectFile`
+  行仍在、`Project.is_archived` 仍为 False，于是 v1 与 v2 的文件**同时**进入 `allowed_ids`。
+- 影响：检索结果混入已被取代的材料；属于任务卡所述「跨 owner / **版本**泄露」中的版本面。
+- 非跨 owner：`allowed_ids` 严格来自本人 `student_id`，跨 owner 未发现泄露面。
+
+## 未验证项（限制明确）
+
+1. **无 PG 运行**：本会话 Docker 命名管道被拒（`permission denied … dockerDesktopLinuxEngine`），
+   任务卡要求「无授权专属 PG 时仅离线 SQL/模块检查」。故 `ef_search`/`iterative_scan` 下的
+   真实召回数、`owned_matches` 在 asyncpg 下的类型回传、以及 Z61 自述的 4 passed 均**未复跑**。
+2. V1 的**简历侧**发生频率未验证：简历上传入口 `services/portfolio.py:193-199` 每次新建 `Resume`
+   且 `version_number` 硬编码 1，本卡未找到「给既有简历加 v2」的端点，故简历面可能实际不可达；
+   **项目侧已证实可达**（上）。结论对简历按「若存在多版本」条件成立，对项目按已证实成立。
+3. 语义引擎（MiniLM 真向量）路径未验；本次仅 hash 引擎谓词面。
+4. 未以 `EXPLAIN` 代替召回正确性，也未作性能结论。
+
+## 证据与哈希
+
+- `probe_version_dimension.py` / `probe_version_dimension.raw.out`（含 A 段编译 SQL 与 B 段逐项 PASS/FAIL）
+- 复核时点源码 hash：`retrieval.py 62d53a64…8e62`、`api/v1/portfolio.py 3cd1f496…8876`、
+  `models/portfolio.py 6b1654cf…50e7`、`test_retrieval_filtered_recall.py bac255b7…5f6b`
+- 唯一写入本目录；未 Git 提交/推送；未触碰 PG/服务/.env/ACL。

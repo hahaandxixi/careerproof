@@ -1,0 +1,29 @@
+{
+  "sourceDatabase": "cp_e2e_release-core-20261012",
+  "cloneDatabase": "cp_e2e_enterprise-filter-20261019",
+  "cloneMethod": "CREATE DATABASE ... TEMPLATE source; source database not modified",
+  "alembic": {
+    "before": "0018_application_reconsent",
+    "after": "0021_job_discovery_flags"
+  },
+  "ports": {
+    "frontend": 3001,
+    "backend": 8001
+  },
+  "frontendStage": "backend/.tmp/dep-frontend-20261019-enterprise-filter",
+  "jobId": "b176166e-75e3-4a89-965c-6c845652f9cd",
+  "jobTitle": "E2E 岗位A（合成）",
+  "authorizedApplications": [
+    {
+      "applicationId": "0582cc18-3dda-4230-a468-e56ec93f0196",
+      "candidateName": "E2E 合成学生",
+      "status": "submitted"
+    },
+    {
+      "applicationId": "7e6d80dc-796f-41c7-92dd-d0463407e37c",
+      "candidateName": "E2E 合成学生",
+      "status": "submitted"
+    }
+  ],
+  "note": "Both synthetic candidates have the same display name; recipient disambiguation uses the first 8 characters of the application id."
+}

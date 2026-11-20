@@ -1,0 +1,12 @@
+{
+  "name": "frontend-typecheck",
+  "command": [
+    "npm.cmd",
+    "run",
+    "typecheck"
+  ],
+  "cwd": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\github-source-20261027\\jianli",
+  "exit": 0,
+  "seconds": 4.43,
+  "scope": "isolated exact pending-source snapshot; not main or browser acceptance"
+}

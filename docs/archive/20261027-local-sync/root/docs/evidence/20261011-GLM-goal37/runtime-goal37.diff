@@ -1,0 +1,80 @@
+--- /tmp/goal37-before/local-runtime.ps1	2026-10-11 20:34:47.569014300 +0800
++++ scripts/local-runtime.ps1	2026-10-11 20:31:17.855668700 +0800
+@@ -66,10 +66,25 @@
+ 
+ function Save-LocalRunManifest([string]$Path, $Manifest) {
+     Assert-LocalStatePath $Path
+-    $temporary = "$Path.tmp"
++    # Own uniquely named temp beside the target; CreateNew refuses any existing
++    # entry (stale temp, occupied file, reparse point), so an object parked at a
++    # predictable temp path is never overwritten, followed, or deleted, and only
++    # this save's own temp is ever cleaned up.
++    $temporary = Join-Path (Split-Path -Parent $Path) ((Split-Path -Leaf $Path) + '.tmp-' + [guid]::NewGuid().ToString('N'))
+     try {
+-        $Manifest | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $temporary -Encoding utf8
+-        Move-Item -LiteralPath $temporary -Destination $Path -Force
++        $json = $Manifest | ConvertTo-Json -Depth 4
++        $stream = [System.IO.File]::Open($temporary, [System.IO.FileMode]::CreateNew, [System.IO.FileAccess]::Write, [System.IO.FileShare]::None)
++        try {
++            $writer = New-Object System.IO.StreamWriter($stream, (New-Object System.Text.UTF8Encoding($true)))
++            try { $writer.Write($json) } finally { $writer.Dispose() }
++        } finally { $stream.Dispose() }
++        # Same-volume metadata replacement (ReplaceFile) when the record exists,
++        # a plain move on first write. Both are verifiable Windows replacement
++        # behaviors, not a power-failure durability guarantee. PowerShell 5.1
++        # binds a bare $null to an empty string here, which ReplaceFile rejects,
++        # so a true null must be passed for the no-backup case.
++        if (Test-Path -LiteralPath $Path) { [System.IO.File]::Replace($temporary, $Path, [NullString]::Value) }
++        else { [System.IO.File]::Move($temporary, $Path) }
+     } catch {
+         Remove-Item -LiteralPath $temporary -ErrorAction SilentlyContinue
+         throw "Failed to save local run record at $Path; the previous record was left untouched. ($($_.Exception.Message))"
+@@ -107,8 +122,27 @@
+ function Stop-ValidatedLocalProcesses($Manifest, [string]$StatePath, [switch]$ValidateOnly) {
+     $live = @(Get-ValidatedLocalProcesses $Manifest $StatePath)
+     if ($ValidateOnly) { return $live }
++    $where = if ($StatePath) { " in $StatePath" } else { '' }
++    # Build the full plan for every root first: snapshot, descendant walk and
++    # identity sampling must all succeed before any Stop-Process runs, so a
++    # failing later root cannot leave an earlier root already stopped.
++    $plans = @()
+     foreach ($record in $live) {
+         $allProcesses = @(Get-CimInstance Win32_Process)
++        $snapshots = @{}
++        foreach ($row in $allProcesses) { $snapshots[[int]$row.ProcessId] = $row }
++        $rootRow = $snapshots[[int]$record.Id]
++        if (!$rootRow) {
++            # The validated root vanished before the snapshot: if nothing lives
++            # at that PID any more there is nothing to stop, otherwise the
++            # snapshot cannot prove the identity and the whole stop is refused.
++            if (Get-Process -Id $record.Id -ErrorAction SilentlyContinue) { throw "Root PID $($record.Id) is missing from the process snapshot; no processes stopped$where." }
++            continue
++        }
++        # The root stays bound to its manifest record: a reused PID would show a
++        # new creation time in the snapshot even though the live start time was
++        # matched by the earlier validation pass.
++        if (([datetime]$rootRow.CreationDate).ToUniversalTime().Ticks -ne ([datetime]$record.Started).ToUniversalTime().Ticks) { throw "Root PID $($record.Id) no longer matches its recorded start time; no processes stopped$where." }
+         $descendants = @([int]$record.Id)
+         for ($index = 0; $index -lt $descendants.Count; $index++) {
+             $children = @($allProcesses | Where-Object { $_.ParentProcessId -eq $descendants[$index] })
+@@ -118,8 +152,19 @@
+         $identities = @{}
+         foreach ($ownedId in $descendants) {
+             $ownedProcess = Get-Process -Id $ownedId -ErrorAction SilentlyContinue
+-            if ($ownedProcess) { $identities[$ownedId] = $ownedProcess.StartTime.ToUniversalTime().Ticks }
++            if (!$ownedProcess) { continue }
++            # Kernel creation times are microsecond-aligned, so a process that
++            # still is the one from the snapshot carries the exact same time in
++            # both APIs; any difference here means the PID was reused between
++            # the snapshot and this sampling and the identity is not ours.
++            $row = $snapshots[$ownedId]
++            if (!$row -or ([datetime]$row.CreationDate).ToUniversalTime().Ticks -ne $ownedProcess.StartTime.ToUniversalTime().Ticks) { throw "PID $ownedId changed identity between the process snapshot and sampling; refusing to stop it$where." }
++            $identities[$ownedId] = $ownedProcess.StartTime.ToUniversalTime().Ticks
+         }
++        $plans += ,@($descendants, $identities)
++    }
++    foreach ($plan in $plans) {
++        $descendants = $plan[0]; $identities = $plan[1]
+         foreach ($ownedId in $descendants) {
+             $ownedProcess = Get-Process -Id $ownedId -ErrorAction SilentlyContinue
+             if ($ownedProcess -and $identities.ContainsKey($ownedId)) {

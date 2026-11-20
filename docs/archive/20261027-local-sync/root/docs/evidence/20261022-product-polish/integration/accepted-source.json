@@ -1,0 +1,311 @@
+{
+  "baseCommit": "01232d27e8768121592b6c05300e0b5ba5170a55",
+  "files": [
+    {
+      "path": "backend/app/api/v1/analysis.py",
+      "acceptedSha256": "871cf6988f7f5f6d6fc073b2121c508f7f80daa7eb5019829094cac0a6bec4bb",
+      "acceptedGitBlob": "bf7fc3d46b2961e2452057601d355375a710ac1a",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "backend/app/api/v1/applications.py",
+      "acceptedSha256": "1ab129d16510f775347492df0f4cf39b49431373d4af4bd35f902abde650e32c",
+      "acceptedGitBlob": "95ecb8dde905cae9c7d8c89448cdd1a9678450f2",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "backend/app/schemas/analysis.py",
+      "acceptedSha256": "6ec8ebb7d9ea7993415e5d1f1f53617a9d503053aab28c141a5dcf7e24a701d4",
+      "acceptedGitBlob": "3c25a78ac278f3d2b3c2fd2c96c01ea0c0579822",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "backend/app/schemas/jobs.py",
+      "acceptedSha256": "e90822f16cae3531243a33e2a24bd411a2173795f165d36209a25ae59898bca0",
+      "acceptedGitBlob": "b2845288d1fdce47fc70b5134ceb536d02f3bd69",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "backend/app/services/analysis.py",
+      "acceptedSha256": "952802e51977abefce04a377b5531cf29d42b880a2d3e3243251d412d90f61ce",
+      "acceptedGitBlob": "2028f3dcfdfdcdb4442677f7dc6f1db015387f87",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "backend/app/services/applications.py",
+      "acceptedSha256": "7a16abae89fa944e59aa8a6f2145f3a7b9a65f009fb9d51886cff3208d178677",
+      "acceptedGitBlob": "1af0d13dd11ac8e9db3a45affa354cafb9bb75c9",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "backend/app/services/jobs.py",
+      "acceptedSha256": "3204cca66db4f27622225eb3ca513d0be1db1ff8106f00b8ac2ef2dfdc660c86",
+      "acceptedGitBlob": "73750d9b06c26949c1da98d76cd3f2c36b3c76e1",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "backend/app/tests/test_product_history_filters.py",
+      "acceptedSha256": "6b3094a937a77966e63cb8b1ab28b9c5184d5e159201bbf4a11ea7920a5c83da",
+      "acceptedGitBlob": "01a0701a96f9d142186ff983f9b278e07786e43f",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "backend/app/tests/test_product_history_filters_postgres.py",
+      "acceptedSha256": "9a92e750eb4ecf357d6528d36a49e9f2681640d2ac6c76c0a959bc10540adcf1",
+      "acceptedGitBlob": "b8587dda1c0e200eccde681a8c27d116295e3adc",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/app/demo/page.tsx",
+      "acceptedSha256": "df9f82566395968f29da99ac0d81f0bfed0d0c9f60d64283aaf1514293674433",
+      "acceptedGitBlob": "038830b7a275ea4d47a83eb6c3a085c9cfd9c423",
+      "workspaceHasSeparateChanges": true
+    },
+    {
+      "path": "jianli/src/app/globals.css",
+      "acceptedSha256": "95a54ff84420c13b43ddc5c577fc760543fa2548087498e8e1d3ddab5eb35a61",
+      "acceptedGitBlob": "57228d2a86c99bfd1c55b32aa0f0353b9632d673",
+      "workspaceHasSeparateChanges": true
+    },
+    {
+      "path": "jianli/src/app/layout.tsx",
+      "acceptedSha256": "f43a886cef73f8510cb1d0a58e9b15fce54b6342b29e3b0794bad6530f720981",
+      "acceptedGitBlob": "28068d8bfbe6bfe7d326061bb38d82e12d412576",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/app/login/page.tsx",
+      "acceptedSha256": "8af0511866078a22ef90df193e452bb4b1c6747163668947a01751eaa32382d9",
+      "acceptedGitBlob": "8c4e6d18c557a8b39ecee08f852b255b23836da1",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/app/page.tsx",
+      "acceptedSha256": "942c32c8e8574c0a551607fe35b6ee9bfc985d28864f5ae46988196234a6ba10",
+      "acceptedGitBlob": "5b7755e804ae58fef3b0b7fab66899ab5ee2e13e",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/app/portfolio/page.tsx",
+      "acceptedSha256": "6d6fb6c2cbbb343580046b4d16ee19a1035ee2d65a5508ac5bfd6bcba8b49fc8",
+      "acceptedGitBlob": "fa4a29e5b6f60870e7bedf23e7b2197da0a4c823",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/app/register/page.tsx",
+      "acceptedSha256": "653164fe32fb3a157e1252f6947a1aa0092b286621b6fd37190a33decffb8503",
+      "acceptedGitBlob": "87ea8c9fad32a0bacd22f3d29255cf379aba77bc",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/components/AccessGate.tsx",
+      "acceptedSha256": "bee84ffb6db0be26733d263f0110101d2633592775852a25ae91fed7662eb26a",
+      "acceptedGitBlob": "d90e1094ee0b6c741a4d7e5f7c6ff30f21c8796c",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/components/ApplicationBoard.tsx",
+      "acceptedSha256": "529ece6e80c7aed0cf18ae77f4c2569d7fec9c693488fd3dae79a495b2b249c3",
+      "acceptedGitBlob": "2c92b18572c545064abb48a0757410b932436e5e",
+      "workspaceHasSeparateChanges": true
+    },
+    {
+      "path": "jianli/src/components/ApplicationList.tsx",
+      "acceptedSha256": "9e2b6cedcda627b05b2f8f5aaab8c12af62d39b75dc19a8f2a9dd7e424c52806",
+      "acceptedGitBlob": "ea491118168fbbbe6b5d307d6ace2fe2054f5276",
+      "workspaceHasSeparateChanges": true
+    },
+    {
+      "path": "jianli/src/components/FlowSteps.tsx",
+      "acceptedSha256": "fb40a1b6c41ae83fc5242b098532f986422821c6d0a1b6db4997b94f0e0ed0e6",
+      "acceptedGitBlob": "44127d57c6adc9be7fc75d8bf0e5b820b0ef81ca",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/components/GrowthUploadReturn.tsx",
+      "acceptedSha256": "1bec51f68dd454728efc89463919d6580990fe73239a0b5263de687636418f32",
+      "acceptedGitBlob": "9f8783430c5ff7eb26e348b00cda72decc6bfa0e",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/components/GrowthWorkspace.tsx",
+      "acceptedSha256": "b4ee435de115011d31c18d6594337fbccdaafcee21890ba378342525a950006e",
+      "acceptedGitBlob": "47678fa9c9ba32a3e6ab65f713aee32055c92bcc",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/components/HomeWorkspace.tsx",
+      "acceptedSha256": "47dc7d307ea5f7e899da408ad0160ebc468dafab6e7031ae61bf597f11614103",
+      "acceptedGitBlob": "d8cebcc38d0b0c371112a25c9a65e11370818257",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/components/JobList.tsx",
+      "acceptedSha256": "20140cfc6c1893565769917d3c28719d1449a03121616387aa0be506c1abf4b8",
+      "acceptedGitBlob": "4acaad04de9a00ae3a11a97f8a9d5db07127b228",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/components/LoginLink.tsx",
+      "acceptedSha256": "e021957da03ea373a18e4a128a5209921c3338b33e0418afb94ec33182472be5",
+      "acceptedGitBlob": "d0acc2dbd4aefe9d1010a7c2d7ae3f059a873ef1",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/components/MaterialFileDropzone.tsx",
+      "acceptedSha256": "808011e2635cf6c513ad5a50e4b8074d89e597b0b00232d32b31476dbbf12deb",
+      "acceptedGitBlob": "ca1c2d30324366c12ae7df1fb2dd9af3a39fee87",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/components/ProjectVersionPicker.tsx",
+      "acceptedSha256": "991e72da754b31933a5259656f73393bf8a15810bc08d9ed01a57579361583f5",
+      "acceptedGitBlob": "99bebf17f6d050f9294a61ea600336282ed81a14",
+      "workspaceHasSeparateChanges": true
+    },
+    {
+      "path": "jianli/src/components/ReportDetail.tsx",
+      "acceptedSha256": "87f643e6ba542b0368498076ae72d76f77de4a84158f82e3c354bd57246adeec",
+      "acceptedGitBlob": "dbd0de9839ac62ba4d5bc535d21afc43518b7d0e",
+      "workspaceHasSeparateChanges": true
+    },
+    {
+      "path": "jianli/src/components/ReportList.tsx",
+      "acceptedSha256": "8e48cf4a4990fa30e874c26b2f1ddec1f9716d4938ff3feaedd23c307cc0338a",
+      "acceptedGitBlob": "af58b7119bcc74cc265ed966c54b6dcb2c4ad6fe",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/components/ReportOverview.tsx",
+      "acceptedSha256": "eaf929199d622cafa99129163d6c2bfb1a7f74393e92fc51afac5f1f8342a16b",
+      "acceptedGitBlob": "631f67845ba36fab02b559db8b708531fc585f64",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/components/ReportRequirementReader.tsx",
+      "acceptedSha256": "ca67dc8165e29424ab9c812c291f23f47ad7ca5b3dfc2c2c3d125b6dfa4de26c",
+      "acceptedGitBlob": "75a75371c67f25b1c4573623743fe722bf3ca97c",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/components/SiteHeader.tsx",
+      "acceptedSha256": "64a9233feffbc0464604b4c628a888ea32e06bf33c6bb5307e7982881345487d",
+      "acceptedGitBlob": "287dc8c7bf6822394e2ba00ca8fbf803beafa16b",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/components/StudentAccountMenu.tsx",
+      "acceptedSha256": "60716705d2272264be51f1cfee50d88ec20fb47ed56bb5eb1ee4ac3946980b61",
+      "acceptedGitBlob": "b60d725a60d41661ce91fa71088bca33b9145c7a",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/lib/api/client.ts",
+      "acceptedSha256": "0cd240ca726b7ab5aaf9a857d1eb8d441248223337ebe62a717e53be2e170bf9",
+      "acceptedGitBlob": "e48439159ca55b1f9a8db913bd2c229e4597e9b1",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/lib/api/domain.ts",
+      "acceptedSha256": "94bcc4d44fd9f78448cf6ff1c081255f8d72c79786fc5d734699b950428f4a30",
+      "acceptedGitBlob": "cc2764138c52f8407855dfff16bf2fe4599f9aa3",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/lib/application-board-session.ts",
+      "acceptedSha256": "c28cf546dbfaa893afe034e9cffe088a1a6b4504c01aa58693f2e3100a9f2d82",
+      "acceptedGitBlob": "d9ecb56c0f94592f3d924ca54a9ee11acd0567f2",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/lib/auth-return.ts",
+      "acceptedSha256": "b66bd607b57a95e315b3c3874c77d578ab50d75c99b94254caa2c68408a235dd",
+      "acceptedGitBlob": "1f9bef5b26f6738cb89e214abac9d85060d609ac",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/lib/material-picker.ts",
+      "acceptedSha256": "959da4416d46221eca26413cc6d659863c63c722524e63e964b6eeb6cf1beda8",
+      "acceptedGitBlob": "9ed0c40d9f991164bdfadf360c2c620f01c117ca",
+      "workspaceHasSeparateChanges": true
+    },
+    {
+      "path": "jianli/src/lib/material-upload.ts",
+      "acceptedSha256": "855c39d8cc2ce964a9f5ebca851055dbf2cb29a19a87334ad5e2487ca5437c9c",
+      "acceptedGitBlob": "b23800d57d7f9c85f8fe68f0bb12308b2ace3e08",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/src/lib/report-reader.ts",
+      "acceptedSha256": "eec1a81ddef912ef1dbf69ef99f8c7be96ac38de89375e5bf145642b81b8bd09",
+      "acceptedGitBlob": "87fd0f300fd65d11089682489f3ca23e92e0a5f2",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/tests/application-board-session.test.mjs",
+      "acceptedSha256": "e0b592192569c671b9de2f1613624253b95865b25c6123d493c70230fcbd4b46",
+      "acceptedGitBlob": "b2262fa60254fd251203bbd2c9c5b3e1397d567e",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/tests/auth-return.test.mjs",
+      "acceptedSha256": "64c8048395deff01a7b914fccd0ba49530512a5b4a2916e0c0f679dad6396d1f",
+      "acceptedGitBlob": "4ba875193349399a48cb7ee103156ec4d16b362f",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/tests/failure-reply-draft.test.mjs",
+      "acceptedSha256": "23063afd930b75b565d560b6a06f33a9cf04d309e2c55c632908931ee1850337",
+      "acceptedGitBlob": "07138d9fb81e6921275e66b94d730905595047f7",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/tests/flow-steps.test.mjs",
+      "acceptedSha256": "2daecaae10f522fd5b57c13ee7b9210ea74a16f1e746d3bf7cd82e03c57ab770",
+      "acceptedGitBlob": "4cc6719c42e0fa243331b683e9f50c330a3b891f",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/tests/growth-material-entry.test.mjs",
+      "acceptedSha256": "ed9592ba14713bc60847354bda6624d3895d6410621a2dcbaeb8183aeaa9730a",
+      "acceptedGitBlob": "ac6034bfa5aeae44f14276f9cdca61d6520d35da",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/tests/history-enterprise.test.mjs",
+      "acceptedSha256": "cb24099f1cd1df2a567045e8782fca418e8b6010911c253d40b1c6ff601e5ddf",
+      "acceptedGitBlob": "c5dfec865e01e5539bd56bceb4f6bd64f54e8704",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/tests/home-workspace.test.mjs",
+      "acceptedSha256": "ce18555d336351175b1abc756d893ad66a99fff7b14d59495023f68e177b1b1b",
+      "acceptedGitBlob": "54e51c40faf057242e018dfdf15f4f784f99a3d4",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/tests/material-picker.test.mjs",
+      "acceptedSha256": "b246fc1a90833c27428a62ba53efb765457c3fb4d4e9d8b6d075fdf59409c68a",
+      "acceptedGitBlob": "d1679d2ca5f80486123f4a3c3b09000e5136c913",
+      "workspaceHasSeparateChanges": true
+    },
+    {
+      "path": "jianli/tests/material-upload.test.mjs",
+      "acceptedSha256": "6cedc81756f19b332edbcdbd3432189f2aa483489eb2091da6afdf5424902439",
+      "acceptedGitBlob": "9abb48adef78447cd49842df1708a096125858ae",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/tests/material-workspace.test.mjs",
+      "acceptedSha256": "f22bee28963863735876272133598ccc8b2839c81889d8d400dbb35959d0750e",
+      "acceptedGitBlob": "a4df0ed4be869b0e297fc9649571de6254d398e1",
+      "workspaceHasSeparateChanges": false
+    },
+    {
+      "path": "jianli/tests/report-reader.test.mjs",
+      "acceptedSha256": "f3ae85590b53bb30ae70d62ed4d3fc5529feaf65ac6c024abc301ed981d1428e",
+      "acceptedGitBlob": "7496849ca695671f7f812aae6b823af75d72ff92",
+      "workspaceHasSeparateChanges": false
+    }
+  ]
+}

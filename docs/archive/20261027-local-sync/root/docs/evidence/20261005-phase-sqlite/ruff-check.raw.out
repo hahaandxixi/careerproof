@@ -1,0 +1,4 @@
+CAREERPROOF_TEST_DATABASE_URL(subprocess)=UNSET
+COMMAND: .venv/Scripts/python.exe -m ruff check app evals  (cwd=backend)
+All checks passed!
+EXIT=0

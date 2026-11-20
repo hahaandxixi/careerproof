@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261021-complete-project-validation\rule-narrative-fix\validate.py", line 182, in <module>
+    main()
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261021-complete-project-validation\rule-narrative-fix\validate.py", line 56, in main
+    assert red.returncode == 1 and "reserve" in (OUT / "red-baseline.raw.out").read_text(encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

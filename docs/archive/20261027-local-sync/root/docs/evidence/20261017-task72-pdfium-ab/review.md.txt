@@ -1,0 +1,72 @@
+# task72 · PDFium 替换可行性 A/B 补验 — 交棒（C 可选）
+
+HEAD `33ba7136bd5f516360e5d2d59bacfb4c4e4f39ce`。未改依赖锁/生产解析器；只写本目录。
+
+## 环境（关键约束）
+
+- **PyMuPDF 只在** `backend/.venv`（1.26.4）；**pypdfium2 只在** 打包运行时
+  `...\codex-runtimes\codex-primary-runtime\dependencies\python.exe`（pypdfium2 5.14.0）。
+  两个解释器都不齐，故 A/B 用**同一份落盘 fixture**（`fixtures/` + `fixtures-manifest.json` 记 SHA256），
+  分别由两个解释器读取；每例 `file_sha256` 两侧一致，保证比的是同一字节。
+- 未安装、未升级任何依赖；未动 `pyproject`/锁文件。
+
+## 结果（7 例，逐值对比见 `diff.txt`）
+
+| fixture | 页数一致 | PyMuPDF 字符 | PDFium 字符 | 文本逐字节相同 |
+| --- | --- | --- | --- | --- |
+| english_text | 是 | 74 | 75 | **否** |
+| chinese_text | 是 | 36 | 37 | **否** |
+| plain_lines | 是 | 28 | 30 | **否** |
+| multi_page | 是 | 33 | 33 | 是 |
+| rotated_90 | 是 | 22 | 22 | 是 |
+| over_char_cap（3000 页 × 200 字符） | 是 | 600000 | 600000 | 是 |
+| scanned_image_only | 是（0 节） | 0 | 0 | 是（但**错误语义不同**，见 F2） |
+
+### F1 — 中：换行符不同，直接改变下游字符计数与引用定位
+- PyMuPDF 产出 `\n`，PDFium 适配器产出 `\r\n`：
+  - `plain_lines`：`'line one\nline two\nline three'` vs `'line one\r\nline two\r\nline three'`
+    → **+2 字符**（2 个换行）；`english_text`/`chinese_text` 各 **+1**。
+- 影响面：生产用 `max_document_characters` 计数（`services/matching_materials.py:131`）与
+  `lineStart/lineEnd` 引用定位（`document_parser` 的 section 行号 + 引用片段切片）。
+  换行差 1 字节/行意味着**同一份材料在替换后字符上限与引用偏移都会漂移**，多行文档累积显著。
+- 该差异是**适配器行为差异，不是 PDFium 本身**，可在适配器层归一化（统一 `\n`）后消除；
+  本卡只记录差异，未改原型。
+
+### F2 — 低/信息：无文字 PDF 的错误语义不同
+- 纯扫描页（无文字层）：PyMuPDF 路径抛 `AppError(4024)`「PDF未提取或识别到可分析文字」；
+  PDFium 原型在 OCR 未启用/未命中时返回 **0 sections 且无异常**，需调用方自行按"空结果"处理。
+- 若替换时不显式对齐，原本会被 4024 拒绝的材料会变成"成功但无内容"。
+
+### 未发现差异
+- 页数与页码（含 3000 页、旋转 90°、多页）完全一致；字符总量在无换行歧义的 fixture 上一致；
+  `over_char_cap` 两侧都抽出 600,000 字符 → **两个 reader 都不在解析层执行字符上限**（与 task71 的 P2 同源）。
+
+## 建议
+
+**保留现状，不建议现在替换**：F1 会在不改适配器的情况下改变字符计数与引用偏移，属可复现的回归面；
+F2 需先对齐错误语义。若继续验证，下一步应是"适配器归一化换行 + 空结果映射 4024"后的复测，
+而非直接进入依赖替换。
+
+## 未验证项
+
+1. **OCR 路径未做真识别比对**：两例只用了 scripted/空 recognizer，未接真实 OCR 引擎，
+   故"扫描页文本一致性"未验。
+2. 未做**子进程真实隔离**测试（本探针同进程调用两库）；卡片要求"子进程真实隔离能测才写通过"，
+   故不写通过。
+3. 未测性能、内存、许可；**不作法律结论**，也不把原型通过视为可上线替换。
+4. 未验证 PDFium 生产镜像可用性（本机 runtime 有 5.14.0，不代表部署环境有）。
+
+## 命令
+
+```text
+runtime_python make_fixtures.py --part reportlab     # exit 0, 4 fixtures
+.venv_python   make_fixtures.py --part pymupdf       # exit 0, 3 fixtures
+runtime_python read_fixtures.py --reader pdfium      # exit 0 -> read-pdfium.json
+.venv_python   read_fixtures.py --reader pymupdf     # exit 0 -> read-pymupdf.json
+.venv_python   diff (见 diff.json / diff.txt)
+```
+
+## 证据
+
+`make_fixtures.py`、`read_fixtures.py`、`fixtures/`、`fixtures-manifest.json`、
+`read-pdfium.json`、`read-pymupdf.json`、`diff.json`、`diff.txt`、`*.raw.out`（本目录）。

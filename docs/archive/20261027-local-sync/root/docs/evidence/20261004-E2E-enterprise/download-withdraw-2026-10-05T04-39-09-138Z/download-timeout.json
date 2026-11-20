@@ -1,0 +1,21 @@
+{
+  "events": [],
+  "dirFiles": [],
+  "alertText": null,
+  "lastPosts": [
+    {
+      "at": "2026-10-05T04:39:10.177Z",
+      "phase": "request",
+      "url": "http://127.0.0.1:3001/auth/login",
+      "method": "POST",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T04:39:11.445Z",
+      "phase": "request",
+      "url": "http://127.0.0.1:3001/applications/dfff7065-80ac-447e-95fb-0838e1bf3789/view",
+      "method": "POST",
+      "type": "Fetch"
+    }
+  ]
+}

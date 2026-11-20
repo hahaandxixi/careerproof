@@ -1,0 +1,7 @@
+﻿PASS normal-environment cmd entry exists
+PASS cmd entry is a thin forwarder to Start-Local.ps1 with argument passthrough
+PASS launcher scripts parse without syntax errors
+PASS guide recommends the same entry and the self-service registration page
+PASS normal entry prints no secret values
+PASS preflight either passes without starting services or names every failed path
+6 launcher-entry assertions passed; no services, containers, databases or files outside the project were touched.

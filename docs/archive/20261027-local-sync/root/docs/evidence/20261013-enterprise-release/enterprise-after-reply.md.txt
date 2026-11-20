@@ -1,0 +1,106 @@
+- link "跳到主要内容":
+  - /url: "#main-content"
+- banner:
+  - link "职证 CareerProof":
+    - /url: /
+  - navigation "主导航":
+    - link "岗位发现":
+      - /url: /jobs
+    - link "岗位管理":
+      - /url: /jobs/mine
+    - link "发布岗位":
+      - /url: /jobs/new
+    - link "通知（6 未读）":
+      - /url: /notifications
+    - generic: E2E 合成企业
+    - button "退出"
+- main:
+  - heading "已授权投递 · 岗位匹配对照" [level=1]
+  - paragraph: 查看学生向本岗位授权的固定报告，点选格子即可联动要求与证据。分数仅辅助核对，不代表录用顺序。
+  - button "刷新授权投递"
+  - generic "查看授权范围与使用说明"
+  - text: 关键词（姓名、技能或要求）
+  - searchbox "关键词（姓名、技能或要求）"
+  - text: 聚焦岗位要求
+  - combobox "聚焦岗位要求":
+    - option "全部要求" [selected]
+    - option "Python"
+    - option "SQL"
+    - option "pytest"
+  - text: 证据状态筛选
+  - combobox "证据状态筛选":
+    - option "全部状态" [selected]
+    - option "有证据或部分支持"
+    - option "仅简历自述"
+    - option "缺少材料"
+    - option "暂不可评"
+  - heading "岗位要求 × 投递候选人" [level=2]
+  - paragraph: 绿色/蓝色：有证据的分数；虚线：缺材料或仅自述；灰色：不可评。数值为原报告0—100分，权重沿用原报告。点击姓名或格子查看固定报告。
+  - table:
+    - rowgroup:
+      - row "岗位要求 合成首版验收学生 46.67 · 已回复":
+        - columnheader "岗位要求"
+        - columnheader "合成首版验收学生 46.67 · 已回复":
+          - button "合成首版验收学生"
+          - paragraph: 46.67 · 已回复
+    - rowgroup:
+      - row "提供Python相关实践材料 · 权重2 65 有证据 实践证据 3/5":
+        - rowheader "提供Python相关实践材料 · 权重2"
+        - cell "65 有证据 实践证据 3/5":
+          - button "65 有证据 实践证据 3/5":
+            - text: "65"
+            - generic: 有证据
+            - generic: 实践证据 3/5
+      - row "提供SQL相关实践材料 · 权重2 10 仅自述":
+        - rowheader "提供SQL相关实践材料 · 权重2"
+        - cell "10 仅自述":
+          - button "10 仅自述":
+            - text: "10"
+            - generic: 仅自述
+      - row "提供pytest相关实践材料 · 权重2 65 有证据 实践证据 3/5":
+        - rowheader "提供pytest相关实践材料 · 权重2"
+        - cell "65 有证据 实践证据 3/5":
+          - button "65 有证据 实践证据 3/5":
+            - text: "65"
+            - generic: 有证据
+            - generic: 实践证据 3/5
+  - heading "合成首版验收学生 · 投递时固定报告" [level=2]
+  - paragraph: 共3项岗位要求，其中2项有项目证据支撑，1项仅有简历声明，0项当前无法确认，0项暂不支持评估且不计分。分数为材料支持度，不是能力或录用结论。
+  - paragraph: 报告模式：rules；查看与下载不等于通过面试。
+  - button "下载本次授权简历"
+  - region "证据联动雷达":
+    - heading "岗位要求雷达 · 证据联动" [level=3]
+    - paragraph: 点选要求，核对原报告判断与来源。实心点有证据，空心点仅自述；缺材料不绘点，不可评用“—”。分数沿用原报告，不填充面积。
+    - group "岗位要求分数，点选轴标签或下方要求按钮查看证据":
+      - generic: "25"
+      - generic: "50"
+      - generic: "75"
+      - generic: "100"
+      - generic: "0"
+      - generic "Python：65，有证据"
+      - button "Python，有证据，65，查看证据":
+        - generic: Python
+        - generic: 65 · 有证据
+      - generic "SQL：10，仅自述"
+      - button "SQL，仅自述，10，查看证据" [pressed]:
+        - generic: SQL
+        - generic: 10 · 仅自述
+      - generic "pytest：65，有证据"
+      - button "pytest，有证据，65，查看证据":
+        - generic: pytest
+        - generic: 65 · 有证据
+    - generic "选择岗位要求":
+      - button "Python"
+      - button "SQL" [pressed]
+      - button "pytest"
+    - paragraph: 第 2 项 · 权重 2
+    - heading "提供SQL相关实践材料" [level=4]
+    - paragraph: 10/ 100
+    - paragraph: 仅自述
+    - paragraph: 简历中存在该技能声明，但个人作品中暂未找到可验证证据
+    - generic "查看本次授权引用片段（0）"
+  - generic "AI核验建议与沟通问题（按需查看）"
+  - generic "查看完整逐项报告（3项）"
+  - blockquote: 已发送回复：合成验收：请补充 SQL GROUP BY 查询脚本、合成输入输出和预期结果，并说明本人贡献。当前核对的是本次投递固定版本，新版材料需重新生成报告后由本人决定是否投递。
+- contentinfo: 规则检索 + AI 证据解释 · 模型不可用时自动降级 · 不执行上传的代码
+- alert: 可追溯人才匹配平台

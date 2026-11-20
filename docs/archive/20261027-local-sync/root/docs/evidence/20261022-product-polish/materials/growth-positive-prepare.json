@@ -1,0 +1,156 @@
+{
+  "api": "http://127.0.0.1:8113",
+  "externalAI": false,
+  "database": {
+    "host": "127.0.0.1",
+    "port": 55445,
+    "name": "cp_product_polish_20261022"
+  },
+  "source": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\backend",
+  "storage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\storage",
+  "baseReportId": "4cd00c84-855f-4d26-8a3b-6fe31a076535",
+  "uploadedVersionId": "53366c20-1973-48a4-8b18-c27ca4ceaa7e",
+  "calls": [
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/match-reports/4cd00c84-855f-4d26-8a3b-6fe31a076535",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/projects",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/match-reports/4cd00c84-855f-4d26-8a3b-6fe31a076535/growth-tasks/8ba20aff-ca1c-4180-9785-8a5a05092ff0",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/match-reports/4cd00c84-855f-4d26-8a3b-6fe31a076535/growth-tasks",
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/match-reports/4cd00c84-855f-4d26-8a3b-6fe31a076535",
+      "status": 200
+    }
+  ],
+  "uploads": 0,
+  "materialSaves": 0,
+  "analyses": 0,
+  "baseReportHashBefore": "b060cf0112b3b8bcba83836a476ba443ea8f99bfd7b100c8227ec466a1d33819",
+  "requirementId": "8ba20aff-ca1c-4180-9785-8a5a05092ff0",
+  "requirementTitle": "编写行为测试验证成功报名、重复与满额拒绝、取消、事务回滚、重启恢复及最后名额竞争",
+  "baseMaterials": [
+    {
+      "kind": "resume",
+      "id": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+      "title": "校园活动项目合成简历",
+      "versionNumber": 1,
+      "materialRole": null,
+      "contentHash": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+    },
+    {
+      "kind": "project",
+      "id": "ca395374-2435-46ae-94f5-249c4331f33b",
+      "title": "Campus Signup：完整业务实现",
+      "versionNumber": 1,
+      "materialRole": "portfolio",
+      "contentHash": "56fa9fa10dccc035e20c5fa447077436d24f893cc20d0dea7cb0c01a15a3463c"
+    }
+  ],
+  "targetVersion": {
+    "id": "53366c20-1973-48a4-8b18-c27ca4ceaa7e",
+    "versionNumber": 4,
+    "contentHash": null,
+    "status": "completed",
+    "originalFilename": "CareerProof-campus-signup-v2-runtime.zip"
+  },
+  "projectId": "1d4636c9-2497-490a-969c-e9ac431d694d",
+  "reused": false,
+  "createPayload": {
+    "requirementId": "8ba20aff-ca1c-4180-9785-8a5a05092ff0",
+    "gapKind": "execution",
+    "deliverable": "核对新版行为测试及上传的运行记录与固定源码版本之间的对应关系",
+    "steps": [
+      "对照旧版固定报告中已保存的测试引用",
+      "明确选择现有新版材料后，核对运行记录、测试与实现的对应范围"
+    ],
+    "acceptanceChecks": [
+      "引用能定位到保存版本的文件与行号",
+      "上传的运行输出不被当作平台独立执行或本人贡献认证",
+      "不承诺等级提升"
+    ]
+  },
+  "growth": {
+    "id": "362c7923-9025-43df-87cf-b68dbf3c4d10",
+    "baseReportId": "4cd00c84-855f-4d26-8a3b-6fe31a076535",
+    "jobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+    "jobTitle": "校园活动后端：完整项目材料验证",
+    "targetJobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+    "targetJobTitle": "校园活动后端：完整项目材料验证",
+    "requirementId": "8ba20aff-ca1c-4180-9785-8a5a05092ff0",
+    "requirementTitle": "编写行为测试验证成功报名、重复与满额拒绝、取消、事务回滚、重启恢复及最后名额竞争",
+    "gap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+    "originalAction": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+    "actionSource": "rules",
+    "actionCitationIds": [],
+    "actionNeedsRecheck": false,
+    "taskPlanNeedsRecheck": false,
+    "taskPlanWarning": null,
+    "enterpriseReply": null,
+    "plan": {
+      "requirementId": "8ba20aff-ca1c-4180-9785-8a5a05092ff0",
+      "gapKind": "execution",
+      "deliverable": "核对新版行为测试及上传的运行记录与固定源码版本之间的对应关系",
+      "steps": [
+        "对照旧版固定报告中已保存的测试引用",
+        "明确选择现有新版材料后，核对运行记录、测试与实现的对应范围"
+      ],
+      "acceptanceChecks": [
+        "引用能定位到保存版本的文件与行号",
+        "上传的运行输出不被当作平台独立执行或本人贡献认证",
+        "不承诺等级提升"
+      ]
+    },
+    "baseMaterials": [
+      {
+        "kind": "resume",
+        "id": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+        "title": "校园活动项目合成简历",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+      },
+      {
+        "kind": "project",
+        "id": "ca395374-2435-46ae-94f5-249c4331f33b",
+        "title": "Campus Signup：完整业务实现",
+        "versionNumber": 1,
+        "materialRole": "portfolio",
+        "contentHash": "56fa9fa10dccc035e20c5fa447077436d24f893cc20d0dea7cb0c01a15a3463c"
+      }
+    ],
+    "materials": [],
+    "status": "planned",
+    "analysisTaskId": null,
+    "analysisStatus": null,
+    "analysisError": null,
+    "targetReportId": null,
+    "comparison": null,
+    "createdAt": "2026-10-22T11:56:57.519031+00:00",
+    "boundary": "任务进度不代表能力通过；新报告不更新企业已收到的投递快照。变化不证明能力提升或本人贡献。"
+  },
+  "baseReportHashAfter": "b060cf0112b3b8bcba83836a476ba443ea8f99bfd7b100c8227ec466a1d33819",
+  "baseReportUnchanged": true,
+  "returnPath": "/growth/362c7923-9025-43df-87cf-b68dbf3c4d10?uploadedKind=project&uploadedVersion=53366c20-1973-48a4-8b18-c27ca4ceaa7e",
+  "browserURL": "http://127.0.0.1:3135/growth/362c7923-9025-43df-87cf-b68dbf3c4d10?uploadedKind=project&uploadedVersion=53366c20-1973-48a4-8b18-c27ca4ceaa7e",
+  "passed": true
+}

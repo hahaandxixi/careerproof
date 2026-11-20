@@ -1,0 +1,58 @@
+..........................................................sss........... [  5%]
+........................................................................ [ 11%]
+............s.........................s............s.................... [ 17%]
+...............ss.......sss......s.....ssssssss......................... [ 23%]
+........................................................................ [ 29%]
+........................................................................ [ 35%]
+.......................................................ss........s...... [ 41%]
+.....................................................s.................. [ 47%]
+....................................................................F... [ 53%]
+...................................sss.......ss......................... [ 59%]
+.......................ss.............................ssssss............ [ 64%]
+..............................s......................................... [ 70%]
+........................................................................ [ 76%]
+........................................................................ [ 82%]
+........................................................................ [ 88%]
+........................................................................ [ 94%]
+......................ssssssss.....................................      [100%]
+================================== FAILURES ===================================
+_________________ test_installed_pins_match_pyproject_exactly _________________
+
+    def test_installed_pins_match_pyproject_exactly():
+        pins = _project_pins()
+        assert set(pins) == set(PINNED_PACKAGES)
+        for name, pinned in pins.items():
+            installed = importlib.metadata.version(name)
+>           assert installed == pinned, f"{name}: installed {installed} != pin {pinned}"
+E           AssertionError: pyjwt: installed 2.10.1 != pin 2.15.0
+E           assert '2.10.1' == '2.15.0'
+E             
+E             - 2.15.0
+E             + 2.10.1
+
+app\tests\test_fastembed_dependency_compatibility.py:50: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+.venv\Lib\site-packages\starlette\testclient.py:51
+  D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\starlette\testclient.py:51: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+app/tests/test_fastembed_dependency_compatibility.py::test_real_local_onnx_embedding_smoke
+  D:\jbcode\web ai\jianli\backend\app\tools\semantic_retrieval.py:70: UserWarning: The model sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 now uses mean pooling instead of CLS embedding. In order to preserve the previous behaviour, consider either pinning fastembed version to 0.5.1 or using `add_custom_model` functionality.
+    return TextEmbedding(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_fastembed_dependency_compatibility.py::test_installed_pins_match_pyproject_exactly
+1 failed, 1172 passed, 46 skipped, 7 warnings in 321.80s (0:05:21)
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

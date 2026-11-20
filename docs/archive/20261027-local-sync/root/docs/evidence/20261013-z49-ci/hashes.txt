@@ -1,0 +1,6 @@
+# z49 file hashes (git hash-object, 2026-10-13)
+f9b8daec749bbb90c3892d5c20ead86b2676a860  .github/workflows/ci.yml
+39fcc739d6b4bc58fe41cac1aa8278e49b690431  backend/scripts/check_ci_junit.py
+5544a4e0be59cd22931f8e5b80a7c7ac52a9bec6  backend/app/tests/test_ci_junit_gate.py
+daf068e63f70c5698494a8c5250f7c75a4e85ad2  jianli/package.json
+5aa3bdfd8481670fd8eee8352fa42865df4f8335  jianli/package-lock.json

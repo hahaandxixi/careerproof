@@ -1,0 +1,9 @@
+{
+  "variant": "response-loss",
+  "draftPreserved": true,
+  "draftReadOnly": true,
+  "editProbeBlocked": true,
+  "probeLength": 42,
+  "errorAlertShown": true,
+  "draftText": "E2E-02响应丢失变体audit-20261005：具名正文，服务器应已收到此条。"
+}

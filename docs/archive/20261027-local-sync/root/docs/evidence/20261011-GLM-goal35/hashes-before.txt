@@ -1,0 +1,5 @@
+10902297f5b8b55d2c01acc44dcb16d702ed8a99d597cc94a07a1c6d90d96192 *Start-Local.ps1
+fb44cfdd6391b5bf821db969f326c575e655959a4800fff2714aa760b525d522 *Stop-Local.ps1
+dd0aa0c74a57eea89d958df0835844acec0380d47d2f3a4afd187a4115d12b5a *scripts/local-runtime.ps1
+10d1075e03b6f4f9fbcdf5e0aa4c408d6424272f9b910f14ea0bf7cb02cdaeaf *scripts/local-runtime.test.ps1
+e15ca64a7c8b738f74505e56aff11413965b7a0db5a56b98f4dc55a5699dc896 *scripts/local-build-cache.test.mjs

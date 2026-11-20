@@ -1,0 +1,16 @@
+== libuv command-line encoding for a spawn arg containing a space ==
+  spawned arg list: [..., "--user-data-dir=D:\jbcode\web ai\jianli\backend\.tmp\e2e-browser\sha-probe\profile-enterprise"]
+  observed CommandLine : C:\Users\����\AppData\Local\hermes\node\node.exe -e "setTimeout(() => process.exit(0), 3000)" -- "--user-data-dir=D:\jbcode\web ai\jianli\backend\.tmp\e2e-browser\sha-probe\profile-enterprise"
+  runner check needle  : --user-data-dir=D:\jbcode\web ai\jianli\backend\.tmp\e2e-browser\sha-probe\profile-enterprise
+  out.includes(needle) -> true   (pidStillOurs uses exactly this check at line 226)
+  quoted form present  : true   (a quote between = and the path defeats the needle)
+
+== PowerShell [datetime] round-trip of the manifest startedAt instant ==
+  manifest writes StartTime.ToUniversalTime().ToString('o') (Start-E2E.ps1 line 160);
+  Stop-E2E.ps1 line 28-29 does ([datetime]$record.startedAt).ToUniversalTime().Ticks
+  compared for EQUALITY with Get-Process StartTime.ToUniversalTime().Ticks.
+  manifest value : 2026-10-05T04:35:26.9920000Z
+  powershell     : Kind|Ticks|ToUniversalTime().Ticks = Local|639268005269920000|639267717269920000
+  true UTC ticks : 639267717269920000
+  cast('Z') -> Kind=Local; ToUniversalTime().Ticks equals true UTC ticks: true
+  => Stop-E2E Ticks equality is stable against the manifest value: true

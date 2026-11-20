@@ -1,0 +1,4 @@
+# 命令：node -e（TS compiler API transpileModule，仅内存语法解析改动文件，无类型检查/无文件写出）
+syntax-ok src/components/GrowthWorkspace.tsx
+syntax-ok src/lib/growth-workflow.ts
+EXIT_CODE=0

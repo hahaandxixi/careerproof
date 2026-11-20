@@ -1,0 +1,110 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+____ test_enterprise_filters_use_same_snapshot_item_before_count_and_page _____
+
+jobs_db = (<fastapi.applications.FastAPI object at 0x00000248C4653980>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x00000248C47178D0>, autoflush=True, expire_on_commit=False))
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/product-history-unicode-red/test_enterprise_filters_use_sa0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002489146CA10>
+
+    async def test_enterprise_filters_use_same_snapshot_item_before_count_and_page(
+        jobs_db,
+        tmp_path,
+        monkeypatch,
+    ):
+        hr, student, outsider, job, rid, _, _, factory = await setup(jobs_db, tmp_path, monkeypatch)
+        try:
+            await source_scope(factory, job["id"], str(rid))
+            required, other_requirement = str(uuid4()), str(uuid4())
+            base = datetime(2026, 1, 1, tzinfo=UTC)
+            expected = None
+            async with factory() as session:
+                for index in range(28):
+                    user = User(
+                        email=f"candidate-{index}-{uuid4().hex}@example.test",
+                        password_hash="synthetic",
+                        display_name="Ŀ��100%_����" if index == 0 else f"������ѡ��{index}",
+                        role=UserRole.STUDENT,
+                    )
+                    session.add(user)
+                    await session.flush()
+                    profile = StudentProfile(user_id=user.id)
+                    session.add(profile)
+                    await session.flush()
+                    item = Application(
+                        job_id=UUID(job["id"]),
+                        student_id=profile.id,
+                        report_id=rid,
+                        consent_at=base,
+                        consent_version="synthetic",
+                        status="withdrawn"
+                        if index == 27
+                        else "replied"
+                        if index == 26
+                        else "submitted",
+                        created_at=base + timedelta(minutes=index),
+                        report_snapshot={
+                            "summary": "����ع���ʾ" if index == 0 else "����ժҪ",
+                            "items": [
+                                {
+                                    "requirementId": required,
+                                    "requirementTitle": "�������㴦��" if index == 0 else "����Ҫ��",
+                                    "skill": "Python",
+                                    "explanation": "�Ƿ�����ܾ�" if index == 0 else "����˵��",
+                                    "aiExplanation": "�־û��ύһ����" if index == 0 else None,
+                                    "verdict": "supported" if index == 0 else "gap",
+                                },
+                                {
+                                    "requirementId": other_requirement,
+                                    "requirementTitle": "����Ҫ��",
+                                    "verdict": "supported",
+                                },
+                            ]
+                        },
+                    )
+                    session.add(item)
+                    await session.flush()
+                    if index == 0:
+                        expected = str(item.id)
+                await session.commit()
+            endpoint = f"/api/v1/jobs/{job['id']}/applications"
+            filtered = await hr.get(
+                endpoint,
+                params={
+                    "requirementId": required,
+                    "verdict": "supported",
+                    "page": 99,
+                },
+            )
+            assert filtered.status_code == 200, filtered.text
+            data = filtered.json()["data"]
+            assert data["total"] == data["page"] == 1
+            assert [row["id"] for row in data["items"]] == [expected]
+            keyword = await hr.get(endpoint, params={"q": "100%_"})
+            assert keyword.json()["data"]["total"] == 1
+            assert keyword.json()["data"]["items"][0]["id"] == expected
+            for term in ("����ع�", "��������", "�Ƿ�����", "�־û�"):
+                response = await hr.get(endpoint, params={"q": term, "page": 99})
+                assert response.status_code == 200, response.text
+                found = response.json()["data"]
+>               assert found["total"] == found["page"] == 1, (term, found)
+E               AssertionError: ('����ع�', {'items': [], 'page': 1, 'pageSize': 20, 'total': 0})
+E               assert 0 == 1
+
+app\tests\test_product_history_filters.py:237: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_product_history_filters.py::test_enterprise_filters_use_same_snapshot_item_before_count_and_page
+1 failed, 2 deselected, 5 warnings in 1.83s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

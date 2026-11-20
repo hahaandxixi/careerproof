@@ -1,0 +1,23 @@
+......................F                                                  [100%]
+================================== FAILURES ===================================
+__ test_pending_negation_clause_does_not_mask_independent_outcome_assertion ___
+
+    def test_pending_negation_clause_does_not_mask_independent_outcome_assertion():
+        # Codex holdout: a pending/negated clause must not mask an independent
+        # deployment conclusion after the comma (no runtime-record step present).
+        context = supported_python_context()
+        for phrase in (
+            "部署是否成功待核验，但服务器已稳定运行",
+            "本人贡献待核验，接口已部署",
+        ):
+            error = plan_deployment_outcome_error(
+                "部署情况说明", ["整理 metrics.py 源码文件"], [phrase]
+            )
+>           assert error is not None and "without a runtime-record step" in error, phrase
+E           AssertionError: 部署是否成功待核验，但服务器已稳定运行
+E           assert (None is not None)
+
+app\tests\test_weekend_plan_boundaries.py:367: AssertionError
+=========================== short test summary info ===========================
+FAILED app/tests/test_weekend_plan_boundaries.py::test_pending_negation_clause_does_not_mask_independent_outcome_assertion
+1 failed, 22 passed in 0.11s

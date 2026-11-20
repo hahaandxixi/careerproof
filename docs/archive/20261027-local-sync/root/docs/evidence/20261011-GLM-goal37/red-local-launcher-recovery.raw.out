@@ -1,0 +1,34 @@
+PASS A1 first write creates the record
+PASS A2 second write replaces the record atomically
+PASS A3 failed save keeps the previous complete record
+PASS A4 reparse-point manifest paths are refused
+PASS A5 corrupt JSON reports the file location and is not deleted
+PASS A6 empty record file is refused with the file location
+PASS B1 valid owned roots are stopped through the extracted stop path
+PASS B2 a record with missing fields stops nothing
+PASS B3 a changed command on the second root stops nothing
+PASS B4 a reused PID stops nothing
+PASS B5 reuse is refused for incomplete or legacy manifests with the file location
+PASS C1 digest is stable across repeated calls
+PASS C2 changed migration content invalidates the digest
+PASS C3 added and removed migrations are detectable
+PASS C4 alembic config changes invalidate the digest
+PASS C5 bytecode cache and unrelated scratch do not affect the digest
+PASS C6 app source changes still invalidate; tests still do not
+PASS D1 safe cleanup swallows cleanup failures with a warning
+PASS D2 safe cleanup still runs a healthy cleanup
+PASS D3 original error survives a failing cleanup in the catch pattern
+PASS D4 AST: start/stop scripts parse and wire the new seams
+FAIL E1 save never overwrites a foreign object parked at the legacy fixed temp path :: 找不到路径“D:\jbcode\web ai\jianli\backend\.tmp\local-launcher-recovery-5301d64fa1f7408481af9ea3b0d92bc3\linktrap\occupied\processes.json.tmp”，因为该路径不存在。
+FAIL E2 a hard-linked temp path never reaches the link-external file :: the link-external file was modified through the temp hard link
+FAIL E3 a reparse point parked at the temp path is neither followed nor deleted :: 未将对象引用设置到对象的实例。
+FAIL E4 a descendant whose snapshot creation time differs from its live start is rejected before any stop :: descendant snapshot/live identity mismatch was accepted
+FAIL E5 a root that no longer matches its recorded start in the stop snapshot is not stopped :: root identity drift after validation was accepted
+FAIL E6 a failing second-root pre-check stops nothing from the first root :: the failing second root was absorbed
+21/27 launcher-recovery assertions passed; no live processes, locks, real manifests, containers or databases touched.
+FAILED: E1 save never overwrites a foreign object parked at the legacy fixed temp path :: 找不到路径“D:\jbcode\web ai\jianli\backend\.tmp\local-launcher-recovery-5301d64fa1f7408481af9ea3b0d92bc3\linktrap\occupied\processes.json.tmp”，因为该路径不存在。
+FAILED: E2 a hard-linked temp path never reaches the link-external file :: the link-external file was modified through the temp hard link
+FAILED: E3 a reparse point parked at the temp path is neither followed nor deleted :: 未将对象引用设置到对象的实例。
+FAILED: E4 a descendant whose snapshot creation time differs from its live start is rejected before any stop :: descendant snapshot/live identity mismatch was accepted
+FAILED: E5 a root that no longer matches its recorded start in the stop snapshot is not stopped :: root identity drift after validation was accepted
+FAILED: E6 a failing second-root pre-check stops nothing from the first root :: the failing second root was absorbed

@@ -1,0 +1,2 @@
+pre snapshot red case -> False
+pre snapshot plain case -> True

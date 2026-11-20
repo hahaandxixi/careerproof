@@ -1,0 +1,79 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "viewport390",
+  "startedAt": "2026-10-05T10:48:19.467Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T10:48:19.467Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=viewport390 runId=closure-20261005"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T10:48:19.721Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise-390 dynamic port 52415 profile=profile-enterprise-390"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T10:48:19.779Z",
+      "name": "viewport",
+      "status": "fail",
+      "detail": "innerWidth=980 innerHeight=2121"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T10:48:19.966Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\viewport390-2026-10-05T10-48-19-466Z\\04-login-page-empty.png"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T10:48:21.855Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T10:48:22.466Z",
+      "name": "screenshot:board-390",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\viewport390-2026-10-05T10-48-19-466Z\\06-board-390.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T10:48:23.346Z",
+      "name": "screenshot:report-390",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\viewport390-2026-10-05T10-48-19-466Z\\07-report-390.png"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T10:48:23.348Z",
+      "name": "key-chain-390",
+      "status": "pass",
+      "detail": "login+board+report at 390px; reportOpen=true; pageWidth=390 vs viewport=390"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T10:48:23.478Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise-390 exitCode=0"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T10:48:23.478Z",
+      "name": "scenario-complete",
+      "status": "fail",
+      "detail": "1 step(s) not passed: 3:viewport"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-05T10:48:23.478Z"
+}

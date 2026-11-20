@@ -1,0 +1,74 @@
+{
+  "runId": "audit-20261005",
+  "scenario": "skeleton",
+  "startedAt": "2026-10-05T04:25:36.109Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T04:25:36.109Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=skeleton runId=audit-20261005"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T04:25:36.372Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise dynamic port 49670 profile=profile-enterprise"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T04:25:36.570Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\skeleton-2026-10-05T04-25-36-108Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T04:25:37.901Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T04:25:38.443Z",
+      "name": "screenshot:board-jobA",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\skeleton-2026-10-05T04-25-36-108Z\\05-board-jobA.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T04:25:39.093Z",
+      "name": "screenshot:report-A-open",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\skeleton-2026-10-05T04-25-36-108Z\\06-report-A-open.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T04:25:39.097Z",
+      "name": "skeleton-report-open",
+      "status": "pass",
+      "detail": "report header rendered=true; network events=130"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T04:25:39.212Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise exitCode=0"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T04:25:39.212Z",
+      "name": "scenario-complete",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261004-E2E-enterprise\\skeleton-2026-10-05T04-25-36-108Z\\skeleton-dom.json",
+    "docs\\evidence\\20261004-E2E-enterprise\\skeleton-2026-10-05T04-25-36-108Z\\skeleton-api-log.json"
+  ],
+  "finishedAt": "2026-10-05T04:25:39.212Z"
+}

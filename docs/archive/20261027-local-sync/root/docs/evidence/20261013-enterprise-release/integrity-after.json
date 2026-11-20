@@ -1,0 +1,72 @@
+{
+  "runId": "release-owner-20261012",
+  "applications": {
+    "d08df56a-4f79-44f8-8094-34582865053f": {
+      "reportId": "3967b943-06c6-4ab2-9722-af076ef91a14",
+      "jobId": "d3ae897a-0e37-42cc-87dc-efce0794eb7a",
+      "status": "submitted",
+      "snapshotSha256": "d43f6d96419f2952acf7c238edb1b66b8109974eebe35ddd31cad3fa7ef52c97",
+      "replySha256": "2dac76d521b05be957abcd098ba29501bb065127122504cc5187172199833460"
+    },
+    "2b3fa060-396f-4ef3-8f8e-93c811e00434": {
+      "reportId": "40992e63-6ff9-4ac9-bd52-09f21d0d00e7",
+      "jobId": "59a8fdf5-ec35-40fc-8fb4-1007d72a34fe",
+      "status": "submitted",
+      "snapshotSha256": "47d5d648a3f7fcfe2c075e1b1247979247cf9788eec7dcc12da67a6d1f04b1b5",
+      "replySha256": "2dac76d521b05be957abcd098ba29501bb065127122504cc5187172199833460"
+    },
+    "d97a30c2-11e5-4715-8012-ee5516eee3e5": {
+      "reportId": "d0b81d2a-bd0c-4832-b87d-5c5384ff90c3",
+      "jobId": "d3ae897a-0e37-42cc-87dc-efce0794eb7a",
+      "status": "submitted",
+      "snapshotSha256": "2b96385952a91b60c92622c652b9af334b3d1449803191f867c8f32b085ee700",
+      "replySha256": "2dac76d521b05be957abcd098ba29501bb065127122504cc5187172199833460"
+    },
+    "6bf6508a-b59b-4eb7-85bb-c635f79c8e47": {
+      "reportId": "80c96d12-5172-425b-b184-13421d43547d",
+      "jobId": "6f5716f9-c467-4059-9358-ce4f5500fe84",
+      "status": "withdrawn",
+      "snapshotSha256": "97128e633922609213eb8942ffeed59e13946ed480c555fcdb274a5d55d38f90",
+      "replySha256": "dbb1ca1a34fff2a32aca6bc56ba4b86eee8f43389d7adbd23bc20c36ba83f8da"
+    },
+    "2b2031bd-0e42-41e4-ba40-62d3945c9deb": {
+      "reportId": "f8916c93-fde6-46b9-8bc3-be6b928645f2",
+      "jobId": "6f5716f9-c467-4059-9358-ce4f5500fe84",
+      "status": "replied",
+      "snapshotSha256": "d255f5ca6dff4e7eb3a033d7771536c398808521f4f4f4051b1df7519ea9f83a",
+      "replySha256": "3df70430adc6fc2955fa7693c48fd0df328bf79842792dce972a98ed864387e5"
+    }
+  },
+  "reports": {
+    "3967b943-06c6-4ab2-9722-af076ef91a14": "142a0fc4328f68759d3e85ea42f08dff399be27f3252d97e95d2931835213768",
+    "40992e63-6ff9-4ac9-bd52-09f21d0d00e7": "57e5d68f7172d9eddde8974398e50174460a1f64c173e81eb745ae900c31bf9e",
+    "d0b81d2a-bd0c-4832-b87d-5c5384ff90c3": "8cd1c8ada788b71ebbeb600ae76c382a2806dbe0c82e1d84acd9622e24865aee",
+    "80c96d12-5172-425b-b184-13421d43547d": "d2b9873adf519d4bbce3385caa95ec7e12bf0c4c530eb7d3eeb90fc1921d1ef5",
+    "f8916c93-fde6-46b9-8bc3-be6b928645f2": "19b85e06845c4c52f1e83885f157f545de978f887b7b1830337c9e2535ead652",
+    "77af85c6-0e78-49d7-be70-4a41f2167592": "08305261e0e704f74f4da90770cd077a7e580dc46f683aa835c52a0f6a14479a"
+  },
+  "events": {
+    "5e50604a-36e8-45c1-8add-eec7501b2b71": "74a8817aba3555b575b310e4222250f7188d6dc17f37949573b5377e3031d3ea",
+    "7649a3f9-7e47-4adc-8616-1e8ed3b72eec": "e3aef4043b040f2b5c4ba208c438232be8d62627e36a9d4449a73981b5e1638d",
+    "384b0a4c-b890-492d-8659-426daf11d05a": "119401e462c9b35aa1bdd0ca4a78b492614b16e9675c0bf12bffc21699e4b710",
+    "2bd6fa37-5372-462c-b954-237947964633": "981d5f03c6f7b2d20241d59c4ab4787678c2ad0c4f70bb173f15ce0314b71277",
+    "6412adb6-1d4e-4148-86bf-d334aee6eda5": "77bf3508e1b6584cabbb0cdef456a84e391cd6652528fcef77ae8e6c0e90f3c3",
+    "4db52140-5f00-44d7-8b2f-bb31c941a2de": "9ec4004ac428d3b2642e0ce1ba68d7a7cf36a60ba74ed08a10d3597061edf537",
+    "60c870ed-ebb7-454b-b6b3-f05cbf35f31d": "38e8e3f3ec6f5d2fedd3fcde838627a62c63073ce7ebbefd92bb162ff30a23f5",
+    "b5008564-74d7-4904-8b2a-e2588592cc1e": "c8f37a02a5ae015cd3c7a1f8c65934caca94ee560fa685551af519c55b8ab545",
+    "9d905721-b9f1-4c63-b35b-0d222a87d0ae": "ee9c98f216a02e24de0ab6a2b12b1c406594e7c05884835c3dc2b47e6ae09cff",
+    "ae519d3c-d413-4dac-bb65-32fad563e896": "cf84c9169cb80ee19fa341227a8245e14c6957d106010224ea204cd6cf790079",
+    "d54a42c9-34de-4052-bfc2-81211ed6ff35": "494806e53bc707df3d4a2599072aff4aec8e11fa9101c749a4c23128a13f2cdc",
+    "7ef4b389-ff62-41f0-8254-68ba806a8e4b": "85061516f90a08dba15f92910c1669703aad5a69bc30dce626740f212f3dd88e"
+  },
+  "seedSnapshotMatches": {
+    "A": true,
+    "B": true,
+    "A2": true
+  },
+  "comparison": {
+    "allOriginalSnapshotsUnchanged": true,
+    "allSavedReportsUnchanged": true,
+    "allExistingEventsUnchanged": true
+  }
+}

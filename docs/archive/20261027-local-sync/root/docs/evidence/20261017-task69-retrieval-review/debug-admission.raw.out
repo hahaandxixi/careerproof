@@ -1,0 +1,45 @@
+﻿student_id=02973e70-3753-4b80-b7b7-811fef582f50
+
+--- raw table contents ---
+  resumes: 2
+  resume_versions: 3
+  resume_sections: 3
+  projects: 2
+  project_versions: 4
+  project_files: 4
+
+--- resumes rows ---
+  id=bd697341-841d-496e-8917-3479053c2279 student=02973e70-3753-4b80-b7b7-811fef582f50 archived=False
+  id=2ae035ba-cf29-467c-8ea8-c6845b692c60 student=50a6448e-a2ef-4159-8b3f-ba60c166da6c archived=False
+--- resume_versions rows ---
+  id=122e7d75-e9c8-46f7-b7a4-f5e07927149c resume=bd697341-841d-496e-8917-3479053c2279 v=1
+  id=3fe6419e-8d3f-4a7c-a25e-fb498702b872 resume=bd697341-841d-496e-8917-3479053c2279 v=2
+  id=ad46215c-ce16-4379-87a6-c035017e1916 resume=2ae035ba-cf29-467c-8ea8-c6845b692c60 v=1
+--- project_versions rows ---
+  id=c4bbcf66-dffa-4919-868a-8b7651227840 project=ce2fee39-983e-4c45-9ad8-2eba39dd6870 v=1 role=portfolio
+  id=f579f704-bc89-44f2-8c6b-74f6a7b1db3a project=ce2fee39-983e-4c45-9ad8-2eba39dd6870 v=2 role=portfolio
+  id=e78eb204-6014-4990-a3ad-38092e8ca5ae project=ce2fee39-983e-4c45-9ad8-2eba39dd6870 v=3 role=reference
+  id=006f5ac8-926b-407b-a189-bdfea2927df8 project=9b4d3fc1-f1d9-45ad-98db-6ececdf50b01 v=1 role=portfolio
+
+--- stage 1: newest_resume derived table ---
+  rows=[(UUID('2ae035ba-cf29-467c-8ea8-c6845b692c60'), 1), (UUID('bd697341-841d-496e-8917-3479053c2279'), 2)]
+
+--- stage 2: resume_versions joined to newest_resume ---
+  ids=[UUID('3fe6419e-8d3f-4a7c-a25e-fb498702b872')]
+
+--- stage 3: newest_project derived table ---
+  rows=[(UUID('9b4d3fc1-f1d9-45ad-98db-6ececdf50b01'), 'portfolio', 1), (UUID('ce2fee39-983e-4c45-9ad8-2eba39dd6870'), 'portfolio', 2), (UUID('ce2fee39-983e-4c45-9ad8-2eba39dd6870'), 'reference', 3)]
+
+--- stage 4: project_versions joined to newest_project ---
+  ids=[UUID('f579f704-bc89-44f2-8c6b-74f6a7b1db3a'), UUID('e78eb204-6014-4990-a3ad-38092e8ca5ae')]
+
+--- stage 5: project_files via those versions ---
+  ids=[UUID('d2411de7-998a-4471-a5ee-806a17d13e97'), UUID('896bd289-f249-4191-9327-a769117400ed')]
+
+--- compiled SQL of the project_file stage ---
+SELECT project_files.id 
+FROM project_files 
+WHERE project_files.project_version_id IN (SELECT project_versions.id 
+FROM project_versions JOIN projects ON projects.id = project_versions.project_id JOIN (SELECT project_versions.project_id AS project_id, project_versions.material_role AS material_role, max(project_versions.version_number) AS version_number 
+FROM project_versions GROUP BY project_versions.project_id, project_versions.material_role) AS anon_1 ON anon_1.project_id = project_versions.project_id AND anon_1.material_role = project_versions.material_role AND anon_1.version_number = project_versions.version_number 
+WHERE projects.student_id = ? AND projects.is_archived IS 0)

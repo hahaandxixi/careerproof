@@ -1,0 +1,117 @@
+# 传智杯80 · 候选集成前最小修复 — 交棒
+
+HEAD `33ba713`（未变，未提交推送）。本轮只做卡内两处修复与第三项快速核对；未改 `retrieval.py`、检索测试、
+锁文件、依赖声明、启动脚本、正式文档；未安装任何依赖；未连数据库、未启停服务。
+
+## 一、环境（明确解释器与依赖）
+
+| 项 | 值 |
+| --- | --- |
+| 后端解释器 | `D:\jbcode\web ai\jianli\backend\.venv-dependency23\Scripts\python.exe`（Python 3.12.14） |
+| PyJWT | **2.15.0**（与 `pyproject.toml` 声明一致；`backend\.venv` 仍为 2.10.1，本轮不采用该环境、不降级） |
+| 前端执行器 | `C:\Users\江博\AppData\Local\hermes\node\node.exe`（Node v22.23.1） |
+| 前端源码目录 | `D:\jbcode\web ai\jianli\jianli` |
+| 前端依赖目录 | `jianli\node_modules`（无 eslint/DOM 库） |
+| lint 复用依赖 | `backend\.tmp\task62-lint\stage\jianli\node_modules`（junction，零安装） |
+| Ruff | `backend\.venv-dependency23\Scripts\ruff.exe` |
+
+## 二、第 1 项：解析异常边界（已复现 → 已修）
+
+### 红（修复前，`probe-parser-red.raw.out`）
+
+用真实 `parse_document` 只替换失败协作者，得到：
+
+| 用例 | 修复前 | 期望 |
+| --- | --- | --- |
+| `page.get_text` 抛内部 `ValueError` | **`AppError(4024)`**（被当成文件损坏） | 传播 |
+| OCR `recognize_image` 抛 `ValueError` | **`AppError(4024)`** | 传播 |
+| `_docx_text` 抛内部 `ValueError` | **`AppError(4024)`** | 传播 |
+| `_docx_text` 抛内部 `KeyError` | **`AppError(4024)`** | 传播 |
+| 损坏 PDF / 零字节 PDF / 加密 PDF | `AppError(4024)` | 保持 4024 |
+
+根因：PDF 分支用整段 `try/except (FileDataError, FileNotFoundError, ValueError)` 包住"打开+读页+OCR"；
+DOCX 分支把 `_docx_text`（本项目自己的遍历）也包进 `(BadZipFile, KeyError, ValueError)`。
+
+### 修复（`backend/app/tools/document_parser.py`）
+
+- 只把**打开文件**这一步视为输入问题：`fitz.open` 的窄捕获 `(fitz.FileDataError, fitz.FileNotFoundError)`；
+  `Document(path)` 与其 `element.body` 取的窄捕获 `(BadZipFile, KeyError, ValueError)`。
+- **加密改为显式判定**：打开后检查 `document.needs_pass`，命中即 `AppError(4024)`「已加密，需要密码」，
+  不再依赖遍历时抛出的 `ValueError`。
+- 读页、`get_pixmap`、OCR、`_docx_text` 全部移到捕获之外，内部异常照常传播；
+  既有 `AppError`（4024 无可析文字 / 4026 像素预检）不在任何捕获元组内，原样保留。
+- 上下文管理保留（`with document:`），失败路径仍关闭文档；`from error` 保留诊断原因。
+
+### 绿（修复后，`probe-parser-green.raw.out`）
+
+```
+[PROPAGATED] internal ValueError from page.get_text   :: ValueError: internal read defect
+[PROPAGATED] ValueError from OCR recognize_image      :: ValueError: ocr decode defect
+[PROPAGATED] internal ValueError from _docx_text      :: ValueError: internal docx walk defect
+[PROPAGATED] internal KeyError from _docx_text        :: KeyError: 'internal docx key defect'
+[AppError(4024)] corrupt PDF      :: PDF文件无法解析，可能已损坏，请重新导出后上传
+[AppError(4024)] zero-byte PDF    :: 同上
+[AppError(4024)] encrypted PDF    :: PDF文件已加密，需要密码才能打开，请移除密码后重新上传
+```
+
+永久回归新增于 `test_document_parser_unreadable.py`（内部 ValueError/OCR ValueError/DOCX ValueError 与
+KeyError 传播、加密改为显式标志判定）；既有"损坏/零字节/改名/加密仍 4024""4026 像素预检保留"
+"保留 `__cause__`""开/关计数"用例保持通过。旧测试中**没有**把任意 `ValueError` 当损坏的假设
+（`test_document_ocr.py` 仅断言 4026），无需改写。
+另更新 71 号证据内的替身（加 `needs_pass = 0`），使其与新显式判定兼容。
+
+## 三、第 2 项：材料预览加载状态（复现受阻，已做最小修复）
+
+**代码路径确认缺陷可达**：外层 effect 切上下文时重置了 `selected`/`fileError`/`fileRequest`，
+但**未重置 `fileLoading`**；在途文件请求被撤销后 `current=false`，其 `finally` 不再执行，
+因此若新材料没有 `initialFileId`，旧文件的"正在加载文件…"会残留。
+
+**修复**：外层 effect 增加 `setFileLoading("")`（附带注释说明为何必须在此重置）。
+
+**未能用真实组件复现（明确阻塞）**：本机与四个已交付依赖 stage 均无 `jsdom`/`happy-dom`/`linkedom`/
+`react-test-renderer`/`@testing-library/react`，React 19 的 effect 无法在 Node 内驱动；
+按卡不安装、不绕行环境，故**未取得组件级红→绿**。该修复按代码路径判断为最小且严格增量
+（只清空一个加载字符串），但**标为未经测试验证**。
+
+## 四、第 3 项：77 展示快速核对（无代码改动）
+
+复用后端事件语义核对数据链，结论一致，无需再改：
+
+| 数据情形 | 后端产出 | 前端文案 |
+| --- | --- | --- |
+| 模型被跳过（未同意外发/额度等） | `evidence_workflow.py:350-370` 返回 `provider="rules"`、`skipped_reason` 非空；步骤仍记 `tool.completed` | 步骤旁标「未调用模型」；处理方式「规则模式（未使用外部 AI）」 |
+| 模型失败降级 | `evidence_workflow.py:676-678` `provider=<真实>`、`fallback_used=True` | 步骤旁标「模型已降级」；处理方式「模型已降级，本次为规则结果」 |
+| 正常 AI | `provider=<真实>`、`fallbackUsed=False` | 「AI 解释已参与」 |
+
+- 因 `skipped` 时 `provider` 回落为 `"rules"`，`taskUsedExternalAI` 为假，**不会**出现
+  "步骤说未调用模型、处理方式却说 AI 参与"的矛盾。
+- `onerror → onopen` 恢复：`onopen` 必置 `live`，文案回到「实时更新中」（有单测覆盖该映射）。
+- 终态：`active=false` 时不渲染脉冲点，动画停止。
+- 未发现编造成完成记录/耗时/失败原因之处；未改后端事件。
+
+## 五、检查结果（只跑目标项）
+
+| 检查 | 命令 | 结果 |
+| --- | --- | --- |
+| 解析器回归 | `pytest app/tests/test_document_parser_unreadable.py` | **20 passed** |
+| OCR 既有套件 | `pytest app/tests/test_document_ocr.py` | **11 passed** |
+| 两者合并 | 同上一次性 | **31 passed** |
+| Ruff | `ruff check app/tools/document_parser.py app/tests/test_document_parser_unreadable.py` | **All checks passed** |
+| 前端类型 | `tsc --noEmit` | **exit 0** |
+| 目标前端测试 | `node --test tests/process-trace.test.mjs` | **9 passed** |
+| 目标 lint | stage 内 eslint 三文件（TaskView/MaterialPreview/process-trace） | **errors=0 warnings=0，exit 0** |
+
+未跑全量测试；未把不同环境/版本结果合并为全绿。
+
+## 六、未验证与阻塞
+
+1. **材料预览第 2 项未取得可运行反例**：无 DOM/测试渲染器，禁止安装；页面级也不可用浏览器验证。
+2. **页面全部未验**：桌面 1280 / 390px / `prefers-reduced-motion` / `<details>` 键盘 / 断线恢复 /
+   真实降级展示均未做真实渲染验收（无 playwright/puppeteer；既有 stage 早于本轮改动且无预览服务）。
+3. **PG/数据库验证未做**：按卡留给后续专属环境批次，未连任何正常库、未创建容器。
+4. 未做字符上限相关改动（P2 维持原样）。
+
+## 七、证据
+
+`probe-parser-red.raw.out`（红）、`probe-parser-green.raw.out`（绿）、`pytest-parser.raw.out`、
+`pytest-ocr.raw.out`、`lint.json`、本 REPORT。

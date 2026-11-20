@@ -1,0 +1,11 @@
+{
+  "loadingHead": "跳到主要内容\n职证 CareerProof\n岗位发现确认会话中…\n\n正在确认登录状态…\n\n规则检索 + AI 证据解释 · 模型不可用时自动降级 · 不执行上传的代码",
+  "loadedHasReport": true,
+  "failureHead": "跳到主要内容\n职证 CareerProof\n岗位发现\n职业推荐\n我的匹配报告\nM\n学生账户 · Mock界面合成学生\n▾\n1\n准备材料\n→\n2\n推荐职业与岗位\n→\n3\n查看岗位匹配\n当前位置\n→\n4\n补充材料\n→\n5\n确认投递\n\n无法连接服务，请确认网络和后端运行状态后重试。\n\n重新加载\n规则检索 + AI 证据解释 · 模型不可用时自动降级 · 不执行上传的代码",
+  "failureButtons": [
+    "",
+    "重新加载"
+  ],
+  "retryClicked": true,
+  "recoveredHasReport": true
+}

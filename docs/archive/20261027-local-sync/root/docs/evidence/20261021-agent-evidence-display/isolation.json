@@ -1,0 +1,10 @@
+{
+  "container": "ce696c40cda1c68b44b27891424c0390c53cdbd5b5bcc5d219989c99329a284e",
+  "name": "careerproof-agent-display-20261021",
+  "database": "cp_agent_display_20261021",
+  "databasePort": 55442,
+  "backendPort": 8108,
+  "frontendPort": 3108,
+  "realExternalAiEnabled": false,
+  "mockTransportUiOnly": true
+}

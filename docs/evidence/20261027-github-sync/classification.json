@@ -1,0 +1,24 @@
+{
+  "total": 6240,
+  "nonignored_changes": 6218,
+  "targeted_ignored_deliverables": 22,
+  "categories": {
+    "source": 42,
+    "evidence": 555,
+    "delivery": 29,
+    "equivalent": 5282,
+    "decision": 3,
+    "excluded": 321,
+    "source-archive": 8
+  },
+  "main_before": {
+    "head": "8ca91cc2c8e32fbd59412134798eb7db257a29d4",
+    "tracked_modified": 48,
+    "untracked_files": 1587,
+    "staged": 0
+  },
+  "original_worktrees": 13,
+  "unpublished_original_branch_tips": 4,
+  "active_model_requests": 0,
+  "database_writes": 0
+}

@@ -1,0 +1,87 @@
+# 67 → 68 顺序重试幂等检查（只读验证，未改生产源码）
+
+HEAD `33ba7136bd5f516360e5d2d59bacfb4c4e4f39ce`。本轮**未改生产代码、未扩展协议、未新增测试文件**，
+只运行既有真实端点测试并补一次持久化计数探针（用完即删，源码归档在本目录）。
+
+## 0. 67 号交棒状态核对
+
+- `docs/evidence/20261017-task67-upload-recovery/REPORT.md` 已读；其中明确移交：
+  「后端幂等去重……所需文件在后端域……本轮按指示未扩写」——正是本轮目标。
+- 67 的 4 个 hash **全部 MATCH**：`portfolio-upload.test.mjs`、`portfolio-upload.ts`、
+  `GrowthUploadReturn.tsx`、`MaterialPreview.tsx`。
+- 61 号未跟踪测试 `test_retrieval_filtered_recall.py` 未动（`bac255b7…5f6b`）。
+
+## 1. 实际覆盖路径
+
+**上传端点**：`POST /api/v1/projects/{project_id}/versions`
+（`backend/app/api/v1/portfolio.py:167-192`，`requestId` 为可选 Form，别名 `requestId`）。
+
+**requestId 处理**（`backend/app/services/portfolio.py:310-368`）：
+- 前置：`owned_project(project_id, student.id, lock=True)`（:324）——先过 owner，再谈幂等；
+- 命中：`version_by_request(project_id, request_id)`（:350 → `repositories/portfolio.py:54-60`）；
+- 冲突：`content_hash` 或 `material_role` 不一致 → `4092/409`（:352-357）；
+- 原任务丢失 → `4093/409`（:358-362）；
+- 命中且一致：返回**同一** `versionId`/`taskId`，`created=False`，不再入队扫描（:363-368）；
+- 未命中：`next_project_version` 新建版本（:369-382）。
+
+**唯一性约束**：`UniqueConstraint("project_id","upload_request_id")`（`models/portfolio.py:79`）——
+requestId 的作用域是**项目级**，不是全局。
+
+## 2. 命令与结果
+
+```text
+pytest app/tests/test_portfolio_api.py::test_failed_upload_retry_keeps_project_and_replays_version \
+       app/tests/test_portfolio_api.py::test_upload_request_key_is_scoped_to_owner_and_project -v
+→ 2 passed（upload-idempotency-tests.raw.out）
+```
+
+两条都走**真实 ASGI 端点 + 真实 repository + 独占临时 SQLite**
+（`app_database` 夹具用 `tmp_path/test.db`，不连任何业务库）。
+
+## 3. 三项检查的实际结论
+
+| 检查 | 覆盖 | 结论 |
+| --- | --- | --- |
+| 1. 重试返回同一逻辑结果，不重复创建项目/版本 | `test_failed_upload_retry…`（HEAD 既有，:232-292） | **通过**：同 `versionId`/`taskId`；扫描调用恒为 1（`len(calls)==1`）；`versions` 长度 1；项目未被重建 |
+| 2. 不同 owner 不能凭相同 requestId 获取他人结果 | `test_upload_request_key_is_scoped_to_owner_and_project`（:295-379，**他人未提交新增**，非我改动） | **通过**：Bob 对 Alice 项目同键 → 404；Bob 自己项目同键 → 得自己的版本/任务；Alice 侧仍只有自己的版本 |
+| 3. 同 requestId 不同内容/目标项目遵循既有契约 | 同上两条 | **通过**：换内容 → 409；换 `materialRole` → 409；**换目标项目** → 建该项目的独立版本（202，versionId 不同），不绑定原项目材料 |
+
+第 3 项的“换目标项目”契约值得单列：`version_by_request` 按 `(project_id, request_id)` 查，
+所以同键用于另一项目**不会**返回原项目结果，而是新建——这正是 `uq_project_upload_request`
+的既有语义，测试以 202 + 不同 versionId 显式断言，非静默绑定。
+
+## 4. 持久化数量断言（一次性探针，非新增测试）
+
+为给出**真实持久化数字**而非只读代码断言，临时写了 `test_zz_probe_upload_counts.py` 驱动端点两次
+（首次提交 → 同键重试），打印数据库/接口计数；源码已归档为 `persistence-probe.py`，
+探针文件**已从 `app/tests/` 删除**。
+
+```text
+=== PERSISTENCE COUNTS (lost-response retry) ===
+version_id_equal     = True
+task_id_equal        = True
+versions_via_api     = 1
+projects_named_probe = 1
+projects_total       = 1
+1 passed（persistence-counts.raw.out）
+```
+
+## 5. 发现的问题
+
+**无缺陷。** 三项检查全部通过，未发现需要最小反例的缺口。
+
+## 6. 未验证范围（不要据此扩大结论）
+
+1. **只验证了顺序重试，不是并发幂等。** 客户端超时重试是"先提交成功、再重放"，本轮覆盖的正是该序列；
+   两个请求**同时**到达的竞态（SQLite 下无法代表 PG 行锁）**未验证**。`create_project_version`
+   依赖 `owned_project(..., lock=True)` 在 PostgreSQL 上序列化，SQLite 测试不证明该行锁行为
+   （夹具 docstring 亦注明）。
+2. **未在 PostgreSQL 上验证** `uq_project_upload_request` 的真实唯一性仲裁与 `FOR UPDATE` 语义。
+3. 未验证"首次请求已提交、客户端超时、且重试时传入**不同文件名但相同字节**"的情形——
+   幂等键比对的是 `content_hash` 与 `material_role`，文件名不在比对范围（代码可读出的既有契约，
+   本轮未构造用例）。
+4. 67 的前端 lib 层（mock client）与页面级竞态未在本轮重跑；本轮只覆盖后端持久化面。
+
+## 7. 证据
+
+`upload-idempotency-tests.raw.out`、`persistence-counts.raw.out`、`persistence-probe.py`（本目录）。

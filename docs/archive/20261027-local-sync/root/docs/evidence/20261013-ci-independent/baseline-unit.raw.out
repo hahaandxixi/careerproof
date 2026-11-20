@@ -1,0 +1,1273 @@
+..........................................................sss..F........ [  5%]
+........................................................................ [ 11%]
+............s.........................s............s......E....s........ [ 17%]
+......................ss.......sss......s.....ssssssss.................. [ 23%]
+........................................................................ [ 28%]
+........................................................................ [ 34%]
+..............................................................ss..FFFFF. [ 40%]
+sFFFFFFFFFFFFFF.............................................s........... [ 46%]
+........................................................................ [ 52%]
+.....s....................................sss.......ss.................. [ 57%]
+..............................ss.............................ssssss..... [ 63%]
+.....................................s.................................. [ 69%]
+........................................................................ [ 75%]
+........................................................................ [ 81%]
+........................................................................ [ 86%]
+........................................................................ [ 92%]
+...................................................................sssss [ 98%]
+sss................                                                      [100%]
+=================================== ERRORS ====================================
+____ ERROR at setup of test_postgres_reconsent_migration_preserves_history ____
+file D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\tests\test_application_reconsent_migration.py, line 63
+  async def test_postgres_reconsent_migration_preserves_history(attempt_pg):
+      engine, schema = attempt_pg
+      async with engine.begin() as connection:
+          assert await connection.scalar(sa.text("SELECT current_schema()")) == schema
+          await connection.run_sync(exercise)
+E       fixture 'attempt_pg' not found
+>       available fixtures: _asyncio_loop_factory, _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, disable_external_ai_for_tests, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, jobs_db, matching_db, monkeypatch, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\tests\test_application_reconsent_migration.py:63
+================================== FAILURES ===================================
+________ test_matching_small_daily_remainder_is_granted_on_actual_wire ________
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F78C3E9A60>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F78B5E5F90>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F78BF77B00>
+
+    async def test_matching_small_daily_remainder_is_granted_on_actual_wire(durable_db, monkeypatch):  # noqa: F811
+        app, factory, _runtime = durable_db
+        calls = []
+    
+        def handler(request):
+            calls.append(json.loads(request.content))
+            return valid_response(request)
+    
+        provider = synthetic_provider(handler)
+        async with matching_case(app, monkeypatch, provider, "budget-wire-remainder") as candidate:
+            monkeypatch.setattr(settings, "ai_daily_output_token_limit", 1000)
+            await legacy_output(factory, candidate.owner_id, 800)
+            task_id = await submit_case(candidate)
+>       assert len(calls) == 1 and calls[0]["max_tokens"] == 200
+E       assert (0 == 1)
+E        +  where 0 = len([])
+
+app\tests\test_ai_budget_workflows.py:91: AssertionError
+____ test_every_physical_matching_request_is_durable_attempted_and_booked _____
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F795783920>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F795308710>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F78F5E4320>
+
+    async def test_every_physical_matching_request_is_durable_attempted_and_booked(
+        durable_db, monkeypatch
+    ):
+        app, factory, _runtime = durable_db
+        calls: list = []
+        outcomes: list = []
+        provider = synthetic_provider(retry_handler(calls, outcomes))
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "deepseek")
+        monkeypatch.setattr(settings, "ai_local_fallback_enabled", True)
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: provider)
+    
+        transport = ASGITransport(app=app)
+        async with (
+            AsyncClient(transport=transport, base_url="http://test") as owner,
+            AsyncClient(transport=transport, base_url="http://test") as student,
+        ):
+            await register(owner, "durable-owner@example.com")
+            job = await create_job(owner)
+            await register(student, "durable-student@example.com", "student")
+            resume, _project, version = await upload_materials(student)
+            report = await match_report(student, job, resume, version, externalAiConsent=True)
+    
+        expected_steps = [classify_request(call) for call in calls]
+        expected_states = [state for state, _usage in outcomes]
+        expected_usage = [usage for _state, usage in outcomes]
+>       assert report["analysisMode"] == "ai_evidence"
+E       AssertionError: assert 'rules' == 'ai_evidence'
+E         
+E         - ai_evidence
+E         + rules
+
+app\tests\test_durable_matching.py:267: AssertionError
+______ test_fallback_after_invalid_repair_still_books_persisted_receipts ______
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F7954DA9C0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F795250090>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F78E033C20>
+
+    async def test_fallback_after_invalid_repair_still_books_persisted_receipts(
+        durable_db, monkeypatch
+    ):
+        app, factory, _runtime = durable_db
+        calls: list = []
+        outcomes: list = []
+        report, _owner = await run_durable_match(
+            app, factory, monkeypatch, invalid_output_handler(calls, outcomes),
+            email="fallback",
+        )
+        assert report["analysisMode"] == "rules"
+        assert report["aiFallbackUsed"] is True
+        expected_states = [state for state, _usage in outcomes]
+        async with factory() as session:
+            task_id = UUID(report["taskId"])
+            attempts = list(
+                await session.scalars(
+                    select(AiRequestAttempt)
+                    .where(AiRequestAttempt.analysis_task_id == task_id)
+                    .order_by(AiRequestAttempt.physical_sequence)
+                )
+            )
+            assert [row.step for row in attempts] == [classify_request(call) for call in calls]
+            assert [row.state for row in attempts] == expected_states
+            ledger = list(
+                await session.scalars(
+                    select(AiUsageLog).where(AiUsageLog.analysis_task_id == task_id)
+                )
+            )
+            # No legacy aggregate row: the fallback settled from durable receipts.
+            assert sorted(row.request_seq for row in ledger) == [
+                row.physical_sequence for row in attempts
+            ]
+            assert all(row.attempt_id is not None for row in ledger)
+            report_row = await session.scalar(
+                select(MatchReport).where(MatchReport.analysis_task_id == task_id)
+            )
+            metadata = report_row.analysis_metadata
+>           assert metadata["usageKnown"] is True
+E           assert False is True
+
+app\tests\test_durable_matching.py:431: AssertionError
+______________ test_booking_failure_recovers_without_extra_http _______________
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F79104F140>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F78F936A90>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F790E7EFC0>
+
+    async def test_booking_failure_recovers_without_extra_http(durable_db, monkeypatch):
+        app, factory, _runtime = durable_db
+        calls: list = []
+        outcomes: list = []
+        original_reconcile = AttemptService.reconcile
+    
+        async def broken_reconcile(self):
+            raise RuntimeError("synthetic ledger outage")
+    
+        monkeypatch.setattr(AttemptService, "reconcile", broken_reconcile)
+        report, owner_id = await run_durable_match(
+            app, factory, monkeypatch, retry_handler(calls, outcomes), email="bookfail",
+        )
+        # The booking outage must not resend HTTP nor fail the task.
+        assert len(calls) == len(outcomes)
+>       assert report["analysisMode"] == "ai_evidence"
+E       AssertionError: assert 'rules' == 'ai_evidence'
+E         
+E         - ai_evidence
+E         + rules
+
+app\tests\test_durable_matching.py:453: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    app.services.analysis:analysis.py:82 Usage ledger booking failed after decoupling: synthetic ledger outage
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 229, in bounded_booking
+    return await asyncio.wait_for(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\tests\test_durable_matching.py", line 445, in broken_reconcile
+    raise RuntimeError("synthetic ledger outage")
+RuntimeError: synthetic ledger outage
+ERROR    app.services.analysis:analysis.py:798 Durable receipt settlement failed for task 448d4df8-389e-4c0b-8de6-22980d4dc9af; known usage may stay unbooked for reconciliation
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 794, in execute_match_task
+    await _settle_durable_receipts(ledger)
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 235, in _settle_durable_receipts
+    return await asyncio.shield(booking)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 229, in bounded_booking
+    return await asyncio.wait_for(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\tests\test_durable_matching.py", line 445, in broken_reconcile
+    raise RuntimeError("synthetic ledger outage")
+RuntimeError: synthetic ledger outage
+_______________ test_report_save_failure_keeps_booked_receipts ________________
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F794D6B7A0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F78F4D33D0>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F7911512B0>
+
+    async def test_report_save_failure_keeps_booked_receipts(durable_db, monkeypatch):
+        app, factory, _runtime = durable_db
+        calls: list = []
+        outcomes: list = []
+    
+        def broken_asdict(value):
+            raise RuntimeError("synthetic report save failure")
+    
+        monkeypatch.setattr(analysis_service, "asdict", broken_asdict)
+        with pytest.raises(AssertionError):
+            # match_report asserts completion; the report save failure must turn
+            # the task FAILED instead of publishing a partial report.
+            await run_durable_match(
+                app, factory, monkeypatch, retry_handler(calls, outcomes), email="savefail",
+            )
+        # Nothing was resent after the failure; every trusted receipt stayed booked.
+        assert len(calls) == len(outcomes)
+    
+        async with factory() as session:
+            owner = await session.scalar(
+                select(User).where(User.email == "savefail-student@example.com")
+            )
+            task = await session.scalar(
+                select(AnalysisTask).where(
+                    AnalysisTask.created_by == owner.id,
+                    AnalysisTask.task_type == "job_match",
+                )
+            )
+            assert task.status == TaskStatus.FAILED
+            attempts = list(
+                await session.scalars(
+                    select(AiRequestAttempt)
+                    .where(AiRequestAttempt.analysis_task_id == task.id)
+                    .order_by(AiRequestAttempt.physical_sequence)
+                )
+            )
+>           assert attempts and all(row.state == "booked" for row in attempts)
+E           assert ([])
+
+app\tests\test_durable_matching.py:533: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    app.services.analysis:analysis.py:1178 Match task failed: f5691e1b-d0ad-40e4-ade5-cfae9a75f629
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 983, in execute_match_task
+    **asdict(evidence),
+      ^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\tests\test_durable_matching.py", line 503, in broken_asdict
+    raise RuntimeError("synthetic report save failure")
+RuntimeError: synthetic report save failure
+________ test_owner_deactivation_and_material_replacement_send_nothing ________
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F7948C7380>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F797954810>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F793BA5BE0>
+
+    async def test_owner_deactivation_and_material_replacement_send_nothing(
+        durable_db, monkeypatch
+    ):
+        app, factory, _runtime = durable_db
+        for scenario in ("owner_deactivated", "materials_replaced"):
+            student_email = f"authz-{scenario}-student@example.com"
+            calls: list = []
+            outcomes: list = []
+            original_progress = analysis_service.update_task_progress
+    
+            async def mutate_then_progress(
+                session, tid, tok, *, progress, step,
+                _scenario=scenario, _student_email=student_email,
+                _original_progress=original_progress,
+            ):
+                result = await _original_progress(session, tid, tok, progress=progress, step=step)
+                if progress == 55:
+                    async with factory() as mutation_session:
+                        if _scenario == "owner_deactivated":
+                            owner = await mutation_session.scalar(
+                                select(User).where(User.email == _student_email)
+                            )
+                            owner.is_active = False
+                        else:
+                            task_row = await mutation_session.get(AnalysisTask, tid)
+                            task_row.input_snapshot = {
+                                **task_row.input_snapshot,
+                                "materials": [
+                                    {**material, "versionNumber": 9999, "contentHash": "f" * 64}
+                                    for material in task_row.input_snapshot["materials"]
+                                ],
+                            }
+                        await mutation_session.commit()
+                return result
+    
+            monkeypatch.setattr(analysis_service, "update_task_progress", mutate_then_progress)
+            # POST only: after deactivation the student session cannot read the API,
+            # so all assertions read the database with the owner's own rows.
+            provider = synthetic_provider(retry_handler(calls, outcomes))
+            monkeypatch.setattr(settings, "ai_external_enabled", True)
+            monkeypatch.setattr(settings, "ai_provider", "deepseek")
+            monkeypatch.setattr(settings, "ai_local_fallback_enabled", True)
+            monkeypatch.setattr(
+                "app.agents.evidence_workflow.get_ai_provider",
+                lambda _provider=provider: _provider,
+            )
+            transport = ASGITransport(app=app)
+            async with (
+                AsyncClient(transport=transport, base_url="http://test") as owner_client,
+                AsyncClient(transport=transport, base_url="http://test") as student_client,
+            ):
+                await register(owner_client, f"authz-{scenario}-owner@example.com")
+                job = await create_job(owner_client)
+                await register(student_client, student_email, "student")
+                resume, _project, version = await upload_materials(student_client)
+                accepted = await student_client.post(
+                    "/api/v1/matches",
+                    json={
+                        "jobId": job["id"],
+                        "resumeVersionId": resume["versionId"],
+                        "projectVersionIds": [version["versionId"]],
+                        "externalAiConsent": True,
+                    },
+                )
+                assert accepted.status_code == 202, accepted.text
+                task_id = UUID(accepted.json()["data"]["taskId"])
+            monkeypatch.setattr(analysis_service, "update_task_progress", original_progress)
+            # Zero HTTP: durable admission refuses before any provider request.
+            assert calls == [], scenario
+            async with factory() as session:
+                attempts = list(
+                    await session.scalars(
+                        select(AiRequestAttempt)
+                        .where(AiRequestAttempt.analysis_task_id == task_id)
+                        .order_by(AiRequestAttempt.physical_sequence)
+                    )
+                )
+                ledger = list(
+                    await session.scalars(
+                        select(AiUsageLog).where(AiUsageLog.analysis_task_id == task_id)
+                    )
+                )
+                assert ledger == [], scenario
+                report_row = await session.scalar(
+                    select(MatchReport).where(MatchReport.analysis_task_id == task_id)
+                )
+                assert report_row is None, scenario
+                task = await session.get(AnalysisTask, task_id)
+                assert task.status == TaskStatus.FAILED
+                if scenario == "owner_deactivated":
+                    # prepare() refuses before any row exists when the owner is gone.
+                    assert attempts == []
+                else:
+                    # The prepared row is closed as not_sent; never relabelled.
+>                   assert len(attempts) == 1
+E                   assert 0 == 1
+E                    +  where 0 = len([])
+
+app\tests\test_durable_matching.py:642: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    app.services.analysis:analysis.py:1178 Match task failed: 0155fb9c-c4c5-4410-951a-2e7c2d1ae391
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 901, in execute_match_task
+    await _authorize_matching_snapshot(
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 146, in _authorize_matching_snapshot
+    raise AppError("账号不可用", code=4032, status_code=403)
+app.core.exceptions.AppError: 账号不可用
+ERROR    app.services.analysis:analysis.py:1178 Match task failed: 92821f0c-2398-401e-a3a4-67508528a6f7
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 901, in execute_match_task
+    await _authorize_matching_snapshot(
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 160, in _authorize_matching_snapshot
+    raise AppError("任务固定输入已被替换，禁止发送或保存AI结果", code=4096, status_code=409)
+app.core.exceptions.AppError: 任务固定输入已被替换，禁止发送或保存AI结果
+_ test_planning_unknown_and_error_receipts_are_accounted_without_fake_completion _
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F797B619A0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F797C6BD10>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F7944F0380>
+
+    async def test_planning_unknown_and_error_receipts_are_accounted_without_fake_completion(
+        durable_db, monkeypatch,  # noqa: F811 - imported pytest fixture
+    ):
+        app, factory, _runtime = durable_db
+        calls, outcomes = [], []
+        configure_synthetic(monkeypatch, synthetic_provider(retry_handler(calls, outcomes)))
+        async with (
+            AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner,
+            AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as student,
+        ):
+            await register(owner, "review-planning-owner@example.com")
+            job = await create_job(owner)
+            await register(student, "review-planning-student@example.com", "student")
+            resume, _project, version = await upload_materials(student)
+            previous = await match_report(student, job, resume, version)
+            report = await match_report(
+                student, job, resume, version,
+                externalAiConsent=True, usePreviousReport=True,
+            )
+    
+        # The authorized historical report forces a real planning request even
+        # when the selected code evidence is already source-exact.
+>       assert [classify_request(call) for call in calls] == [
+            "planning_1", "planning_1", "analysis", "analysis", "repair",
+        ]
+E       AssertionError: assert ['planning_1'] == ['planning_1'...is', 'repair']
+E         
+E         Right contains 4 more items, first extra item: 'planning_1'
+E         Use -v to get more diff
+
+app\tests\test_durable_matching_review.py:122: AssertionError
+_ test_authorization_lost_while_http_is_in_flight_keeps_fees_not_report[owner] _
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F797C58AD0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F797E37F10>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F797C236B0>
+revocation = 'owner'
+
+    @pytest.mark.parametrize("revocation", ["owner", "resume_status", "project_status"])
+    async def test_authorization_lost_while_http_is_in_flight_keeps_fees_not_report(
+        durable_db, monkeypatch, revocation,  # noqa: F811 - imported pytest fixture
+    ):
+        app, factory, _runtime = durable_db
+        calls, ids = [], {}
+    
+        async def handler(request):
+            calls.append(request)
+            source = json.loads(json.loads(request.content)["messages"][1]["content"])
+            requirement_id = source["requirements"][0]["requirement_id"]
+            async with factory() as session:
+                if revocation == "owner":
+                    owner_row = await session.get(User, ids["owner"])
+                    owner_row.is_active = False
+                elif revocation == "resume_status":
+                    resume_row = await session.get(ResumeVersion, ids["resume"])
+                    resume_row.parse_status = "failed"
+                else:
+                    project_row = await session.get(ProjectVersion, ids["project"])
+                    project_row.analysis_status = "failed"
+                await session.commit()
+            return httpx.Response(200, json={
+                "choices": [{"message": {"content": json.dumps(
+                    analysis_answer(requirement_id, citation_ids=["R1-E1"]),
+                    ensure_ascii=False,
+                )}}],
+                "usage": {"prompt_tokens": 120, "completion_tokens": 20},
+            })
+    
+        configure_synthetic(monkeypatch, synthetic_provider(handler))
+        async with (
+            AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner,
+            AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as student,
+        ):
+            await register(owner, f"review-late-{revocation}-owner@example.com")
+            job = await create_job(owner)
+            student_user = await register(
+                student, f"review-late-{revocation}-student@example.com", "student",
+            )
+            resume, _project, version = await upload_materials(student)
+            ids.update(owner=UUID(student_user["id"]), resume=UUID(resume["versionId"]),
+                       project=UUID(version["versionId"]))
+            accepted = await student.post("/api/v1/matches", json={
+                "jobId": job["id"], "resumeVersionId": resume["versionId"],
+                "projectVersionIds": [version["versionId"]], "externalAiConsent": True,
+            })
+            assert accepted.status_code == 202, accepted.text
+            task_id = UUID(accepted.json()["data"]["taskId"])
+    
+>       assert len(calls) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+app\tests\test_durable_matching_review.py:212: AssertionError
+_ test_authorization_lost_while_http_is_in_flight_keeps_fees_not_report[resume_status] _
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F797D16D20>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F797ED5810>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F797FD1A30>
+revocation = 'resume_status'
+
+    @pytest.mark.parametrize("revocation", ["owner", "resume_status", "project_status"])
+    async def test_authorization_lost_while_http_is_in_flight_keeps_fees_not_report(
+        durable_db, monkeypatch, revocation,  # noqa: F811 - imported pytest fixture
+    ):
+        app, factory, _runtime = durable_db
+        calls, ids = [], {}
+    
+        async def handler(request):
+            calls.append(request)
+            source = json.loads(json.loads(request.content)["messages"][1]["content"])
+            requirement_id = source["requirements"][0]["requirement_id"]
+            async with factory() as session:
+                if revocation == "owner":
+                    owner_row = await session.get(User, ids["owner"])
+                    owner_row.is_active = False
+                elif revocation == "resume_status":
+                    resume_row = await session.get(ResumeVersion, ids["resume"])
+                    resume_row.parse_status = "failed"
+                else:
+                    project_row = await session.get(ProjectVersion, ids["project"])
+                    project_row.analysis_status = "failed"
+                await session.commit()
+            return httpx.Response(200, json={
+                "choices": [{"message": {"content": json.dumps(
+                    analysis_answer(requirement_id, citation_ids=["R1-E1"]),
+                    ensure_ascii=False,
+                )}}],
+                "usage": {"prompt_tokens": 120, "completion_tokens": 20},
+            })
+    
+        configure_synthetic(monkeypatch, synthetic_provider(handler))
+        async with (
+            AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner,
+            AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as student,
+        ):
+            await register(owner, f"review-late-{revocation}-owner@example.com")
+            job = await create_job(owner)
+            student_user = await register(
+                student, f"review-late-{revocation}-student@example.com", "student",
+            )
+            resume, _project, version = await upload_materials(student)
+            ids.update(owner=UUID(student_user["id"]), resume=UUID(resume["versionId"]),
+                       project=UUID(version["versionId"]))
+            accepted = await student.post("/api/v1/matches", json={
+                "jobId": job["id"], "resumeVersionId": resume["versionId"],
+                "projectVersionIds": [version["versionId"]], "externalAiConsent": True,
+            })
+            assert accepted.status_code == 202, accepted.text
+            task_id = UUID(accepted.json()["data"]["taskId"])
+    
+>       assert len(calls) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+app\tests\test_durable_matching_review.py:212: AssertionError
+_ test_authorization_lost_while_http_is_in_flight_keeps_fees_not_report[project_status] _
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F79827B4A0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F798219910>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F797B633E0>
+revocation = 'project_status'
+
+    @pytest.mark.parametrize("revocation", ["owner", "resume_status", "project_status"])
+    async def test_authorization_lost_while_http_is_in_flight_keeps_fees_not_report(
+        durable_db, monkeypatch, revocation,  # noqa: F811 - imported pytest fixture
+    ):
+        app, factory, _runtime = durable_db
+        calls, ids = [], {}
+    
+        async def handler(request):
+            calls.append(request)
+            source = json.loads(json.loads(request.content)["messages"][1]["content"])
+            requirement_id = source["requirements"][0]["requirement_id"]
+            async with factory() as session:
+                if revocation == "owner":
+                    owner_row = await session.get(User, ids["owner"])
+                    owner_row.is_active = False
+                elif revocation == "resume_status":
+                    resume_row = await session.get(ResumeVersion, ids["resume"])
+                    resume_row.parse_status = "failed"
+                else:
+                    project_row = await session.get(ProjectVersion, ids["project"])
+                    project_row.analysis_status = "failed"
+                await session.commit()
+            return httpx.Response(200, json={
+                "choices": [{"message": {"content": json.dumps(
+                    analysis_answer(requirement_id, citation_ids=["R1-E1"]),
+                    ensure_ascii=False,
+                )}}],
+                "usage": {"prompt_tokens": 120, "completion_tokens": 20},
+            })
+    
+        configure_synthetic(monkeypatch, synthetic_provider(handler))
+        async with (
+            AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner,
+            AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as student,
+        ):
+            await register(owner, f"review-late-{revocation}-owner@example.com")
+            job = await create_job(owner)
+            student_user = await register(
+                student, f"review-late-{revocation}-student@example.com", "student",
+            )
+            resume, _project, version = await upload_materials(student)
+            ids.update(owner=UUID(student_user["id"]), resume=UUID(resume["versionId"]),
+                       project=UUID(version["versionId"]))
+            accepted = await student.post("/api/v1/matches", json={
+                "jobId": job["id"], "resumeVersionId": resume["versionId"],
+                "projectVersionIds": [version["versionId"]], "externalAiConsent": True,
+            })
+            assert accepted.status_code == 202, accepted.text
+            task_id = UUID(accepted.json()["data"]["taskId"])
+    
+>       assert len(calls) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+app\tests\test_durable_matching_review.py:212: AssertionError
+__ test_cancel_after_receipt_preserves_cancel_and_recovers_only_fees[False] ___
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F798435C70>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F7982F3C50>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F7984C17F0>
+booking_failure = False
+
+    @pytest.mark.parametrize("booking_failure", [False, True])
+    async def test_cancel_after_receipt_preserves_cancel_and_recovers_only_fees(
+        durable_db, monkeypatch, booking_failure,  # noqa: F811 - imported pytest fixture
+    ):
+        app, factory, _runtime = durable_db
+        calls = []
+        original_phase, original_book = AttemptService._phase, AttemptService.book_one
+    
+        async def cancel_after_receipt(self, name, attempt_id):
+            await original_phase(self, name, attempt_id)
+            if name == "receipt_committed":
+                raise asyncio.CancelledError("synthetic cancellation after durable receipt")
+    
+        async def failed_book(self, attempt_id):
+            raise RuntimeError("synthetic ledger failure during cancellation")
+    
+        def handler(request):
+            calls.append(request)
+            return valid_response(request)
+    
+        provider = synthetic_provider(handler)
+        monkeypatch.setattr(AttemptService, "_phase", cancel_after_receipt)
+        if booking_failure:
+            monkeypatch.setattr(AttemptService, "book_one", failed_book)
+        label = f"review-cancel-{booking_failure}"
+        from app.api.v1 import analysis as analysis_api
+    
+        cancellations = []
+        original_execute = analysis_api.execute_match_task
+    
+        async def observe_cancellation(*args, **kwargs):
+            try:
+                return await original_execute(*args, **kwargs)
+            except asyncio.CancelledError as exc:
+                cancellations.append(str(exc))
+                raise
+    
+        monkeypatch.setattr(analysis_api, "execute_match_task", observe_cancellation)
+        async with matching_case(app, monkeypatch, provider, label) as case:
+            await submit_case(case)
+>       assert cancellations == ["synthetic cancellation after durable receipt"]
+E       AssertionError: assert [] == ['synthetic c...able receipt']
+E         
+E         Right contains one more item: 'synthetic cancellation after durable receipt'
+E         Use -v to get more diff
+
+app\tests\test_durable_matching_review.py:272: AssertionError
+___ test_cancel_after_receipt_preserves_cancel_and_recovers_only_fees[True] ___
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F798622180>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F798632D10>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F79871CDD0>
+booking_failure = True
+
+    @pytest.mark.parametrize("booking_failure", [False, True])
+    async def test_cancel_after_receipt_preserves_cancel_and_recovers_only_fees(
+        durable_db, monkeypatch, booking_failure,  # noqa: F811 - imported pytest fixture
+    ):
+        app, factory, _runtime = durable_db
+        calls = []
+        original_phase, original_book = AttemptService._phase, AttemptService.book_one
+    
+        async def cancel_after_receipt(self, name, attempt_id):
+            await original_phase(self, name, attempt_id)
+            if name == "receipt_committed":
+                raise asyncio.CancelledError("synthetic cancellation after durable receipt")
+    
+        async def failed_book(self, attempt_id):
+            raise RuntimeError("synthetic ledger failure during cancellation")
+    
+        def handler(request):
+            calls.append(request)
+            return valid_response(request)
+    
+        provider = synthetic_provider(handler)
+        monkeypatch.setattr(AttemptService, "_phase", cancel_after_receipt)
+        if booking_failure:
+            monkeypatch.setattr(AttemptService, "book_one", failed_book)
+        label = f"review-cancel-{booking_failure}"
+        from app.api.v1 import analysis as analysis_api
+    
+        cancellations = []
+        original_execute = analysis_api.execute_match_task
+    
+        async def observe_cancellation(*args, **kwargs):
+            try:
+                return await original_execute(*args, **kwargs)
+            except asyncio.CancelledError as exc:
+                cancellations.append(str(exc))
+                raise
+    
+        monkeypatch.setattr(analysis_api, "execute_match_task", observe_cancellation)
+        async with matching_case(app, monkeypatch, provider, label) as case:
+            await submit_case(case)
+>       assert cancellations == ["synthetic cancellation after durable receipt"]
+E       AssertionError: assert [] == ['synthetic c...able receipt']
+E         
+E         Right contains one more item: 'synthetic cancellation after durable receipt'
+E         Use -v to get more diff
+
+app\tests\test_durable_matching_review.py:272: AssertionError
+_______ test_expired_claim_during_http_books_old_run_without_publishing _______
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F798852720>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F798605810>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F7988835F0>
+
+    async def test_expired_claim_during_http_books_old_run_without_publishing(
+        durable_db, monkeypatch,  # noqa: F811 - imported pytest fixture
+    ):
+        app, factory, _runtime = durable_db
+        calls = []
+    
+        async def no_heartbeat(*_args):
+            return None
+    
+        async def handler(request):
+            calls.append(request)
+            context = provider.durable_observer.service.context
+            async with factory() as session:
+                task = await session.get(AnalysisTask, context.task_id)
+                task.heartbeat_at = datetime.now(UTC) - timedelta(
+                    seconds=settings.task_lease_seconds + 2,
+                )
+                await session.commit()
+            assert await recover_interrupted_tasks(factory) == 1
+            return valid_response(request)
+    
+        provider = synthetic_provider(handler)
+        monkeypatch.setattr(analysis_service, "heartbeat_task", no_heartbeat)
+        async with matching_case(app, monkeypatch, provider, "review-expired") as case:
+            task_id = await submit_case(case)
+>       attempt = await assert_one_fee_no_report(factory, task_id)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_durable_matching_review.py:319: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F798605810>, autoflush=True, expire_on_commit=False)
+task_id = UUID('f1f40994-f30c-4ad7-b87e-289bc62658a1')
+
+    async def assert_one_fee_no_report(factory, task_id):
+        async with factory() as session:
+>           assert await session.scalar(select(MatchReport.id).where(
+                MatchReport.analysis_task_id == task_id,
+            )) is None
+E           AssertionError: assert UUID('8d6479af-3edc-4a32-979e-77ffe190aa0d') is None
+
+app\tests\test_durable_matching_review.py:84: AssertionError
+___ test_report_transaction_before_commit_failure_keeps_prior_ledger_commit ___
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F7989DACC0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F7989E91D0>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F798AC36B0>
+
+    async def test_report_transaction_before_commit_failure_keeps_prior_ledger_commit(
+        durable_db, monkeypatch,  # noqa: F811 - imported pytest fixture
+    ):
+        app, factory, _runtime = durable_db
+        calls, failed = [], []
+    
+        def handler(request):
+            calls.append(request)
+            return valid_response(request)
+    
+        def fail_report_commit(session):
+            reports = [row for row in session.identity_map.values() if isinstance(row, MatchReport)]
+            if reports and not failed:
+                assert reports[0].id is not None  # Real flush has already happened.
+                failed.append(reports[0].analysis_task_id)
+                raise RuntimeError("synthetic failure of flushed report transaction before_commit")
+    
+        provider = synthetic_provider(handler)
+        async with matching_case(app, monkeypatch, provider, "review-commit-failure") as case:
+            event.listen(Session, "before_commit", fail_report_commit)
+            try:
+                task_id = await submit_case(case)
+            finally:
+                event.remove(Session, "before_commit", fail_report_commit)
+        assert failed == [task_id]
+>       await assert_one_fee_no_report(factory, task_id)
+
+app\tests\test_durable_matching_review.py:353: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F7989E91D0>, autoflush=True, expire_on_commit=False)
+task_id = UUID('108b30c9-8a10-4a0a-b44e-6e038c180839')
+
+    async def assert_one_fee_no_report(factory, task_id):
+        async with factory() as session:
+            assert await session.scalar(select(MatchReport.id).where(
+                MatchReport.analysis_task_id == task_id,
+            )) is None
+            attempts = list(await session.scalars(select(AiRequestAttempt).where(
+                AiRequestAttempt.analysis_task_id == task_id,
+            )))
+            ledger = list(await session.scalars(select(AiUsageLog).where(
+                AiUsageLog.analysis_task_id == task_id,
+            )))
+>           assert len(attempts) == len(ledger) == 1
+E           assert 0 == 1
+E            +  where 0 = len([])
+
+app\tests\test_durable_matching_review.py:93: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    app.services.analysis:analysis.py:1178 Match task failed: 108b30c9-8a10-4a0a-b44e-6e038c180839
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 1159, in execute_match_task
+    await session.commit()
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\session.py", line 1014, in commit
+    await greenlet_spawn(self.sync_session.commit)
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 190, in greenlet_spawn
+    result = context.switch(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\orm\session.py", line 2032, in commit
+    trans.commit(_to_root=True)
+  File "<string>", line 2, in commit
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\orm\session.py", line 1313, in commit
+    self._prepare_impl()
+  File "<string>", line 2, in _prepare_impl
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\orm\session.py", line 1276, in _prepare_impl
+    self.session.dispatch.before_commit(self.session)
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\event\attr.py", line 378, in __call__
+    fn(*args, **kw)
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\tests\test_durable_matching_review.py", line 343, in fail_report_commit
+    raise RuntimeError("synthetic failure of flushed report transaction before_commit")
+RuntimeError: synthetic failure of flushed report transaction before_commit
+_ test_pre_send_readiness_and_fixed_selection_mutations_send_nothing[resume_status] _
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F798A1ECC0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F798A11610>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F7987D9A90>
+change = 'resume_status'
+
+    @pytest.mark.parametrize("change", [
+        "resume_status", "project_status", "selected_resume", "selected_projects", "history_id",
+    ])
+    async def test_pre_send_readiness_and_fixed_selection_mutations_send_nothing(
+        durable_db, monkeypatch, change,  # noqa: F811 - imported pytest fixture
+    ):
+        app, factory, _runtime = durable_db
+        calls = []
+    
+        def handler(request):
+            calls.append(request)
+            return valid_response(request)
+    
+        provider = synthetic_provider(handler)
+        original_progress = analysis_service.update_task_progress
+        async with matching_case(app, monkeypatch, provider, f"review-binding-{change}") as case:
+            async def mutate_ready_snapshot(session, task_id, token, *, progress, step):
+                result = await original_progress(session, task_id, token, progress=progress, step=step)
+                if progress == 55:
+                    async with factory() as mutation:
+                        if change == "resume_status":
+                            row = await mutation.get(ResumeVersion, UUID(case.resume["versionId"]))
+                            row.parse_status = "failed"
+                        elif change == "project_status":
+                            row = await mutation.get(ProjectVersion, UUID(case.version["versionId"]))
+                            row.analysis_status = "failed"
+                        else:
+                            row = await mutation.get(AnalysisTask, task_id)
+                            field, value = {
+                                "selected_resume": ("resumeVersionId", str(uuid4())),
+                                "selected_projects": ("projectVersionIds", []),
+                                "history_id": ("previousReportId", str(uuid4())),
+                            }[change]
+                            row.input_snapshot = {**row.input_snapshot, field: value}
+                        await mutation.commit()
+                return result
+    
+            monkeypatch.setattr(analysis_service, "update_task_progress", mutate_ready_snapshot)
+            task_id = await submit_case(case)
+        assert calls == []
+        async with factory() as session:
+            task = await session.get(AnalysisTask, task_id)
+            assert task.status == TaskStatus.FAILED
+            assert await session.scalar(select(MatchReport.id).where(
+                MatchReport.analysis_task_id == task_id,
+            )) is None
+            assert await session.scalar(select(AiUsageLog.id).where(
+                AiUsageLog.analysis_task_id == task_id,
+            )) is None
+            attempts = list(await session.scalars(select(AiRequestAttempt).where(
+                AiRequestAttempt.analysis_task_id == task_id,
+            )))
+>           assert len(attempts) == 1
+E           assert 0 == 1
+E            +  where 0 = len([])
+
+app\tests\test_durable_matching_review.py:412: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    app.services.analysis:analysis.py:1178 Match task failed: 6e3233c4-8746-471e-ad26-2d65d8813212
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 901, in execute_match_task
+    await _authorize_matching_snapshot(
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 164, in _authorize_matching_snapshot
+    raise AppError("任务固定材料版本已失效", code=4096, status_code=409)
+app.core.exceptions.AppError: 任务固定材料版本已失效
+_ test_pre_send_readiness_and_fixed_selection_mutations_send_nothing[project_status] _
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F79842B3E0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F797C48250>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F7983705F0>
+change = 'project_status'
+
+    @pytest.mark.parametrize("change", [
+        "resume_status", "project_status", "selected_resume", "selected_projects", "history_id",
+    ])
+    async def test_pre_send_readiness_and_fixed_selection_mutations_send_nothing(
+        durable_db, monkeypatch, change,  # noqa: F811 - imported pytest fixture
+    ):
+        app, factory, _runtime = durable_db
+        calls = []
+    
+        def handler(request):
+            calls.append(request)
+            return valid_response(request)
+    
+        provider = synthetic_provider(handler)
+        original_progress = analysis_service.update_task_progress
+        async with matching_case(app, monkeypatch, provider, f"review-binding-{change}") as case:
+            async def mutate_ready_snapshot(session, task_id, token, *, progress, step):
+                result = await original_progress(session, task_id, token, progress=progress, step=step)
+                if progress == 55:
+                    async with factory() as mutation:
+                        if change == "resume_status":
+                            row = await mutation.get(ResumeVersion, UUID(case.resume["versionId"]))
+                            row.parse_status = "failed"
+                        elif change == "project_status":
+                            row = await mutation.get(ProjectVersion, UUID(case.version["versionId"]))
+                            row.analysis_status = "failed"
+                        else:
+                            row = await mutation.get(AnalysisTask, task_id)
+                            field, value = {
+                                "selected_resume": ("resumeVersionId", str(uuid4())),
+                                "selected_projects": ("projectVersionIds", []),
+                                "history_id": ("previousReportId", str(uuid4())),
+                            }[change]
+                            row.input_snapshot = {**row.input_snapshot, field: value}
+                        await mutation.commit()
+                return result
+    
+            monkeypatch.setattr(analysis_service, "update_task_progress", mutate_ready_snapshot)
+            task_id = await submit_case(case)
+        assert calls == []
+        async with factory() as session:
+            task = await session.get(AnalysisTask, task_id)
+            assert task.status == TaskStatus.FAILED
+            assert await session.scalar(select(MatchReport.id).where(
+                MatchReport.analysis_task_id == task_id,
+            )) is None
+            assert await session.scalar(select(AiUsageLog.id).where(
+                AiUsageLog.analysis_task_id == task_id,
+            )) is None
+            attempts = list(await session.scalars(select(AiRequestAttempt).where(
+                AiRequestAttempt.analysis_task_id == task_id,
+            )))
+>           assert len(attempts) == 1
+E           assert 0 == 1
+E            +  where 0 = len([])
+
+app\tests\test_durable_matching_review.py:412: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    app.services.analysis:analysis.py:1178 Match task failed: 09674788-2f19-4d62-b8f5-59f0e91bf4d0
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 901, in execute_match_task
+    await _authorize_matching_snapshot(
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 164, in _authorize_matching_snapshot
+    raise AppError("任务固定材料版本已失效", code=4096, status_code=409)
+app.core.exceptions.AppError: 任务固定材料版本已失效
+_ test_pre_send_readiness_and_fixed_selection_mutations_send_nothing[selected_resume] _
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F798373B60>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F78C6AF1D0>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F797EC7980>
+change = 'selected_resume'
+
+    @pytest.mark.parametrize("change", [
+        "resume_status", "project_status", "selected_resume", "selected_projects", "history_id",
+    ])
+    async def test_pre_send_readiness_and_fixed_selection_mutations_send_nothing(
+        durable_db, monkeypatch, change,  # noqa: F811 - imported pytest fixture
+    ):
+        app, factory, _runtime = durable_db
+        calls = []
+    
+        def handler(request):
+            calls.append(request)
+            return valid_response(request)
+    
+        provider = synthetic_provider(handler)
+        original_progress = analysis_service.update_task_progress
+        async with matching_case(app, monkeypatch, provider, f"review-binding-{change}") as case:
+            async def mutate_ready_snapshot(session, task_id, token, *, progress, step):
+                result = await original_progress(session, task_id, token, progress=progress, step=step)
+                if progress == 55:
+                    async with factory() as mutation:
+                        if change == "resume_status":
+                            row = await mutation.get(ResumeVersion, UUID(case.resume["versionId"]))
+                            row.parse_status = "failed"
+                        elif change == "project_status":
+                            row = await mutation.get(ProjectVersion, UUID(case.version["versionId"]))
+                            row.analysis_status = "failed"
+                        else:
+                            row = await mutation.get(AnalysisTask, task_id)
+                            field, value = {
+                                "selected_resume": ("resumeVersionId", str(uuid4())),
+                                "selected_projects": ("projectVersionIds", []),
+                                "history_id": ("previousReportId", str(uuid4())),
+                            }[change]
+                            row.input_snapshot = {**row.input_snapshot, field: value}
+                        await mutation.commit()
+                return result
+    
+            monkeypatch.setattr(analysis_service, "update_task_progress", mutate_ready_snapshot)
+            task_id = await submit_case(case)
+        assert calls == []
+        async with factory() as session:
+            task = await session.get(AnalysisTask, task_id)
+            assert task.status == TaskStatus.FAILED
+            assert await session.scalar(select(MatchReport.id).where(
+                MatchReport.analysis_task_id == task_id,
+            )) is None
+            assert await session.scalar(select(AiUsageLog.id).where(
+                AiUsageLog.analysis_task_id == task_id,
+            )) is None
+            attempts = list(await session.scalars(select(AiRequestAttempt).where(
+                AiRequestAttempt.analysis_task_id == task_id,
+            )))
+>           assert len(attempts) == 1
+E           assert 0 == 1
+E            +  where 0 = len([])
+
+app\tests\test_durable_matching_review.py:412: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    app.services.analysis:analysis.py:1178 Match task failed: aa549457-f5c6-4f25-b92f-db7377d4aec7
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 901, in execute_match_task
+    await _authorize_matching_snapshot(
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 160, in _authorize_matching_snapshot
+    raise AppError("任务固定输入已被替换，禁止发送或保存AI结果", code=4096, status_code=409)
+app.core.exceptions.AppError: 任务固定输入已被替换，禁止发送或保存AI结果
+_ test_pre_send_readiness_and_fixed_selection_mutations_send_nothing[selected_projects] _
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F78F3E2C90>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F791017E90>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F792CE6E70>
+change = 'selected_projects'
+
+    @pytest.mark.parametrize("change", [
+        "resume_status", "project_status", "selected_resume", "selected_projects", "history_id",
+    ])
+    async def test_pre_send_readiness_and_fixed_selection_mutations_send_nothing(
+        durable_db, monkeypatch, change,  # noqa: F811 - imported pytest fixture
+    ):
+        app, factory, _runtime = durable_db
+        calls = []
+    
+        def handler(request):
+            calls.append(request)
+            return valid_response(request)
+    
+        provider = synthetic_provider(handler)
+        original_progress = analysis_service.update_task_progress
+        async with matching_case(app, monkeypatch, provider, f"review-binding-{change}") as case:
+            async def mutate_ready_snapshot(session, task_id, token, *, progress, step):
+                result = await original_progress(session, task_id, token, progress=progress, step=step)
+                if progress == 55:
+                    async with factory() as mutation:
+                        if change == "resume_status":
+                            row = await mutation.get(ResumeVersion, UUID(case.resume["versionId"]))
+                            row.parse_status = "failed"
+                        elif change == "project_status":
+                            row = await mutation.get(ProjectVersion, UUID(case.version["versionId"]))
+                            row.analysis_status = "failed"
+                        else:
+                            row = await mutation.get(AnalysisTask, task_id)
+                            field, value = {
+                                "selected_resume": ("resumeVersionId", str(uuid4())),
+                                "selected_projects": ("projectVersionIds", []),
+                                "history_id": ("previousReportId", str(uuid4())),
+                            }[change]
+                            row.input_snapshot = {**row.input_snapshot, field: value}
+                        await mutation.commit()
+                return result
+    
+            monkeypatch.setattr(analysis_service, "update_task_progress", mutate_ready_snapshot)
+            task_id = await submit_case(case)
+        assert calls == []
+        async with factory() as session:
+            task = await session.get(AnalysisTask, task_id)
+            assert task.status == TaskStatus.FAILED
+            assert await session.scalar(select(MatchReport.id).where(
+                MatchReport.analysis_task_id == task_id,
+            )) is None
+            assert await session.scalar(select(AiUsageLog.id).where(
+                AiUsageLog.analysis_task_id == task_id,
+            )) is None
+            attempts = list(await session.scalars(select(AiRequestAttempt).where(
+                AiRequestAttempt.analysis_task_id == task_id,
+            )))
+>           assert len(attempts) == 1
+E           assert 0 == 1
+E            +  where 0 = len([])
+
+app\tests\test_durable_matching_review.py:412: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    app.services.analysis:analysis.py:1178 Match task failed: 838c99f2-eb5c-47be-9ecf-efd0a8df2cea
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 901, in execute_match_task
+    await _authorize_matching_snapshot(
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 160, in _authorize_matching_snapshot
+    raise AppError("任务固定输入已被替换，禁止发送或保存AI结果", code=4096, status_code=409)
+app.core.exceptions.AppError: 任务固定输入已被替换，禁止发送或保存AI结果
+_ test_pre_send_readiness_and_fixed_selection_mutations_send_nothing[history_id] _
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F795C00B00>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F79570F910>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F7902696A0>
+change = 'history_id'
+
+    @pytest.mark.parametrize("change", [
+        "resume_status", "project_status", "selected_resume", "selected_projects", "history_id",
+    ])
+    async def test_pre_send_readiness_and_fixed_selection_mutations_send_nothing(
+        durable_db, monkeypatch, change,  # noqa: F811 - imported pytest fixture
+    ):
+        app, factory, _runtime = durable_db
+        calls = []
+    
+        def handler(request):
+            calls.append(request)
+            return valid_response(request)
+    
+        provider = synthetic_provider(handler)
+        original_progress = analysis_service.update_task_progress
+        async with matching_case(app, monkeypatch, provider, f"review-binding-{change}") as case:
+            async def mutate_ready_snapshot(session, task_id, token, *, progress, step):
+                result = await original_progress(session, task_id, token, progress=progress, step=step)
+                if progress == 55:
+                    async with factory() as mutation:
+                        if change == "resume_status":
+                            row = await mutation.get(ResumeVersion, UUID(case.resume["versionId"]))
+                            row.parse_status = "failed"
+                        elif change == "project_status":
+                            row = await mutation.get(ProjectVersion, UUID(case.version["versionId"]))
+                            row.analysis_status = "failed"
+                        else:
+                            row = await mutation.get(AnalysisTask, task_id)
+                            field, value = {
+                                "selected_resume": ("resumeVersionId", str(uuid4())),
+                                "selected_projects": ("projectVersionIds", []),
+                                "history_id": ("previousReportId", str(uuid4())),
+                            }[change]
+                            row.input_snapshot = {**row.input_snapshot, field: value}
+                        await mutation.commit()
+                return result
+    
+            monkeypatch.setattr(analysis_service, "update_task_progress", mutate_ready_snapshot)
+            task_id = await submit_case(case)
+        assert calls == []
+        async with factory() as session:
+            task = await session.get(AnalysisTask, task_id)
+            assert task.status == TaskStatus.FAILED
+            assert await session.scalar(select(MatchReport.id).where(
+                MatchReport.analysis_task_id == task_id,
+            )) is None
+            assert await session.scalar(select(AiUsageLog.id).where(
+                AiUsageLog.analysis_task_id == task_id,
+            )) is None
+            attempts = list(await session.scalars(select(AiRequestAttempt).where(
+                AiRequestAttempt.analysis_task_id == task_id,
+            )))
+>           assert len(attempts) == 1
+E           assert 0 == 1
+E            +  where 0 = len([])
+
+app\tests\test_durable_matching_review.py:412: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    app.services.analysis:analysis.py:1178 Match task failed: f5d3e6d2-db60-4be9-b2af-e4a126a424b1
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 901, in execute_match_task
+    await _authorize_matching_snapshot(
+  File "D:\jbcode\web ai\jianli\backend\.tmp\ci-independent-20261013\snapshot\backend\app\services\analysis.py", line 160, in _authorize_matching_snapshot
+    raise AppError("任务固定输入已被替换，禁止发送或保存AI结果", code=4096, status_code=409)
+app.core.exceptions.AppError: 任务固定输入已被替换，禁止发送或保存AI结果
+______________ test_each_planning_round_has_its_own_durable_step ______________
+
+durable_db = (<fastapi.applications.FastAPI object at 0x000001F795B37710>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...gine object at 0x000001F793DCF450>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F797EC7E00>
+
+    async def test_each_planning_round_has_its_own_durable_step(
+        durable_db, monkeypatch,  # noqa: F811 - imported pytest fixture
+    ):
+        app, factory, _runtime = durable_db
+        calls, planning = [], []
+    
+        def handler(request):
+            calls.append(request)
+            body = json.loads(request.content)
+            if "tools" not in body:
+                return valid_response(request)
+            planning.append(request)
+            assert provider.durable_observer.service.context.step == f"planning_{len(planning)}"
+            source = json.loads(body["messages"][1]["content"])
+            requirement_id = source["requirements"][0]["requirement_id"]
+            message = {"content": "无需补检索"} if len(planning) == 2 else {
+                "tool_calls": [{"function": {
+                    "name": "get_previous_report_context",
+                    "arguments": json.dumps({"requirement_id": requirement_id}),
+                }}],
+            }
+            return httpx.Response(200, json={
+                "choices": [{"message": message}],
+                "usage": {"prompt_tokens": 40 + 10 * len(planning), "completion_tokens": 10},
+            })
+    
+        provider = synthetic_provider(handler)
+        monkeypatch.setattr(settings, "ai_max_retrieval_calls", 2)
+        # Force two legal planner opportunities; the actual planner, history
+        # authorization, HTTP hooks and durable writes still execute unchanged.
+        monkeypatch.setattr("app.agents.evidence_workflow.eligible_retrieval_contexts",
+                            lambda _result, contexts: contexts)
+        async with matching_case(app, monkeypatch, provider, "review-planning-rounds") as case:
+            previous = await match_report(case.student, case.job, case.resume, case.version)
+            task_id = await submit_case(case, usePreviousReport=True)
+>       assert len(planning) == 2 and len(calls) == 3
+E       AssertionError: assert (1 == 2)
+E        +  where 1 = len([<Request('POST', 'https://api.deepseek.com/chat/completions')>])
+
+app\tests\test_durable_matching_review.py:451: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\testclient.py:1
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\testclient.py:53
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\starlette\testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+app/tests/test_dependency_upgrade_regression.py::test_decode_token_rejects_malformed_tokens[eyJhbGciOiJIUzI1NiJ9.W10.sig]
+app/tests/test_dependency_upgrade_regression.py::test_legacy_pytjwt_2101_token_still_decodes
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\jwt\api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    decoded = self.decode_complete(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_ai_budget_workflows.py::test_matching_small_daily_remainder_is_granted_on_actual_wire
+FAILED app/tests/test_durable_matching.py::test_every_physical_matching_request_is_durable_attempted_and_booked
+FAILED app/tests/test_durable_matching.py::test_fallback_after_invalid_repair_still_books_persisted_receipts
+FAILED app/tests/test_durable_matching.py::test_booking_failure_recovers_without_extra_http
+FAILED app/tests/test_durable_matching.py::test_report_save_failure_keeps_booked_receipts
+FAILED app/tests/test_durable_matching.py::test_owner_deactivation_and_material_replacement_send_nothing
+FAILED app/tests/test_durable_matching_review.py::test_planning_unknown_and_error_receipts_are_accounted_without_fake_completion
+FAILED app/tests/test_durable_matching_review.py::test_authorization_lost_while_http_is_in_flight_keeps_fees_not_report[owner]
+FAILED app/tests/test_durable_matching_review.py::test_authorization_lost_while_http_is_in_flight_keeps_fees_not_report[resume_status]
+FAILED app/tests/test_durable_matching_review.py::test_authorization_lost_while_http_is_in_flight_keeps_fees_not_report[project_status]
+FAILED app/tests/test_durable_matching_review.py::test_cancel_after_receipt_preserves_cancel_and_recovers_only_fees[False]
+FAILED app/tests/test_durable_matching_review.py::test_cancel_after_receipt_preserves_cancel_and_recovers_only_fees[True]
+FAILED app/tests/test_durable_matching_review.py::test_expired_claim_during_http_books_old_run_without_publishing
+FAILED app/tests/test_durable_matching_review.py::test_report_transaction_before_commit_failure_keeps_prior_ledger_commit
+FAILED app/tests/test_durable_matching_review.py::test_pre_send_readiness_and_fixed_selection_mutations_send_nothing[resume_status]
+FAILED app/tests/test_durable_matching_review.py::test_pre_send_readiness_and_fixed_selection_mutations_send_nothing[project_status]
+FAILED app/tests/test_durable_matching_review.py::test_pre_send_readiness_and_fixed_selection_mutations_send_nothing[selected_resume]
+FAILED app/tests/test_durable_matching_review.py::test_pre_send_readiness_and_fixed_selection_mutations_send_nothing[selected_projects]
+FAILED app/tests/test_durable_matching_review.py::test_pre_send_readiness_and_fixed_selection_mutations_send_nothing[history_id]
+FAILED app/tests/test_durable_matching_review.py::test_each_planning_round_has_its_own_durable_step
+ERROR app/tests/test_application_reconsent_migration.py::test_postgres_reconsent_migration_preserves_history
+20 failed, 1174 passed, 48 skipped, 9 warnings, 1 error in 333.55s (0:05:33)
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

@@ -1,0 +1,1778 @@
+{
+  "sourceCommit": "01232d27e8768121592b6c05300e0b5ba5170a55",
+  "source": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\backend",
+  "api": "http://127.0.0.1:8113",
+  "database": {
+    "host": "127.0.0.1",
+    "port": 55445,
+    "name": "cp_product_polish_20261022"
+  },
+  "storage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\storage",
+  "externalAI": false,
+  "calls": [
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/match-reports/fda4ec24-3534-4a4e-80aa-2d5959b0c87e",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/project-versions/6db170c9-ea2b-4036-84d1-47260c687014/files",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/resumes",
+      "status": 202
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/88016c16-a605-482e-b781-db90bfc9a9c3",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/88016c16-a605-482e-b781-db90bfc9a9c3",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/88016c16-a605-482e-b781-db90bfc9a9c3",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/88016c16-a605-482e-b781-db90bfc9a9c3",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/resume-versions/152e8749-8be4-41e6-8977-6feb0ec06b86/preview",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/matches",
+      "status": 202
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/034c7bc7-d95e-458c-8f78-e9f8f9f1b53a",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/034c7bc7-d95e-458c-8f78-e9f8f9f1b53a",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/034c7bc7-d95e-458c-8f78-e9f8f9f1b53a",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/match-reports/59ac4fa1-4792-4c14-b268-51119b129076",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/match-reports/fda4ec24-3534-4a4e-80aa-2d5959b0c87e",
+      "status": 200
+    }
+  ],
+  "image": {
+    "filename": "Resume.PNG",
+    "bytes": 32177,
+    "sha256": "4f8968b833a326087fb9c61eb141ba13ccf8ffd3348a14f51ff239190019df21"
+  },
+  "databaseBefore": {
+    "ai_request_attempts": 3,
+    "ai_usage_logs": 3,
+    "applicationSnapshotsHash": "bd4ffdc1ae35aed6e9a9beadbba5b9f5baab264468f1ba157b4a098695f729c3",
+    "applicationCount": 2
+  },
+  "userId": "d37532ac-ff22-4d4e-a469-305da757b71c",
+  "baseReport": {
+    "id": "fda4ec24-3534-4a4e-80aa-2d5959b0c87e",
+    "sha256": "d775165ca3cbbaadc1c3f9da273875e8dc34594593d4bba7753f4c2f0aa35322",
+    "jobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+    "materials": [
+      {
+        "kind": "resume",
+        "id": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+        "title": "校园活动项目合成简历",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+      },
+      {
+        "kind": "project",
+        "id": "6db170c9-ea2b-4036-84d1-47260c687014",
+        "title": "Campus Signup：完整业务实现",
+        "versionNumber": 2,
+        "materialRole": "portfolio",
+        "contentHash": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518"
+      }
+    ],
+    "requirementCount": 5,
+    "projectFileCount": 13,
+    "projectFiles": [
+      "campus_signup/api.py",
+      "campus_signup/__init__.py",
+      "campus_signup/__main__.py",
+      "campus_signup/schema.sql",
+      "campus_signup/service.py",
+      "campus_signup/storage.py",
+      "README.md",
+      "requirements.txt",
+      "runtime/http-observations.json",
+      "runtime/pytest-output.txt",
+      "runtime/README.txt",
+      "runtime/source-hashes.json",
+      "tests/test_registration.py"
+    ]
+  },
+  "imageUpload": {
+    "resumeId": "29d91ca3-9bea-44cb-b56d-3b861530ffeb",
+    "versionId": "152e8749-8be4-41e6-8977-6feb0ec06b86",
+    "taskId": "88016c16-a605-482e-b781-db90bfc9a9c3",
+    "status": "pending"
+  },
+  "imageTask": {
+    "id": "88016c16-a605-482e-b781-db90bfc9a9c3",
+    "status": "completed",
+    "states": [
+      {
+        "status": "running",
+        "progress": 10,
+        "currentStep": "解析简历文档"
+      },
+      {
+        "status": "completed",
+        "progress": 100,
+        "currentStep": "简历解析完成"
+      }
+    ],
+    "errorMessage": null
+  },
+  "imagePreview": {
+    "id": "152e8749-8be4-41e6-8977-6feb0ec06b86",
+    "status": "completed",
+    "sectionCount": 1,
+    "characters": 247,
+    "text": "[OCR识别文本｜平均置信度 99%｜请对照原图复核]\nCareerProof synthetic image resume\nStudent: Demo Reviewer\nSkills: Python, SQL, API testing\nProject: Registration service\nBuilt input validation, transaction and tests.\nThis is fictional material for local Ul acceptance."
+  },
+  "rulesRequest": {
+    "jobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+    "resumeVersionId": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+    "projectVersionIds": [
+      "6db170c9-ea2b-4036-84d1-47260c687014"
+    ],
+    "externalAiConsent": false,
+    "usePreviousReport": false
+  },
+  "rulesAccepted": {
+    "taskId": "034c7bc7-d95e-458c-8f78-e9f8f9f1b53a",
+    "status": "pending"
+  },
+  "rulesTask": {
+    "id": "034c7bc7-d95e-458c-8f78-e9f8f9f1b53a",
+    "status": "completed",
+    "states": [
+      {
+        "status": "pending",
+        "progress": 0,
+        "currentStep": "等待分析真实材料"
+      },
+      {
+        "status": "running",
+        "progress": 25,
+        "currentStep": "正在读取材料并检索候选证据"
+      },
+      {
+        "status": "completed",
+        "progress": 100,
+        "currentStep": "材料支持度报告已生成"
+      }
+    ],
+    "errorMessage": null,
+    "steps": [
+      {
+        "step": 1,
+        "eventType": "tool.completed",
+        "name": "核对材料版本",
+        "detail": "读取2份所选材料，报告固定到所选版本",
+        "payload": {
+          "materialCount": 2
+        }
+      },
+      {
+        "step": 2,
+        "eventType": "tool.completed",
+        "name": "检索候选证据",
+        "detail": "静态检查13个文件，找到39条候选证据",
+        "payload": {
+          "fileCount": 13,
+          "evidenceCount": 39,
+          "contextRetrieval": [
+            {
+              "name": "补取并核对证据上下文",
+              "rounds": 1,
+              "expandedCount": 37,
+              "limitedCount": 13,
+              "sourceExact": true,
+              "maxLines": 40,
+              "maxCharacters": 4000
+            },
+            {
+              "name": "混合检索补充候选上下文",
+              "engine": "hybrid-lexical-v1",
+              "candidateCount": 14,
+              "changesRuleScore": false,
+              "semanticEmbedding": false
+            },
+            {
+              "name": "本地语义文档检索",
+              "engine": "multilingual-minilm-docs-v1",
+              "status": "unavailable",
+              "candidateCount": 0,
+              "changesRuleScore": false,
+              "semanticEmbedding": false
+            }
+          ]
+        }
+      },
+      {
+        "step": 3,
+        "eventType": "tool.completed",
+        "name": "补取并核对证据上下文",
+        "detail": "一次补取，37条多行原文；13条仍为局部上下文；未执行上传代码",
+        "payload": {
+          "name": "补取并核对证据上下文",
+          "rounds": 1,
+          "expandedCount": 37,
+          "limitedCount": 13,
+          "sourceExact": true,
+          "maxLines": 40,
+          "maxCharacters": 4000
+        }
+      },
+      {
+        "step": 4,
+        "eventType": "tool.completed",
+        "name": "混合检索补充候选上下文",
+        "detail": "规则检测后补充14条低强度候选原文；候选不改变规则分数，需经引用校验与模型判断",
+        "payload": {
+          "name": "混合检索补充候选上下文",
+          "engine": "hybrid-lexical-v1",
+          "candidateCount": 14,
+          "changesRuleScore": false,
+          "semanticEmbedding": false
+        }
+      },
+      {
+        "step": 5,
+        "eventType": "tool.completed",
+        "name": "本地语义文档检索",
+        "detail": "本地语义模型不可用，已保留词法检索与规则报告",
+        "payload": {
+          "name": "本地语义文档检索",
+          "engine": "multilingual-minilm-docs-v1",
+          "status": "unavailable",
+          "candidateCount": 0,
+          "changesRuleScore": false,
+          "semanticEmbedding": false
+        }
+      },
+      {
+        "step": 6,
+        "eventType": "tool.completed",
+        "name": "计算材料支持度",
+        "detail": "使用evidence-v4规则；未支持的能力不参与评分",
+        "payload": {
+          "engine": "rules",
+          "formulaVersion": "evidence-v4"
+        }
+      },
+      {
+        "step": 7,
+        "eventType": "tool.completed",
+        "name": "模型证据分析",
+        "detail": "外部模型未启用",
+        "payload": {
+          "provider": "rules",
+          "promptVersion": "evidence-trust-v30-budget-deduplication",
+          "model": null,
+          "fallbackUsed": false,
+          "fallbackReason": null,
+          "failureStage": null,
+          "inputBudgetStop": null,
+          "inputPreflights": [],
+          "skippedReason": null,
+          "repairUsed": false,
+          "requestCount": 0,
+          "planningSkippedReason": null,
+          "jsonRepairCount": 0,
+          "modelRequirementCount": 0,
+          "providerFinishReason": null,
+          "modelToolCalls": [],
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "latencyMs": 0
+        }
+      },
+      {
+        "step": 8,
+        "eventType": "tool.completed",
+        "name": "校验模型引用",
+        "detail": "未采信模型输出，规则证据保持不变",
+        "payload": {
+          "validation": "not_run",
+          "acceptedCitationCount": 0
+        }
+      },
+      {
+        "step": 9,
+        "eventType": "tool.completed",
+        "name": "保存可追溯报告",
+        "detail": "保存材料版本、文件行号、证据哈希、模型解释与降级状态",
+        "payload": {
+          "mode": "rules"
+        }
+      }
+    ],
+    "totalCostRmb": "0.000000"
+  },
+  "freshReport": {
+    "id": "59ac4fa1-4792-4c14-b268-51119b129076",
+    "taskId": "034c7bc7-d95e-458c-8f78-e9f8f9f1b53a",
+    "jobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+    "jobTitle": "校园活动后端：完整项目材料验证",
+    "jobCategory": "software",
+    "candidateId": "d37532ac-ff22-4d4e-a469-305da757b71c",
+    "candidateName": "林舟（虚构项目验证）",
+    "overallScore": 52.0,
+    "summary": "共5项岗位要求，其中4项有项目证据支撑，0项仅有简历声明，1项当前无法确认，0项暂不支持评估且不计分。分数为材料支持度，不是能力或录用结论。",
+    "analysisMode": "rules",
+    "aiProvider": null,
+    "aiModel": null,
+    "aiFallbackUsed": false,
+    "evidenceContextVersion": "source-context-v8-actionable-evidence-gaps",
+    "createdAt": "2026-10-22T11:45:09.143751Z",
+    "visualClaims": [],
+    "materials": [
+      {
+        "kind": "resume",
+        "id": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+        "title": "校园活动项目合成简历",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+      },
+      {
+        "kind": "project",
+        "id": "6db170c9-ea2b-4036-84d1-47260c687014",
+        "title": "Campus Signup：完整业务实现",
+        "versionNumber": 2,
+        "materialRole": "portfolio",
+        "contentHash": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518"
+      }
+    ],
+    "gaps": [
+      "使用Redis缓存活动查询并在报名或取消后失效缓存"
+    ],
+    "claimedOnly": [],
+    "items": [
+      {
+        "evidenceLevelSource": "rules",
+        "skillPath": [
+          "后端开发",
+          "FastAPI"
+        ],
+        "ratingCriteria": [],
+        "evidenceLevel": 3,
+        "evidenceLevelLabel": "任务实现",
+        "evidenceLevelReason": "本项静态引用：6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/api.py 第36—38行（create_event）。上述是源码中可见的结构，不代表本项全部业务条件已满足、运行成功或本人贡献。",
+        "evidenceLevelGap": "先对照接口输入校验、响应与错误分支，逐条核对本项岗位要求。已上传测试命名文件：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py；已上传文本/JSON材料：6db170c9-ea2b-4036-84d1-47260c687014/runtime/README.txt、6db170c9-ea2b-4036-84d1-47260c687014/runtime/http-observations.json、6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。",
+        "evidenceLevelVersion": "practice-evidence-v5-redis-operation",
+        "requirementId": "5db05125-931a-4bc6-8cca-7bc352d558e5",
+        "requirementTitle": "实现校园活动创建、报名、取消和查询接口，校验请求并返回对应错误状态",
+        "skill": "FastAPI",
+        "claimed": true,
+        "claimText": "提供校园活动报名项目，使用Python、FastAPI、SQLite SQL、pytest。",
+        "evidence": {
+          "citationId": "R1-E1",
+          "provenance": "portfolio",
+          "contextComplete": true,
+          "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "functionLineStart": 36,
+          "functionLineEnd": 38,
+          "sourceLineCount": 56,
+          "skill": "FastAPI",
+          "evidenceType": "fastapi_route",
+          "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/api.py",
+          "lineStart": 36,
+          "lineEnd": 38,
+          "snippet": "    @app.post(\"/events\", status_code=201)\n    def create_event(payload: EventInput):\n        return service.create_event(payload.title, payload.capacity)",
+          "strength": "high",
+          "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "7035d7745e5b7eb4e143029b185ba17ca9f1f3e1adf11101704f2ee5f234de79",
+          "projectFileId": "bd5a2407-73d7-41bd-97dd-07f2075b1458",
+          "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+          "sourceId": "371f15b9-36e9-42f1-8772-a5ef3f287c92"
+        },
+        "evidenceList": [
+          {
+            "citationId": "R1-E1",
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 36,
+            "functionLineEnd": 38,
+            "sourceLineCount": 56,
+            "skill": "FastAPI",
+            "evidenceType": "fastapi_route",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/api.py",
+            "lineStart": 36,
+            "lineEnd": 38,
+            "snippet": "    @app.post(\"/events\", status_code=201)\n    def create_event(payload: EventInput):\n        return service.create_event(payload.title, payload.capacity)",
+            "strength": "high",
+            "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "7035d7745e5b7eb4e143029b185ba17ca9f1f3e1adf11101704f2ee5f234de79",
+            "projectFileId": "bd5a2407-73d7-41bd-97dd-07f2075b1458",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "371f15b9-36e9-42f1-8772-a5ef3f287c92"
+          },
+          {
+            "citationId": "R1-E2",
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 22,
+            "functionLineEnd": 56,
+            "sourceLineCount": 56,
+            "skill": "FastAPI",
+            "evidenceType": "fastapi_app",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/api.py",
+            "lineStart": 22,
+            "lineEnd": 56,
+            "snippet": "def create_app(database_path: Path):\n    store = Store(database_path)\n    store.initialize()\n    service = RegistrationService(store)\n    app = FastAPI(title=\"Campus Signup\")\n\n    @app.exception_handler(RegistrationError)\n    async def registration_error(_request: Request, error: RegistrationError):\n        return JSONResponse(status_code=error.status_code, content={\"detail\": str(error)})\n\n    @app.exception_handler(sqlite3.DatabaseError)\n    async def database_error(_request: Request, _error: sqlite3.DatabaseError):\n        return JSONResponse(status_code=503, content={\"detail\": \"Storage unavailable\"})\n\n    @app.post(\"/events\", status_code=201)\n    def create_event(payload: EventInput):\n        return service.create_event(payload.title, payload.capacity)\n\n    @app.get(\"/events\")\n    def list_events():\n        return store.list_events()\n\n    @app.post(\"/registrations\", status_code=201)\n    def register(payload: SignupInput):\n        return service.register(payload.event_id, payload.student_code)\n\n    @app.get(\"/registrations\")\n    def list_registrations():\n        return store.list_registrations()\n\n    @app.post(\"/registrations/{registration_id}/cancel\")\n    def cancel(registration_id: int):\n        return service.cancel(registration_id)\n\n    return app",
+            "strength": "medium",
+            "explanation": "创建了FastAPI应用实例；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "7035d7745e5b7eb4e143029b185ba17ca9f1f3e1adf11101704f2ee5f234de79",
+            "projectFileId": "bd5a2407-73d7-41bd-97dd-07f2075b1458",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "a50f8d1f-b7b3-42c5-ac5c-2fcf353fa219"
+          },
+          {
+            "citationId": "R1-E3",
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "完整依赖声明；仅证明声明，不能证明安装、运行或功能实现",
+            "functionLineStart": null,
+            "functionLineEnd": null,
+            "sourceLineCount": 5,
+            "skill": "FastAPI",
+            "evidenceType": "fastapi_dependency",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/requirements.txt",
+            "lineStart": 1,
+            "lineEnd": 1,
+            "snippet": "fastapi==0.143.0",
+            "strength": "low",
+            "explanation": "仅有依赖或配置声明，未据此确认功能实现。",
+            "contentHash": "18429cfadddf9abeaebd6248c0d95731e6fb6dd97bdb863e77163c1ffc6baf45",
+            "projectFileId": "55179ae3-f226-4aa3-aa87-f35ffdc8820b",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "fc4cd8b1-63ab-4827-aa01-b008580efec2"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": false,
+            "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+            "functionLineStart": null,
+            "functionLineEnd": null,
+            "sourceLineCount": 18,
+            "skill": "FastAPI",
+            "evidenceType": "retrieved_context",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/README.md",
+            "lineStart": 1,
+            "lineEnd": 9,
+            "snippet": "# Campus Signup\n\n原创合成的本地校园活动报名服务。提供创建活动、报名、查询与取消报名接口；数据保存到调用者指定的 SQLite 文件。活动名额、报名记录与审计记录在同一事务中更新。重复报名和满额返回409，未知活动返回404，非法请求返回422，数据库故障返回503。\n\n这是范围有限的练习项目：不提供登录鉴权、支付、邮件、分布式部署、本人贡献认证或生产服务承诺。报名取消后该学生不能再次报名同一活动；保留原报名记录，其他学生可使用释放的名额。\n\n需要Python 3.12。在本目录执行：\n\n```powershell",
+            "strength": "low",
+            "explanation": "混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。",
+            "contentHash": "89939f0f681e8d0eb61a74693c310253d18373039c1e6976b1f51125089bd410",
+            "projectFileId": "d8807f90-6532-4bcf-a529-57452d267311",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "57f940e1-3f65-44e5-9943-ea307a3e2c5a"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": false,
+            "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+            "functionLineStart": null,
+            "functionLineEnd": null,
+            "sourceLineCount": 18,
+            "skill": "FastAPI",
+            "evidenceType": "retrieved_context",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/README.md",
+            "lineStart": 3,
+            "lineEnd": 11,
+            "snippet": "原创合成的本地校园活动报名服务。提供创建活动、报名、查询与取消报名接口；数据保存到调用者指定的 SQLite 文件。活动名额、报名记录与审计记录在同一事务中更新。重复报名和满额返回409，未知活动返回404，非法请求返回422，数据库故障返回503。\n\n这是范围有限的练习项目：不提供登录鉴权、支付、邮件、分布式部署、本人贡献认证或生产服务承诺。报名取消后该学生不能再次报名同一活动；保留原报名记录，其他学生可使用释放的名额。\n\n需要Python 3.12。在本目录执行：\n\n```powershell\npython -m venv .venv\n.\\.venv\\Scripts\\python.exe -m pip install -r requirements.txt",
+            "strength": "low",
+            "explanation": "混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。",
+            "contentHash": "89939f0f681e8d0eb61a74693c310253d18373039c1e6976b1f51125089bd410",
+            "projectFileId": "d8807f90-6532-4bcf-a529-57452d267311",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "09e19ff3-814c-43f1-820e-7c11d26c3293"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": false,
+            "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+            "functionLineStart": null,
+            "functionLineEnd": null,
+            "sourceLineCount": 56,
+            "skill": "FastAPI",
+            "evidenceType": "retrieved_context",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/api.py",
+            "lineStart": 2,
+            "lineEnd": 10,
+            "snippet": "from pathlib import Path\n\nfrom fastapi import FastAPI, Request\nfrom fastapi.responses import JSONResponse\nfrom pydantic import BaseModel, Field\n\nfrom .service import RegistrationError, RegistrationService\nfrom .storage import Store\n",
+            "strength": "low",
+            "explanation": "混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。",
+            "contentHash": "7035d7745e5b7eb4e143029b185ba17ca9f1f3e1adf11101704f2ee5f234de79",
+            "projectFileId": "bd5a2407-73d7-41bd-97dd-07f2075b1458",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "a0ba8d7d-4226-4132-93b6-47430062edb4"
+          }
+        ],
+        "verdict": "supported",
+        "aiConfidence": null,
+        "ruleBaseScore": 0.65,
+        "weight": 5,
+        "finalScore": 65.0,
+        "explanation": "本项静态引用：6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/api.py 第36—38行（create_event）。上述是源码中可见的结构，不代表本项全部业务条件已满足、运行成功或本人贡献。",
+        "formulaVersion": "evidence-v4",
+        "evidenceId": "a387c522-9842-45c0-ae64-90e15ca83935",
+        "confirmationStatus": "pending",
+        "confirmedAt": null,
+        "reviewerNote": null,
+        "aiExplanation": null,
+        "aiCitationIds": [],
+        "aiInformationGap": null,
+        "aiSuggestion": null,
+        "aiTaskPlan": null,
+        "aiTaskPlanWarning": null,
+        "aiSuggestionRedundant": false,
+        "aiStatus": "not_used",
+        "aiOrigin": null,
+        "functionSourceCoverage": [
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/api.py",
+            "function_line_start": 22,
+            "function_line_end": 56,
+            "covered_line_count": 35,
+            "fully_covered": true,
+            "citation_ids": [
+              "R1-E2"
+            ]
+          },
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/api.py",
+            "function_line_start": 36,
+            "function_line_end": 38,
+            "covered_line_count": 3,
+            "fully_covered": true,
+            "citation_ids": [
+              "R1-E1"
+            ]
+          }
+        ],
+        "fileSourceCoverage": [
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/api.py",
+            "source_line_count": 56,
+            "covered_line_count": 35,
+            "fully_covered": false,
+            "citation_ids": [
+              "R1-E1",
+              "R1-E2"
+            ]
+          },
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/requirements.txt",
+            "source_line_count": 5,
+            "covered_line_count": 1,
+            "fully_covered": false,
+            "citation_ids": [
+              "R1-E3"
+            ]
+          }
+        ]
+      },
+      {
+        "evidenceLevelSource": "rules",
+        "skillPath": [
+          "数据库",
+          "SQL"
+        ],
+        "ratingCriteria": [],
+        "evidenceLevel": 3,
+        "evidenceLevelLabel": "任务实现",
+        "evidenceLevelReason": "本项静态引用：6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/schema.sql 第1—8行（源码片段）；6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py 第25—54行（register、条件分支、显式抛错、带参数的SQL调用）；6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py 第32—36行（list_events、SQL调用）。上述是源码中可见的结构，不代表本项全部业务条件已满足、运行成功或本人贡献。",
+        "evidenceLevelGap": "先对照SQL读写条件、参数与事务边界，逐条核对本项岗位要求。已上传测试命名文件：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py；已上传文本/JSON材料：6db170c9-ea2b-4036-84d1-47260c687014/runtime/README.txt、6db170c9-ea2b-4036-84d1-47260c687014/runtime/http-observations.json、6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。",
+        "evidenceLevelVersion": "practice-evidence-v5-redis-operation",
+        "requirementId": "4a3a984f-3fcd-490f-9dd1-c056b0f0ff86",
+        "requirementTitle": "使用SQLite SQL持久化活动与报名，参数化读写，写入失败回滚名额及报名记录",
+        "skill": "SQL",
+        "claimed": true,
+        "claimText": "提供校园活动报名项目，使用Python、FastAPI、SQLite SQL、pytest。",
+        "evidence": {
+          "citationId": "R2-E1",
+          "provenance": "portfolio",
+          "contextComplete": false,
+          "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+          "functionLineStart": null,
+          "functionLineEnd": null,
+          "sourceLineCount": 19,
+          "skill": "SQL",
+          "evidenceType": "sql_schema",
+          "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/schema.sql",
+          "lineStart": 1,
+          "lineEnd": 8,
+          "snippet": "PRAGMA foreign_keys = ON;\nCREATE TABLE IF NOT EXISTS events (\n    id INTEGER PRIMARY KEY,\n    title TEXT NOT NULL,\n    capacity INTEGER NOT NULL CHECK(capacity > 0),\n    remaining INTEGER NOT NULL CHECK(remaining >= 0 AND remaining <= capacity)\n);\nCREATE TABLE IF NOT EXISTS registrations (",
+          "strength": "high",
+          "explanation": "存在建表实现，不代表查询优化能力；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "182162244aee1881986140c004e76f8ff5665587fd383141b31e1dea39ad3fa5",
+          "projectFileId": "f8493e4e-a2ea-42ec-96b6-495a44434ed6",
+          "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+          "sourceId": "79d1a0ba-2d41-49fe-a320-2207fc778e70"
+        },
+        "evidenceList": [
+          {
+            "citationId": "R2-E1",
+            "provenance": "portfolio",
+            "contextComplete": false,
+            "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+            "functionLineStart": null,
+            "functionLineEnd": null,
+            "sourceLineCount": 19,
+            "skill": "SQL",
+            "evidenceType": "sql_schema",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/schema.sql",
+            "lineStart": 1,
+            "lineEnd": 8,
+            "snippet": "PRAGMA foreign_keys = ON;\nCREATE TABLE IF NOT EXISTS events (\n    id INTEGER PRIMARY KEY,\n    title TEXT NOT NULL,\n    capacity INTEGER NOT NULL CHECK(capacity > 0),\n    remaining INTEGER NOT NULL CHECK(remaining >= 0 AND remaining <= capacity)\n);\nCREATE TABLE IF NOT EXISTS registrations (",
+            "strength": "high",
+            "explanation": "存在建表实现，不代表查询优化能力；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "182162244aee1881986140c004e76f8ff5665587fd383141b31e1dea39ad3fa5",
+            "projectFileId": "f8493e4e-a2ea-42ec-96b6-495a44434ed6",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "79d1a0ba-2d41-49fe-a320-2207fc778e70"
+          },
+          {
+            "citationId": "R2-E2",
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 25,
+            "functionLineEnd": 54,
+            "sourceLineCount": 77,
+            "skill": "SQL",
+            "evidenceType": "sql_query",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py",
+            "lineStart": 25,
+            "lineEnd": 54,
+            "snippet": "    def register(self, event_id: int, student_code: str):\n        with self.store.transaction() as connection:\n            event = connection.execute(\n                \"SELECT id, remaining FROM events WHERE id = ?\", (event_id,)\n            ).fetchone()\n            if event is None:\n                raise RegistrationError(\"Event not found\", 404)\n            previous = connection.execute(\n                \"SELECT id FROM registrations WHERE event_id = ? AND student_code = ?\",\n                (event_id, student_code),\n            ).fetchone()\n            if previous is not None:\n                raise RegistrationError(\"Registration already exists\", 409)\n            updated = connection.execute(\n                \"UPDATE events SET remaining = remaining - 1 WHERE id = ? AND remaining > 0\",\n                (event_id,),\n            )\n            if updated.rowcount != 1:\n                raise RegistrationError(\"Event full\", 409)\n            cursor = connection.execute(\n                \"INSERT INTO registrations(event_id, student_code, status) VALUES (?, ?, 'active')\",\n                (event_id, student_code),\n            )\n            registration_id = cursor.lastrowid\n            connection.execute(\n                \"INSERT INTO audit_log(registration_id, action) VALUES (?, 'register')\",\n                (registration_id,),\n            )\n            return {\"id\": registration_id, \"event_id\": event_id,\n                    \"student_code\": student_code, \"status\": \"active\"}",
+            "strength": "medium",
+            "explanation": "存在SQL查询实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "69a9aaa6aeaf83383d6b4ce70ac106e537737ebf64cf8a9aadd32770b5a12b04",
+            "projectFileId": "58ecff91-30e2-48ef-ae8f-cf53bc5ab17b",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "1b1577b3-c2f2-4dda-9512-0197a88db363"
+          },
+          {
+            "citationId": "R2-E3",
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 32,
+            "functionLineEnd": 36,
+            "sourceLineCount": 42,
+            "skill": "SQL",
+            "evidenceType": "sql_query",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py",
+            "lineStart": 32,
+            "lineEnd": 36,
+            "snippet": "    def list_events(self):\n        with closing(self.connect()) as connection:\n            return [dict(row) for row in connection.execute(\n                \"SELECT id, title, capacity, remaining FROM events ORDER BY id\"\n            )]",
+            "strength": "medium",
+            "explanation": "存在SQL查询实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "ae74fafb0cca2e3ff769d1d0451379d10a03c950a8fa62434847d72d84b91505",
+            "projectFileId": "8f8b7d74-faa3-43a6-95ca-13a5d6508708",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "2f06b4d2-c768-45b2-8da4-6235ea85298b"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 92,
+            "functionLineEnd": 105,
+            "sourceLineCount": 149,
+            "skill": "SQL",
+            "evidenceType": "sql_query",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+            "lineStart": 92,
+            "lineEnd": 105,
+            "snippet": "def test_failed_audit_insert_rolls_back_registration_and_capacity(database):\n    store = Store(database)\n    store.initialize()\n    service = RegistrationService(store)\n    event_id = service.create_event(\"Rollback workshop\", 1)[\"id\"]\n    with closing(store.connect()) as connection:\n        connection.execute(\"\"\"CREATE TRIGGER fail_audit BEFORE INSERT ON audit_log\n            BEGIN SELECT RAISE(ABORT, 'audit write rejected'); END\"\"\")\n    with pytest.raises(sqlite3.IntegrityError, match=\"audit write rejected\"):\n        service.register(event_id, \"S001\")\n    assert store.list_registrations() == []\n    assert store.list_events()[0][\"remaining\"] == 1\n    with closing(store.connect()) as connection:\n        assert connection.execute(\"SELECT COUNT(*) FROM audit_log\").fetchone()[0] == 0",
+            "strength": "medium",
+            "explanation": "存在SQL查询实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "df777b7d36e7d77e8a7961e2bac837dc0b16b4e351e82c1f25c72a96ded324c6",
+            "projectFileId": "8ebaec91-9139-431a-bfa2-9a2cead5dc23",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "cac6b6bd-e8b4-4a7a-8dec-c65beb9343a0"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": false,
+            "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+            "functionLineStart": null,
+            "functionLineEnd": null,
+            "sourceLineCount": 18,
+            "skill": "SQL",
+            "evidenceType": "retrieved_context",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/README.md",
+            "lineStart": 1,
+            "lineEnd": 9,
+            "snippet": "# Campus Signup\n\n原创合成的本地校园活动报名服务。提供创建活动、报名、查询与取消报名接口；数据保存到调用者指定的 SQLite 文件。活动名额、报名记录与审计记录在同一事务中更新。重复报名和满额返回409，未知活动返回404，非法请求返回422，数据库故障返回503。\n\n这是范围有限的练习项目：不提供登录鉴权、支付、邮件、分布式部署、本人贡献认证或生产服务承诺。报名取消后该学生不能再次报名同一活动；保留原报名记录，其他学生可使用释放的名额。\n\n需要Python 3.12。在本目录执行：\n\n```powershell",
+            "strength": "low",
+            "explanation": "混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。",
+            "contentHash": "89939f0f681e8d0eb61a74693c310253d18373039c1e6976b1f51125089bd410",
+            "projectFileId": "d8807f90-6532-4bcf-a529-57452d267311",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "367dcb3e-b320-464d-a759-5e37bc4d5dce"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": false,
+            "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+            "functionLineStart": null,
+            "functionLineEnd": null,
+            "sourceLineCount": 18,
+            "skill": "SQL",
+            "evidenceType": "retrieved_context",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/README.md",
+            "lineStart": 3,
+            "lineEnd": 11,
+            "snippet": "原创合成的本地校园活动报名服务。提供创建活动、报名、查询与取消报名接口；数据保存到调用者指定的 SQLite 文件。活动名额、报名记录与审计记录在同一事务中更新。重复报名和满额返回409，未知活动返回404，非法请求返回422，数据库故障返回503。\n\n这是范围有限的练习项目：不提供登录鉴权、支付、邮件、分布式部署、本人贡献认证或生产服务承诺。报名取消后该学生不能再次报名同一活动；保留原报名记录，其他学生可使用释放的名额。\n\n需要Python 3.12。在本目录执行：\n\n```powershell\npython -m venv .venv\n.\\.venv\\Scripts\\python.exe -m pip install -r requirements.txt",
+            "strength": "low",
+            "explanation": "混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。",
+            "contentHash": "89939f0f681e8d0eb61a74693c310253d18373039c1e6976b1f51125089bd410",
+            "projectFileId": "d8807f90-6532-4bcf-a529-57452d267311",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "524b08c9-e880-48ab-9924-a88a81886914"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": false,
+            "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+            "functionLineStart": null,
+            "functionLineEnd": null,
+            "sourceLineCount": 19,
+            "skill": "SQL",
+            "evidenceType": "retrieved_context",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/schema.sql",
+            "lineStart": 1,
+            "lineEnd": 7,
+            "snippet": "PRAGMA foreign_keys = ON;\nCREATE TABLE IF NOT EXISTS events (\n    id INTEGER PRIMARY KEY,\n    title TEXT NOT NULL,\n    capacity INTEGER NOT NULL CHECK(capacity > 0),\n    remaining INTEGER NOT NULL CHECK(remaining >= 0 AND remaining <= capacity)\n);",
+            "strength": "low",
+            "explanation": "混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。",
+            "contentHash": "182162244aee1881986140c004e76f8ff5665587fd383141b31e1dea39ad3fa5",
+            "projectFileId": "f8493e4e-a2ea-42ec-96b6-495a44434ed6",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "8c52e4cb-cf6e-4b56-b628-fec5822e7fa2"
+          }
+        ],
+        "verdict": "supported",
+        "aiConfidence": null,
+        "ruleBaseScore": 0.65,
+        "weight": 5,
+        "finalScore": 65.0,
+        "explanation": "本项静态引用：6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/schema.sql 第1—8行（源码片段）；6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py 第25—54行（register、条件分支、显式抛错、带参数的SQL调用）；6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py 第32—36行（list_events、SQL调用）。上述是源码中可见的结构，不代表本项全部业务条件已满足、运行成功或本人贡献。",
+        "formulaVersion": "evidence-v4",
+        "evidenceId": "cdcb5c7d-962b-47e2-800c-3046d5065e6f",
+        "confirmationStatus": "pending",
+        "confirmedAt": null,
+        "reviewerNote": null,
+        "aiExplanation": null,
+        "aiCitationIds": [],
+        "aiInformationGap": null,
+        "aiSuggestion": null,
+        "aiTaskPlan": null,
+        "aiTaskPlanWarning": null,
+        "aiSuggestionRedundant": false,
+        "aiStatus": "not_used",
+        "aiOrigin": null,
+        "functionSourceCoverage": [
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py",
+            "function_line_start": 25,
+            "function_line_end": 54,
+            "covered_line_count": 30,
+            "fully_covered": true,
+            "citation_ids": [
+              "R2-E2"
+            ]
+          },
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py",
+            "function_line_start": 32,
+            "function_line_end": 36,
+            "covered_line_count": 5,
+            "fully_covered": true,
+            "citation_ids": [
+              "R2-E3"
+            ]
+          }
+        ],
+        "fileSourceCoverage": [
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/schema.sql",
+            "source_line_count": 19,
+            "covered_line_count": 8,
+            "fully_covered": false,
+            "citation_ids": [
+              "R2-E1"
+            ]
+          },
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py",
+            "source_line_count": 77,
+            "covered_line_count": 30,
+            "fully_covered": false,
+            "citation_ids": [
+              "R2-E2"
+            ]
+          },
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py",
+            "source_line_count": 42,
+            "covered_line_count": 5,
+            "fully_covered": false,
+            "citation_ids": [
+              "R2-E3"
+            ]
+          }
+        ]
+      },
+      {
+        "evidenceLevelSource": "rules",
+        "skillPath": [
+          "后端开发",
+          "Python"
+        ],
+        "ratingCriteria": [],
+        "evidenceLevel": 3,
+        "evidenceLevelLabel": "任务实现",
+        "evidenceLevelReason": "本项静态引用：6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py 第21—30行（transaction、显式抛错、commit调用、rollback调用）；6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py 第25—54行（register、条件分支、显式抛错、带参数的SQL调用）；6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py 第56—77行（cancel、条件分支、显式抛错、带参数的SQL调用）。上述是源码中可见的结构，不代表本项全部业务条件已满足、运行成功或本人贡献。",
+        "evidenceLevelGap": "先对照上述函数的输入、条件分支、返回值与异常路径，逐条核对本项岗位要求。已上传测试命名文件：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py；已上传文本/JSON材料：6db170c9-ea2b-4036-84d1-47260c687014/runtime/README.txt、6db170c9-ea2b-4036-84d1-47260c687014/runtime/http-observations.json、6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。",
+        "evidenceLevelVersion": "practice-evidence-v5-redis-operation",
+        "requirementId": "bd5d7af4-e047-4c61-92ec-30359626ed1e",
+        "requirementTitle": "用Python完成满额与重复报名拒绝，取消后恢复一个名额，避免重复取消导致名额增加",
+        "skill": "Python",
+        "claimed": true,
+        "claimText": "提供校园活动报名项目，使用Python、FastAPI、SQLite SQL、pytest。",
+        "evidence": {
+          "citationId": "R3-E1",
+          "provenance": "portfolio",
+          "contextComplete": true,
+          "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "functionLineStart": 21,
+          "functionLineEnd": 30,
+          "sourceLineCount": 42,
+          "skill": "Python",
+          "evidenceType": "python_code",
+          "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py",
+          "lineStart": 21,
+          "lineEnd": 30,
+          "snippet": "    @contextmanager\n    def transaction(self):\n        with closing(self.connect()) as connection:\n            connection.execute(\"BEGIN IMMEDIATE\")\n            try:\n                yield connection\n                connection.commit()\n            except Exception:\n                connection.rollback()\n                raise",
+          "strength": "high",
+          "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "ae74fafb0cca2e3ff769d1d0451379d10a03c950a8fa62434847d72d84b91505",
+          "projectFileId": "8f8b7d74-faa3-43a6-95ca-13a5d6508708",
+          "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+          "sourceId": "3dd19dff-1c5b-4b12-99f2-dcd0a29b7a19"
+        },
+        "evidenceList": [
+          {
+            "citationId": "R3-E1",
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 21,
+            "functionLineEnd": 30,
+            "sourceLineCount": 42,
+            "skill": "Python",
+            "evidenceType": "python_code",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py",
+            "lineStart": 21,
+            "lineEnd": 30,
+            "snippet": "    @contextmanager\n    def transaction(self):\n        with closing(self.connect()) as connection:\n            connection.execute(\"BEGIN IMMEDIATE\")\n            try:\n                yield connection\n                connection.commit()\n            except Exception:\n                connection.rollback()\n                raise",
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "ae74fafb0cca2e3ff769d1d0451379d10a03c950a8fa62434847d72d84b91505",
+            "projectFileId": "8f8b7d74-faa3-43a6-95ca-13a5d6508708",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "3dd19dff-1c5b-4b12-99f2-dcd0a29b7a19"
+          },
+          {
+            "citationId": "R3-E2",
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 25,
+            "functionLineEnd": 54,
+            "sourceLineCount": 77,
+            "skill": "Python",
+            "evidenceType": "python_code",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py",
+            "lineStart": 25,
+            "lineEnd": 54,
+            "snippet": "    def register(self, event_id: int, student_code: str):\n        with self.store.transaction() as connection:\n            event = connection.execute(\n                \"SELECT id, remaining FROM events WHERE id = ?\", (event_id,)\n            ).fetchone()\n            if event is None:\n                raise RegistrationError(\"Event not found\", 404)\n            previous = connection.execute(\n                \"SELECT id FROM registrations WHERE event_id = ? AND student_code = ?\",\n                (event_id, student_code),\n            ).fetchone()\n            if previous is not None:\n                raise RegistrationError(\"Registration already exists\", 409)\n            updated = connection.execute(\n                \"UPDATE events SET remaining = remaining - 1 WHERE id = ? AND remaining > 0\",\n                (event_id,),\n            )\n            if updated.rowcount != 1:\n                raise RegistrationError(\"Event full\", 409)\n            cursor = connection.execute(\n                \"INSERT INTO registrations(event_id, student_code, status) VALUES (?, ?, 'active')\",\n                (event_id, student_code),\n            )\n            registration_id = cursor.lastrowid\n            connection.execute(\n                \"INSERT INTO audit_log(registration_id, action) VALUES (?, 'register')\",\n                (registration_id,),\n            )\n            return {\"id\": registration_id, \"event_id\": event_id,\n                    \"student_code\": student_code, \"status\": \"active\"}",
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "69a9aaa6aeaf83383d6b4ce70ac106e537737ebf64cf8a9aadd32770b5a12b04",
+            "projectFileId": "58ecff91-30e2-48ef-ae8f-cf53bc5ab17b",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "ef78eca3-9c0b-4626-9884-f0ba85096278"
+          },
+          {
+            "citationId": "R3-E3",
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 56,
+            "functionLineEnd": 77,
+            "sourceLineCount": 77,
+            "skill": "Python",
+            "evidenceType": "python_code",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py",
+            "lineStart": 56,
+            "lineEnd": 77,
+            "snippet": "    def cancel(self, registration_id: int):\n        with self.store.transaction() as connection:\n            row = connection.execute(\n                \"SELECT event_id, student_code, status FROM registrations WHERE id = ?\",\n                (registration_id,),\n            ).fetchone()\n            if row is None:\n                raise RegistrationError(\"Registration not found\", 404)\n            if row[\"status\"] != \"active\":\n                raise RegistrationError(\"Registration already cancelled\", 409)\n            connection.execute(\n                \"UPDATE registrations SET status = 'cancelled' WHERE id = ?\", (registration_id,)\n            )\n            connection.execute(\n                \"UPDATE events SET remaining = remaining + 1 WHERE id = ?\", (row[\"event_id\"],)\n            )\n            connection.execute(\n                \"INSERT INTO audit_log(registration_id, action) VALUES (?, 'cancel')\",\n                (registration_id,),\n            )\n            return {\"id\": registration_id, \"event_id\": row[\"event_id\"],\n                    \"student_code\": row[\"student_code\"], \"status\": \"cancelled\"}",
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "69a9aaa6aeaf83383d6b4ce70ac106e537737ebf64cf8a9aadd32770b5a12b04",
+            "projectFileId": "58ecff91-30e2-48ef-ae8f-cf53bc5ab17b",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "c253604e-71ff-4f83-9a1e-24e559e61698"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 92,
+            "functionLineEnd": 105,
+            "sourceLineCount": 149,
+            "skill": "Python",
+            "evidenceType": "python_code",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+            "lineStart": 92,
+            "lineEnd": 105,
+            "snippet": "def test_failed_audit_insert_rolls_back_registration_and_capacity(database):\n    store = Store(database)\n    store.initialize()\n    service = RegistrationService(store)\n    event_id = service.create_event(\"Rollback workshop\", 1)[\"id\"]\n    with closing(store.connect()) as connection:\n        connection.execute(\"\"\"CREATE TRIGGER fail_audit BEFORE INSERT ON audit_log\n            BEGIN SELECT RAISE(ABORT, 'audit write rejected'); END\"\"\")\n    with pytest.raises(sqlite3.IntegrityError, match=\"audit write rejected\"):\n        service.register(event_id, \"S001\")\n    assert store.list_registrations() == []\n    assert store.list_events()[0][\"remaining\"] == 1\n    with closing(store.connect()) as connection:\n        assert connection.execute(\"SELECT COUNT(*) FROM audit_log\").fetchone()[0] == 0",
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "df777b7d36e7d77e8a7961e2bac837dc0b16b4e351e82c1f25c72a96ded324c6",
+            "projectFileId": "8ebaec91-9139-431a-bfa2-9a2cead5dc23",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "93478c66-df90-4da4-96db-cf91f5d93489"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 108,
+            "functionLineEnd": 118,
+            "sourceLineCount": 149,
+            "skill": "Python",
+            "evidenceType": "python_code",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+            "lineStart": 108,
+            "lineEnd": 118,
+            "snippet": "def test_database_failure_becomes_503_without_partial_write(database):\n    with TestClient(create_app(database), raise_server_exceptions=False) as client:\n        event_id = event(client, capacity=1)\n        with sqlite3.connect(database) as connection:\n            connection.execute(\"\"\"CREATE TRIGGER fail_audit BEFORE INSERT ON audit_log\n                BEGIN SELECT RAISE(ABORT, 'audit write rejected'); END\"\"\")\n        response = signup(client, event_id)\n        assert response.status_code == 503\n        assert response.json() == {\"detail\": \"Storage unavailable\"}\n        assert client.get(\"/registrations\").json() == []\n        assert client.get(\"/events\").json()[0][\"remaining\"] == 1",
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "df777b7d36e7d77e8a7961e2bac837dc0b16b4e351e82c1f25c72a96ded324c6",
+            "projectFileId": "8ebaec91-9139-431a-bfa2-9a2cead5dc23",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "78a27d24-cd6c-4f5d-9233-d880b8c7c7c2"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 14,
+            "functionLineEnd": 23,
+            "sourceLineCount": 77,
+            "skill": "Python",
+            "evidenceType": "python_code",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py",
+            "lineStart": 14,
+            "lineEnd": 23,
+            "snippet": "    def create_event(self, title: str, capacity: int):\n        if not title.strip() or capacity < 1:\n            raise RegistrationError(\"Invalid event\", 422)\n        with self.store.transaction() as connection:\n            cursor = connection.execute(\n                \"INSERT INTO events(title, capacity, remaining) VALUES (?, ?, ?)\",\n                (title.strip(), capacity, capacity),\n            )\n            return {\"id\": cursor.lastrowid, \"title\": title.strip(),\n                    \"capacity\": capacity, \"remaining\": capacity}",
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "69a9aaa6aeaf83383d6b4ce70ac106e537737ebf64cf8a9aadd32770b5a12b04",
+            "projectFileId": "58ecff91-30e2-48ef-ae8f-cf53bc5ab17b",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "eba1f7d2-16cc-46cc-b3c9-f345deebe7a9"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 9,
+            "functionLineEnd": 14,
+            "sourceLineCount": 18,
+            "skill": "Python",
+            "evidenceType": "python_code",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/__main__.py",
+            "lineStart": 9,
+            "lineEnd": 14,
+            "snippet": "def main():\n    parser = argparse.ArgumentParser(description=\"Run the local synthetic signup service\")\n    parser.add_argument(\"--database\", type=Path, required=True)\n    parser.add_argument(\"--port\", type=int, default=8121)\n    args = parser.parse_args()\n    uvicorn.run(create_app(args.database), host=\"127.0.0.1\", port=args.port)",
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "b777c4c18f9b13baea27e5f4bbd1a9d175bb60b363cc6660e27f1d72e6560009",
+            "projectFileId": "96a23477-3ef6-4fa1-8787-62870aaf1263",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "6f318352-3588-483c-97a2-cfbab99f473d"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 22,
+            "functionLineEnd": 56,
+            "sourceLineCount": 56,
+            "skill": "Python",
+            "evidenceType": "python_code",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/api.py",
+            "lineStart": 22,
+            "lineEnd": 56,
+            "snippet": "def create_app(database_path: Path):\n    store = Store(database_path)\n    store.initialize()\n    service = RegistrationService(store)\n    app = FastAPI(title=\"Campus Signup\")\n\n    @app.exception_handler(RegistrationError)\n    async def registration_error(_request: Request, error: RegistrationError):\n        return JSONResponse(status_code=error.status_code, content={\"detail\": str(error)})\n\n    @app.exception_handler(sqlite3.DatabaseError)\n    async def database_error(_request: Request, _error: sqlite3.DatabaseError):\n        return JSONResponse(status_code=503, content={\"detail\": \"Storage unavailable\"})\n\n    @app.post(\"/events\", status_code=201)\n    def create_event(payload: EventInput):\n        return service.create_event(payload.title, payload.capacity)\n\n    @app.get(\"/events\")\n    def list_events():\n        return store.list_events()\n\n    @app.post(\"/registrations\", status_code=201)\n    def register(payload: SignupInput):\n        return service.register(payload.event_id, payload.student_code)\n\n    @app.get(\"/registrations\")\n    def list_registrations():\n        return store.list_registrations()\n\n    @app.post(\"/registrations/{registration_id}/cancel\")\n    def cancel(registration_id: int):\n        return service.cancel(registration_id)\n\n    return app",
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "7035d7745e5b7eb4e143029b185ba17ca9f1f3e1adf11101704f2ee5f234de79",
+            "projectFileId": "bd5a2407-73d7-41bd-97dd-07f2075b1458",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "263eca11-711a-4461-b95c-c8775821fc91"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 10,
+            "functionLineEnd": 14,
+            "sourceLineCount": 42,
+            "skill": "Python",
+            "evidenceType": "python_code",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py",
+            "lineStart": 10,
+            "lineEnd": 14,
+            "snippet": "    def connect(self):\n        connection = sqlite3.connect(self.path, timeout=5, isolation_level=None)\n        connection.row_factory = sqlite3.Row\n        connection.execute(\"PRAGMA foreign_keys = ON\")\n        return connection",
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "ae74fafb0cca2e3ff769d1d0451379d10a03c950a8fa62434847d72d84b91505",
+            "projectFileId": "8f8b7d74-faa3-43a6-95ca-13a5d6508708",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "98bbe43e-48ec-4835-a24b-d50790e7c3f9"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 16,
+            "functionLineEnd": 19,
+            "sourceLineCount": 42,
+            "skill": "Python",
+            "evidenceType": "python_code",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py",
+            "lineStart": 16,
+            "lineEnd": 19,
+            "snippet": "    def initialize(self):\n        self.path.parent.mkdir(parents=True, exist_ok=True)\n        with closing(self.connect()) as connection:\n            connection.executescript(Path(__file__).with_name(\"schema.sql\").read_text())",
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "ae74fafb0cca2e3ff769d1d0451379d10a03c950a8fa62434847d72d84b91505",
+            "projectFileId": "8f8b7d74-faa3-43a6-95ca-13a5d6508708",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "9caf8c66-be39-4dc6-92de-b09f7cacc8b2"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 32,
+            "functionLineEnd": 36,
+            "sourceLineCount": 42,
+            "skill": "Python",
+            "evidenceType": "python_code",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py",
+            "lineStart": 32,
+            "lineEnd": 36,
+            "snippet": "    def list_events(self):\n        with closing(self.connect()) as connection:\n            return [dict(row) for row in connection.execute(\n                \"SELECT id, title, capacity, remaining FROM events ORDER BY id\"\n            )]",
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "ae74fafb0cca2e3ff769d1d0451379d10a03c950a8fa62434847d72d84b91505",
+            "projectFileId": "8f8b7d74-faa3-43a6-95ca-13a5d6508708",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "13523f74-b635-46e9-886f-072606fd42ec"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 14,
+            "functionLineEnd": 16,
+            "sourceLineCount": 149,
+            "skill": "Python",
+            "evidenceType": "python_code",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+            "lineStart": 14,
+            "lineEnd": 16,
+            "snippet": "@pytest.fixture\ndef database(tmp_path):\n    return tmp_path / \"signup.sqlite3\"",
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "df777b7d36e7d77e8a7961e2bac837dc0b16b4e351e82c1f25c72a96ded324c6",
+            "projectFileId": "8ebaec91-9139-431a-bfa2-9a2cead5dc23",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "41e5f8ca-25d3-4961-a2b1-8979b1b38a04"
+          }
+        ],
+        "verdict": "supported",
+        "aiConfidence": null,
+        "ruleBaseScore": 0.65,
+        "weight": 5,
+        "finalScore": 65.0,
+        "explanation": "本项静态引用：6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py 第21—30行（transaction、显式抛错、commit调用、rollback调用）；6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py 第25—54行（register、条件分支、显式抛错、带参数的SQL调用）；6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py 第56—77行（cancel、条件分支、显式抛错、带参数的SQL调用）。上述是源码中可见的结构，不代表本项全部业务条件已满足、运行成功或本人贡献。",
+        "formulaVersion": "evidence-v4",
+        "evidenceId": "75683d7e-0e4d-4650-9215-623717a25946",
+        "confirmationStatus": "pending",
+        "confirmedAt": null,
+        "reviewerNote": null,
+        "aiExplanation": null,
+        "aiCitationIds": [],
+        "aiInformationGap": null,
+        "aiSuggestion": null,
+        "aiTaskPlan": null,
+        "aiTaskPlanWarning": null,
+        "aiSuggestionRedundant": false,
+        "aiStatus": "not_used",
+        "aiOrigin": null,
+        "functionSourceCoverage": [
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py",
+            "function_line_start": 25,
+            "function_line_end": 54,
+            "covered_line_count": 30,
+            "fully_covered": true,
+            "citation_ids": [
+              "R3-E2"
+            ]
+          },
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py",
+            "function_line_start": 56,
+            "function_line_end": 77,
+            "covered_line_count": 22,
+            "fully_covered": true,
+            "citation_ids": [
+              "R3-E3"
+            ]
+          },
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py",
+            "function_line_start": 21,
+            "function_line_end": 30,
+            "covered_line_count": 10,
+            "fully_covered": true,
+            "citation_ids": [
+              "R3-E1"
+            ]
+          }
+        ],
+        "fileSourceCoverage": [
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py",
+            "source_line_count": 77,
+            "covered_line_count": 52,
+            "fully_covered": false,
+            "citation_ids": [
+              "R3-E2",
+              "R3-E3"
+            ]
+          },
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py",
+            "source_line_count": 42,
+            "covered_line_count": 10,
+            "fully_covered": false,
+            "citation_ids": [
+              "R3-E1"
+            ]
+          }
+        ]
+      },
+      {
+        "evidenceLevelSource": "rules",
+        "skillPath": [
+          "测试",
+          "pytest"
+        ],
+        "ratingCriteria": [],
+        "evidenceLevel": 3,
+        "evidenceLevelLabel": "任务实现",
+        "evidenceLevelReason": "本项静态引用：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py 第29—39行（test_registration_persists_across_application_restart、assert断言）；6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py 第53—60行（test_full_event_rejects_without_a_registration、assert断言）；6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py 第69—76行（test_invalid_signup_is_422、assert断言）。上述是源码中可见的结构，不代表本项全部业务条件已满足、运行成功或本人贡献。",
+        "evidenceLevelGap": "先对照已有断言的输入、预期结果和未覆盖的异常场景，逐条核对本项岗位要求。已上传测试命名文件：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py；已上传文本/JSON材料：6db170c9-ea2b-4036-84d1-47260c687014/runtime/README.txt、6db170c9-ea2b-4036-84d1-47260c687014/runtime/http-observations.json、6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。",
+        "evidenceLevelVersion": "practice-evidence-v5-redis-operation",
+        "requirementId": "8ba20aff-ca1c-4180-9785-8a5a05092ff0",
+        "requirementTitle": "编写行为测试验证成功报名、重复与满额拒绝、取消、事务回滚、重启恢复及最后名额竞争",
+        "skill": "pytest",
+        "claimed": true,
+        "claimText": "提供校园活动报名项目，使用Python、FastAPI、SQLite SQL、pytest。",
+        "evidence": {
+          "citationId": "R4-E1",
+          "provenance": "portfolio",
+          "contextComplete": true,
+          "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "functionLineStart": 29,
+          "functionLineEnd": 39,
+          "sourceLineCount": 149,
+          "skill": "pytest",
+          "evidenceType": "pytest_test",
+          "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+          "lineStart": 29,
+          "lineEnd": 39,
+          "snippet": "def test_registration_persists_across_application_restart(database):\n    with TestClient(create_app(database)) as client:\n        event_id = event(client)\n        registered = signup(client, event_id)\n        assert registered.status_code == 201\n        saved = registered.json()\n        assert saved[\"status\"] == \"active\"\n        assert client.get(\"/events\").json()[0][\"remaining\"] == 1\n    with TestClient(create_app(database)) as restarted:\n        assert restarted.get(\"/registrations\").json() == [saved]\n        assert restarted.get(\"/events\").json()[0][\"remaining\"] == 1",
+          "strength": "high",
+          "explanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "df777b7d36e7d77e8a7961e2bac837dc0b16b4e351e82c1f25c72a96ded324c6",
+          "projectFileId": "8ebaec91-9139-431a-bfa2-9a2cead5dc23",
+          "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+          "sourceId": "ff1a150d-a99e-4490-b775-ab112894899c"
+        },
+        "evidenceList": [
+          {
+            "citationId": "R4-E1",
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 29,
+            "functionLineEnd": 39,
+            "sourceLineCount": 149,
+            "skill": "pytest",
+            "evidenceType": "pytest_test",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+            "lineStart": 29,
+            "lineEnd": 39,
+            "snippet": "def test_registration_persists_across_application_restart(database):\n    with TestClient(create_app(database)) as client:\n        event_id = event(client)\n        registered = signup(client, event_id)\n        assert registered.status_code == 201\n        saved = registered.json()\n        assert saved[\"status\"] == \"active\"\n        assert client.get(\"/events\").json()[0][\"remaining\"] == 1\n    with TestClient(create_app(database)) as restarted:\n        assert restarted.get(\"/registrations\").json() == [saved]\n        assert restarted.get(\"/events\").json()[0][\"remaining\"] == 1",
+            "strength": "high",
+            "explanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "df777b7d36e7d77e8a7961e2bac837dc0b16b4e351e82c1f25c72a96ded324c6",
+            "projectFileId": "8ebaec91-9139-431a-bfa2-9a2cead5dc23",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "ff1a150d-a99e-4490-b775-ab112894899c"
+          },
+          {
+            "citationId": "R4-E2",
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 53,
+            "functionLineEnd": 60,
+            "sourceLineCount": 149,
+            "skill": "pytest",
+            "evidenceType": "pytest_test",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+            "lineStart": 53,
+            "lineEnd": 60,
+            "snippet": "def test_full_event_rejects_without_a_registration(database):\n    with TestClient(create_app(database)) as client:\n        event_id = event(client, capacity=1)\n        assert signup(client, event_id).status_code == 201\n        response = signup(client, event_id, \"S002\")\n        assert response.status_code == 409\n        assert response.json()[\"detail\"] == \"Event full\"\n        assert len(client.get(\"/registrations\").json()) == 1",
+            "strength": "high",
+            "explanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "df777b7d36e7d77e8a7961e2bac837dc0b16b4e351e82c1f25c72a96ded324c6",
+            "projectFileId": "8ebaec91-9139-431a-bfa2-9a2cead5dc23",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "5f41bbee-4502-49e1-9ac3-ec023abffea8"
+          },
+          {
+            "citationId": "R4-E3",
+            "provenance": "portfolio",
+            "contextComplete": false,
+            "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+            "functionLineStart": null,
+            "functionLineEnd": null,
+            "sourceLineCount": 12,
+            "skill": "pytest",
+            "evidenceType": "retrieved_context",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt",
+            "lineStart": 10,
+            "lineEnd": 12,
+            "snippet": "\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n11 passed, 2 warnings in 0.46s",
+            "strength": "low",
+            "explanation": "混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。",
+            "contentHash": "a097dc755aff92e023c7ac8863a70baedde5f90fd99474480204e2cf8d7f7a6a",
+            "projectFileId": "e03a9d71-0dcf-42c8-99fd-dc75e8119fdc",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "5a608555-782a-44f0-bae2-71e22abd3ebe"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 69,
+            "functionLineEnd": 76,
+            "sourceLineCount": 149,
+            "skill": "pytest",
+            "evidenceType": "pytest_test",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+            "lineStart": 69,
+            "lineEnd": 76,
+            "snippet": "@pytest.mark.parametrize(\"payload\", [\n    {\"event_id\": 0, \"student_code\": \"S001\"},\n    {\"event_id\": 1, \"student_code\": \"X\"},\n])\ndef test_invalid_signup_is_422(database, payload):\n    with TestClient(create_app(database)) as client:\n        assert client.post(\"/registrations\", json=payload).status_code == 422\n        assert client.get(\"/registrations\").json() == []",
+            "strength": "high",
+            "explanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "df777b7d36e7d77e8a7961e2bac837dc0b16b4e351e82c1f25c72a96ded324c6",
+            "projectFileId": "8ebaec91-9139-431a-bfa2-9a2cead5dc23",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "4a0c728e-c62e-4a56-90e4-381aa13f0e8f"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 79,
+            "functionLineEnd": 89,
+            "sourceLineCount": 149,
+            "skill": "pytest",
+            "evidenceType": "pytest_test",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+            "lineStart": 79,
+            "lineEnd": 89,
+            "snippet": "def test_cancel_restores_place_once(database):\n    with TestClient(create_app(database)) as client:\n        event_id = event(client, capacity=1)\n        registration_id = signup(client, event_id).json()[\"id\"]\n        response = client.post(f\"/registrations/{registration_id}/cancel\")\n        assert response.status_code == 200\n        assert response.json()[\"status\"] == \"cancelled\"\n        assert client.get(\"/events\").json()[0][\"remaining\"] == 1\n        assert client.post(f\"/registrations/{registration_id}/cancel\").status_code == 409\n        assert client.get(\"/events\").json()[0][\"remaining\"] == 1\n        assert signup(client, event_id, \"S002\").status_code == 201",
+            "strength": "high",
+            "explanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "df777b7d36e7d77e8a7961e2bac837dc0b16b4e351e82c1f25c72a96ded324c6",
+            "projectFileId": "8ebaec91-9139-431a-bfa2-9a2cead5dc23",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "c482f77a-64e6-4ee0-b414-20e7b9443d34"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 108,
+            "functionLineEnd": 118,
+            "sourceLineCount": 149,
+            "skill": "pytest",
+            "evidenceType": "pytest_test",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+            "lineStart": 108,
+            "lineEnd": 118,
+            "snippet": "def test_database_failure_becomes_503_without_partial_write(database):\n    with TestClient(create_app(database), raise_server_exceptions=False) as client:\n        event_id = event(client, capacity=1)\n        with sqlite3.connect(database) as connection:\n            connection.execute(\"\"\"CREATE TRIGGER fail_audit BEFORE INSERT ON audit_log\n                BEGIN SELECT RAISE(ABORT, 'audit write rejected'); END\"\"\")\n        response = signup(client, event_id)\n        assert response.status_code == 503\n        assert response.json() == {\"detail\": \"Storage unavailable\"}\n        assert client.get(\"/registrations\").json() == []\n        assert client.get(\"/events\").json()[0][\"remaining\"] == 1",
+            "strength": "high",
+            "explanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "df777b7d36e7d77e8a7961e2bac837dc0b16b4e351e82c1f25c72a96ded324c6",
+            "projectFileId": "8ebaec91-9139-431a-bfa2-9a2cead5dc23",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "9879962e-e0e9-4ff4-9abd-aaa682c6b70b"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 142,
+            "functionLineEnd": 149,
+            "sourceLineCount": 149,
+            "skill": "pytest",
+            "evidenceType": "pytest_test",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+            "lineStart": 142,
+            "lineEnd": 149,
+            "snippet": "def test_student_value_is_bound_as_data(database):\n    student = \"x'); DROP TABLE events;--\"\n    with TestClient(create_app(database)) as client:\n        event_id = event(client)\n        response = signup(client, event_id, student)\n        assert response.status_code == 201\n        assert response.json()[\"student_code\"] == student\n        assert client.get(\"/events\").json()[0][\"remaining\"] == 1",
+            "strength": "high",
+            "explanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "df777b7d36e7d77e8a7961e2bac837dc0b16b4e351e82c1f25c72a96ded324c6",
+            "projectFileId": "8ebaec91-9139-431a-bfa2-9a2cead5dc23",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "a4f416d1-881d-42d2-a925-2ae60356de90"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "functionLineStart": 14,
+            "functionLineEnd": 16,
+            "sourceLineCount": 149,
+            "skill": "pytest",
+            "evidenceType": "pytest_fixture",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+            "lineStart": 14,
+            "lineEnd": 16,
+            "snippet": "@pytest.fixture\ndef database(tmp_path):\n    return tmp_path / \"signup.sqlite3\"",
+            "strength": "medium",
+            "explanation": "使用了pytest夹具或测试标记；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "df777b7d36e7d77e8a7961e2bac837dc0b16b4e351e82c1f25c72a96ded324c6",
+            "projectFileId": "8ebaec91-9139-431a-bfa2-9a2cead5dc23",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "eb8720bf-604a-4c21-8bd3-a6ffcf1e1010"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "完整依赖声明；仅证明声明，不能证明安装、运行或功能实现",
+            "functionLineStart": null,
+            "functionLineEnd": null,
+            "sourceLineCount": 5,
+            "skill": "pytest",
+            "evidenceType": "pytest_dependency",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/requirements.txt",
+            "lineStart": 5,
+            "lineEnd": 5,
+            "snippet": "pytest==9.0.3",
+            "strength": "low",
+            "explanation": "仅有依赖或配置声明，未据此确认功能实现。",
+            "contentHash": "18429cfadddf9abeaebd6248c0d95731e6fb6dd97bdb863e77163c1ffc6baf45",
+            "projectFileId": "55179ae3-f226-4aa3-aa87-f35ffdc8820b",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "215f0fd0-802a-4116-9265-348a736fb568"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": false,
+            "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+            "functionLineStart": null,
+            "functionLineEnd": null,
+            "sourceLineCount": 18,
+            "skill": "pytest",
+            "evidenceType": "retrieved_context",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/README.md",
+            "lineStart": 1,
+            "lineEnd": 9,
+            "snippet": "# Campus Signup\n\n原创合成的本地校园活动报名服务。提供创建活动、报名、查询与取消报名接口；数据保存到调用者指定的 SQLite 文件。活动名额、报名记录与审计记录在同一事务中更新。重复报名和满额返回409，未知活动返回404，非法请求返回422，数据库故障返回503。\n\n这是范围有限的练习项目：不提供登录鉴权、支付、邮件、分布式部署、本人贡献认证或生产服务承诺。报名取消后该学生不能再次报名同一活动；保留原报名记录，其他学生可使用释放的名额。\n\n需要Python 3.12。在本目录执行：\n\n```powershell",
+            "strength": "low",
+            "explanation": "混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。",
+            "contentHash": "89939f0f681e8d0eb61a74693c310253d18373039c1e6976b1f51125089bd410",
+            "projectFileId": "d8807f90-6532-4bcf-a529-57452d267311",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "c8f62468-23a0-4004-8269-f44ec7f37660"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": false,
+            "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+            "functionLineStart": null,
+            "functionLineEnd": null,
+            "sourceLineCount": 18,
+            "skill": "pytest",
+            "evidenceType": "retrieved_context",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/README.md",
+            "lineStart": 16,
+            "lineEnd": 18,
+            "snippet": "在 `http://127.0.0.1:8121/docs` 可操作接口：先POST `/events`（title、capacity），再POST `/registrations`（event_id、student_code）；GET接口读取已保存记录，POST `/registrations/{id}/cancel` 释放名额。重新启动时传入同一个数据库文件即可读取原记录。\n\n`campus_signup/api.py` 负责HTTP边界；`service.py` 负责业务；`storage.py` 和 `schema.sql` 负责事务、数据约束和读取；`tests/test_registration.py` 是行为测试。运行产生的数据库、缓存、虚拟环境不属于源码材料，不应上传。",
+            "strength": "low",
+            "explanation": "混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。",
+            "contentHash": "89939f0f681e8d0eb61a74693c310253d18373039c1e6976b1f51125089bd410",
+            "projectFileId": "d8807f90-6532-4bcf-a529-57452d267311",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "5f240bc9-0c2a-4f4d-b662-2fec9433749e"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": false,
+            "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+            "functionLineStart": null,
+            "functionLineEnd": null,
+            "sourceLineCount": 12,
+            "skill": "pytest",
+            "evidenceType": "retrieved_context",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt",
+            "lineStart": 1,
+            "lineEnd": 8,
+            "snippet": "...........                                                              [100%]\n============================== warnings summary ===============================\n..\\..\\..\\backend\\.venv-dependency23\\Lib\\site-packages\\fastapi\\testclient.py:1\n  D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Lib\\site-packages\\fastapi\\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n    from starlette.testclient import TestClient as TestClient  # noqa\n\n..\\..\\..\\backend\\.venv-dependency23\\Lib\\site-packages\\starlette\\testclient.py:53\n  D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Lib\\site-packages\\starlette\\testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.",
+            "strength": "low",
+            "explanation": "混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。",
+            "contentHash": "a097dc755aff92e023c7ac8863a70baedde5f90fd99474480204e2cf8d7f7a6a",
+            "projectFileId": "e03a9d71-0dcf-42c8-99fd-dc75e8119fdc",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "a5fcdad4-339a-4b51-8e81-b0c06c0993c8"
+          }
+        ],
+        "verdict": "supported",
+        "aiConfidence": null,
+        "ruleBaseScore": 0.65,
+        "weight": 5,
+        "finalScore": 65.0,
+        "explanation": "本项静态引用：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py 第29—39行（test_registration_persists_across_application_restart、assert断言）；6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py 第53—60行（test_full_event_rejects_without_a_registration、assert断言）；6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py 第69—76行（test_invalid_signup_is_422、assert断言）。上述是源码中可见的结构，不代表本项全部业务条件已满足、运行成功或本人贡献。",
+        "formulaVersion": "evidence-v4",
+        "evidenceId": "af64cfda-3eb2-4fd4-ad06-eb25db3ac6d9",
+        "confirmationStatus": "pending",
+        "confirmedAt": null,
+        "reviewerNote": null,
+        "aiExplanation": null,
+        "aiCitationIds": [],
+        "aiInformationGap": null,
+        "aiSuggestion": null,
+        "aiTaskPlan": null,
+        "aiTaskPlanWarning": null,
+        "aiSuggestionRedundant": false,
+        "aiStatus": "not_used",
+        "aiOrigin": null,
+        "functionSourceCoverage": [
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+            "function_line_start": 29,
+            "function_line_end": 39,
+            "covered_line_count": 11,
+            "fully_covered": true,
+            "citation_ids": [
+              "R4-E1"
+            ]
+          },
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+            "function_line_start": 53,
+            "function_line_end": 60,
+            "covered_line_count": 8,
+            "fully_covered": true,
+            "citation_ids": [
+              "R4-E2"
+            ]
+          }
+        ],
+        "fileSourceCoverage": [
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt",
+            "source_line_count": 12,
+            "covered_line_count": 3,
+            "fully_covered": false,
+            "citation_ids": [
+              "R4-E3"
+            ]
+          },
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+            "source_line_count": 149,
+            "covered_line_count": 19,
+            "fully_covered": false,
+            "citation_ids": [
+              "R4-E1",
+              "R4-E2"
+            ]
+          }
+        ]
+      },
+      {
+        "evidenceLevelSource": "rules",
+        "skillPath": [
+          "岗位专项",
+          "Redis"
+        ],
+        "ratingCriteria": [],
+        "evidenceLevel": null,
+        "evidenceLevelLabel": "待核对检索候选",
+        "evidenceLevelReason": "仅有检索候选，尚未确认与该要求相关，不据此展示实践等级。",
+        "evidenceLevelGap": "核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。",
+        "evidenceLevelVersion": "practice-evidence-v5-redis-operation",
+        "requirementId": "58f121b0-fbd4-4e81-ad03-df57eed7978f",
+        "requirementTitle": "使用Redis缓存活动查询并在报名或取消后失效缓存",
+        "skill": "Redis",
+        "claimed": false,
+        "claimText": null,
+        "evidence": {
+          "citationId": "R5-E1",
+          "provenance": "portfolio",
+          "contextComplete": false,
+          "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+          "functionLineStart": null,
+          "functionLineEnd": null,
+          "sourceLineCount": 18,
+          "skill": "Redis",
+          "evidenceType": "retrieved_context",
+          "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/README.md",
+          "lineStart": 1,
+          "lineEnd": 9,
+          "snippet": "# Campus Signup\n\n原创合成的本地校园活动报名服务。提供创建活动、报名、查询与取消报名接口；数据保存到调用者指定的 SQLite 文件。活动名额、报名记录与审计记录在同一事务中更新。重复报名和满额返回409，未知活动返回404，非法请求返回422，数据库故障返回503。\n\n这是范围有限的练习项目：不提供登录鉴权、支付、邮件、分布式部署、本人贡献认证或生产服务承诺。报名取消后该学生不能再次报名同一活动；保留原报名记录，其他学生可使用释放的名额。\n\n需要Python 3.12。在本目录执行：\n\n```powershell",
+          "strength": "low",
+          "explanation": "混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。",
+          "contentHash": "89939f0f681e8d0eb61a74693c310253d18373039c1e6976b1f51125089bd410",
+          "projectFileId": "d8807f90-6532-4bcf-a529-57452d267311",
+          "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+          "sourceId": "afbd1d5a-b3be-4531-938f-9d954e52086f"
+        },
+        "evidenceList": [
+          {
+            "citationId": "R5-E1",
+            "provenance": "portfolio",
+            "contextComplete": false,
+            "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+            "functionLineStart": null,
+            "functionLineEnd": null,
+            "sourceLineCount": 18,
+            "skill": "Redis",
+            "evidenceType": "retrieved_context",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/README.md",
+            "lineStart": 1,
+            "lineEnd": 9,
+            "snippet": "# Campus Signup\n\n原创合成的本地校园活动报名服务。提供创建活动、报名、查询与取消报名接口；数据保存到调用者指定的 SQLite 文件。活动名额、报名记录与审计记录在同一事务中更新。重复报名和满额返回409，未知活动返回404，非法请求返回422，数据库故障返回503。\n\n这是范围有限的练习项目：不提供登录鉴权、支付、邮件、分布式部署、本人贡献认证或生产服务承诺。报名取消后该学生不能再次报名同一活动；保留原报名记录，其他学生可使用释放的名额。\n\n需要Python 3.12。在本目录执行：\n\n```powershell",
+            "strength": "low",
+            "explanation": "混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。",
+            "contentHash": "89939f0f681e8d0eb61a74693c310253d18373039c1e6976b1f51125089bd410",
+            "projectFileId": "d8807f90-6532-4bcf-a529-57452d267311",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "afbd1d5a-b3be-4531-938f-9d954e52086f"
+          },
+          {
+            "citationId": "R5-E2",
+            "provenance": "portfolio",
+            "contextComplete": false,
+            "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+            "functionLineStart": null,
+            "functionLineEnd": null,
+            "sourceLineCount": 18,
+            "skill": "Redis",
+            "evidenceType": "retrieved_context",
+            "filePath": "6db170c9-ea2b-4036-84d1-47260c687014/README.md",
+            "lineStart": 3,
+            "lineEnd": 11,
+            "snippet": "原创合成的本地校园活动报名服务。提供创建活动、报名、查询与取消报名接口；数据保存到调用者指定的 SQLite 文件。活动名额、报名记录与审计记录在同一事务中更新。重复报名和满额返回409，未知活动返回404，非法请求返回422，数据库故障返回503。\n\n这是范围有限的练习项目：不提供登录鉴权、支付、邮件、分布式部署、本人贡献认证或生产服务承诺。报名取消后该学生不能再次报名同一活动；保留原报名记录，其他学生可使用释放的名额。\n\n需要Python 3.12。在本目录执行：\n\n```powershell\npython -m venv .venv\n.\\.venv\\Scripts\\python.exe -m pip install -r requirements.txt",
+            "strength": "low",
+            "explanation": "混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。",
+            "contentHash": "89939f0f681e8d0eb61a74693c310253d18373039c1e6976b1f51125089bd410",
+            "projectFileId": "d8807f90-6532-4bcf-a529-57452d267311",
+            "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+            "sourceId": "bff6a989-fa65-4ee6-8a11-5b85b9611e02"
+          }
+        ],
+        "verdict": "gap",
+        "aiConfidence": null,
+        "ruleBaseScore": 0.0,
+        "weight": 5,
+        "finalScore": 0.0,
+        "explanation": "简历与个人作品中均未找到足够信息，当前无法确认该能力",
+        "formulaVersion": "evidence-v4",
+        "evidenceId": "8a33cded-2f43-402f-9a54-f8b3016b52c3",
+        "confirmationStatus": "pending",
+        "confirmedAt": null,
+        "reviewerNote": null,
+        "aiExplanation": null,
+        "aiCitationIds": [],
+        "aiInformationGap": null,
+        "aiSuggestion": null,
+        "aiTaskPlan": null,
+        "aiTaskPlanWarning": null,
+        "aiSuggestionRedundant": false,
+        "aiStatus": "not_used",
+        "aiOrigin": null,
+        "functionSourceCoverage": [],
+        "fileSourceCoverage": [
+          {
+            "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/README.md",
+            "source_line_count": 18,
+            "covered_line_count": 11,
+            "fully_covered": false,
+            "citation_ids": [
+              "R5-E1",
+              "R5-E2"
+            ]
+          }
+        ]
+      }
+    ],
+    "aiUsage": null,
+    "aiToolCalls": [],
+    "aiProcess": {
+      "planningSkippedReason": null,
+      "skippedReason": null,
+      "fallbackReason": null,
+      "failureStage": null
+    },
+    "actionPlan": [
+      {
+        "requirementId": "58f121b0-fbd4-4e81-ad03-df57eed7978f",
+        "requirementTitle": "使用Redis缓存活动查询并在报名或取消后失效缓存",
+        "skill": "Redis",
+        "weight": 5,
+        "currentLevel": null,
+        "source": "rules",
+        "evidenceGap": "核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。",
+        "action": "核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。",
+        "citationIds": []
+      },
+      {
+        "requirementId": "5db05125-931a-4bc6-8cca-7bc352d558e5",
+        "requirementTitle": "实现校园活动创建、报名、取消和查询接口，校验请求并返回对应错误状态",
+        "skill": "FastAPI",
+        "weight": 5,
+        "currentLevel": 3,
+        "source": "rules",
+        "evidenceGap": "先对照接口输入校验、响应与错误分支，逐条核对本项岗位要求。已上传测试命名文件：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py；已上传文本/JSON材料：6db170c9-ea2b-4036-84d1-47260c687014/runtime/README.txt、6db170c9-ea2b-4036-84d1-47260c687014/runtime/http-observations.json、6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。",
+        "action": "先对照接口输入校验、响应与错误分支，逐条核对本项岗位要求。已上传测试命名文件：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py；已上传文本/JSON材料：6db170c9-ea2b-4036-84d1-47260c687014/runtime/README.txt、6db170c9-ea2b-4036-84d1-47260c687014/runtime/http-observations.json、6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。",
+        "citationIds": []
+      },
+      {
+        "requirementId": "4a3a984f-3fcd-490f-9dd1-c056b0f0ff86",
+        "requirementTitle": "使用SQLite SQL持久化活动与报名，参数化读写，写入失败回滚名额及报名记录",
+        "skill": "SQL",
+        "weight": 5,
+        "currentLevel": 3,
+        "source": "rules",
+        "evidenceGap": "先对照SQL读写条件、参数与事务边界，逐条核对本项岗位要求。已上传测试命名文件：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py；已上传文本/JSON材料：6db170c9-ea2b-4036-84d1-47260c687014/runtime/README.txt、6db170c9-ea2b-4036-84d1-47260c687014/runtime/http-observations.json、6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。",
+        "action": "先对照SQL读写条件、参数与事务边界，逐条核对本项岗位要求。已上传测试命名文件：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py；已上传文本/JSON材料：6db170c9-ea2b-4036-84d1-47260c687014/runtime/README.txt、6db170c9-ea2b-4036-84d1-47260c687014/runtime/http-observations.json、6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。",
+        "citationIds": []
+      }
+    ]
+  },
+  "oldReportUnchanged": true,
+  "databaseAfter": {
+    "ai_request_attempts": 3,
+    "ai_usage_logs": 3,
+    "applicationSnapshotsHash": "bd4ffdc1ae35aed6e9a9beadbba5b9f5baab264468f1ba157b4a098695f729c3",
+    "applicationCount": 2
+  },
+  "passed": true,
+  "limitations": [
+    "执行端在专属合成环境验证，不计首次独立用户验收",
+    "PNG真实API和OCR已验证；浏览器原生文件交互由父任务另验",
+    "仅规则报告，无真实模型质量结论；不代替人工语义复核",
+    "本轮未创建补证任务、未投递、未进入企业查看/回复"
+  ]
+}

@@ -1,0 +1,22 @@
+== libuv command-line encoding for a spawn arg containing a space ==
+  spawned arg list: [..., "--user-data-dir=D:\jbcode\web ai\jianli\backend\.tmp\e2e-browser\sha-probe\profile-enterprise"]
+  CIM probe exit code: 0
+  CIM probe stderr   : ""
+  observed CommandLine : C:\Users\����\AppData\Local\hermes\node\node.exe -e "setTimeout(() => process.exit(0), 3000)" -- "--user-data-dir=D:\jbcode\web ai\jianli\backend\.tmp\e2e-browser\sha-probe\profile-enterprise"
+  runner check needle  : --user-data-dir=D:\jbcode\web ai\jianli\backend\.tmp\e2e-browser\sha-probe\profile-enterprise
+  out.includes(needle) -> true   (pidStillOurs uses exactly this check at line 226)
+  whole-arg quoted form: true (libuv quotes args containing spaces; the quote sits at arg start, not between = and path)
+  verdict: VERIFIED: needle found, guard can pass on this repo layout
+  conditional taskkill (verified needle only): exit 0, stderr=""
+
+== PowerShell [datetime] round-trip of the manifest startedAt instant ==
+  manifest writes StartTime.ToUniversalTime().ToString('o') (Start-E2E.ps1:160);
+  Stop-E2E.ps1:28-29 compares ([datetime]$record.startedAt).ToUniversalTime().Ticks
+  for EQUALITY with Get-Process StartTime.ToUniversalTime().Ticks.
+  PS probe exit code: 0
+  PS probe stderr   : ""
+  manifest value : 2026-10-05T04:35:26.9920000Z
+  powershell     : Kind|Ticks|ToUniversalTime().Ticks = Local|639268005269920000|639267717269920000
+  true UTC ticks : 639267717269920000
+  cast('Z') -> Kind=Local; ToUniversalTime().Ticks equals true UTC ticks: true
+  => Stop-E2E Ticks equality is stable against the manifest value: true

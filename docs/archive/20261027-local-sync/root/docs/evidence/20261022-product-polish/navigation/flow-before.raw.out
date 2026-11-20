@@ -1,0 +1,48 @@
+TAP version 13
+# Subtest: student routes identify location without claiming progress or leaking to other roles
+ok 1 - student routes identify location without claiming progress or leaking to other roles
+  ---
+  duration_ms: 0.7299
+  type: 'test'
+  ...
+# Subtest: navigation retains all five ordered steps and only one current location
+not ok 2 - navigation retains all five ordered steps and only one current location
+  ---
+  duration_ms: 9.4765
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\jianli\\tests\\flow-steps.test.mjs:60:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(position > previous)
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/product-polish-20261022/source/jianli/tests/flow-steps.test.mjs:65:86)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: confirmation is text until a concrete report supplies the existing confirmation anchor
+ok 3 - confirmation is text until a concrete report supplies the existing confirmation anchor
+  ---
+  duration_ms: 0.7585
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 2
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 438.5949

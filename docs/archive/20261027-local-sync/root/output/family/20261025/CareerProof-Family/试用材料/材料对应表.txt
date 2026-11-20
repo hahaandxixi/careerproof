@@ -1,0 +1,18 @@
+﻿都是原创合成材料，人物、经历、企业和岗位为虚构。
+简历 TXT 不要和项目 ZIP 混用；项目 ZIP 保持压缩状态上传。
+
+建议先体验第一套：
+Python 后端开发实习生
+  简历：event-api-resume.txt
+  项目：event-api-project.zip
+
+React 前端开发实习生
+  简历：event-console-resume.txt
+  项目：event-console-project.zip
+
+接口测试开发实习生
+  简历：booking-quality-resume.txt
+  项目：booking-quality-project.zip
+
+有意保留部分证据缺口，不保证满分；报告识别范围和真实能力不是一回事。
+如需练习补证：在原项目上传你确实补充过的新版本，不要重复上传相同材料凑分。

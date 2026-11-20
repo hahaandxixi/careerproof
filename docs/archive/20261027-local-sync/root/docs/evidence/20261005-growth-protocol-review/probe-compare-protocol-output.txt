@@ -1,0 +1,42 @@
+[MATCH] P1: 默认 compare_views 不同岗位
+  预期: AppError 4097 拒绝
+  实际: AppError code=4097: 只能对比同一用户同一岗位的报告
+
+[MATCH] P2: allow_job_change=True 下不同 candidate
+  预期: AppError 4097 拒绝
+  实际: AppError code=4097: 只能对比同一用户同一岗位的报告
+
+[MATCH] P3: 跨岗位放行：items 按 requirementId 新增/移除
+  预期: SQL 技能相似但 requirementId 不同 → 0 existing（不合并），1 added + 2 removed
+  实际: existing=0 added=1 removed=2 同技能误合并=0
+
+[MATCH] P3b: context_changes 含 job 与 requirements
+  预期: ['job', 'materials' 缺席（同材料）, 'requirements']
+  实际: ['job', 'requirements']
+
+[MATCH] P3c: 报告携带 base/target 岗位身份
+  预期: base_job_id=JOB_A, target_job_id=JOB_B, titles 分别为 原/新 岗位
+  实际: base=True target=True titles=原岗位/新岗位
+
+[MATCH] P3d: 同一材料（同版本id+hash）不标 materials 变化
+  预期: materials 不在 context_changes
+  实际: ['job', 'requirements']
+
+[MATCH] P3e: 同内容新版本（attach 视为未变材料，compare 计入材料版本变化）
+  预期: compare 的 context 含 materials（版本id不同）——两处 material_key 定义不一致，非缺陷，供展示层裁决
+  实际: ['job', 'materials', 'requirements']
+
+[MATCH] P4: limitations[3] 当前内容（growth view 按 [3] 覆写复核状态语）
+  预期: 仍为复核状态说明行（索引耦合今天成立，属脆弱设计）
+  实际: 复核状态是当前状态，不代表报告生成时的状态。
+
+[MATCH] P5: MatchCreate by_alias 序列化键
+  预期: 包含 jobId（与 evidence_growth.view L250 的 get('jobId') 一致）
+  实际: keys=['externalAiConsent', 'jobId', 'projectVersionIds', 'resumeVersionId', 'usePreviousReport']
+
+[MATCH] P6: base==target 自我比较
+  预期: AppError 4097 拒绝
+  实际: AppError code=4097: 请选择两份不同的报告
+
+========================================================================
+探针 10 项，符合 10，不符合 0
