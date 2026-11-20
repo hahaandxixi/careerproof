@@ -1,0 +1,98 @@
+[
+  {
+    "id": "materials-desktop",
+    "path": "docs/submission/assets/materials-desktop.png",
+    "original": "docs/evidence/20261023-page-final/after-materials-1280.png",
+    "sha256": "c20e53a6b97cb5ead0b241fe3aed29b86daa86a85386845f3f247709315c4ec7",
+    "pixels": [
+      1265,
+      889
+    ],
+    "actualFormat": "JPEG",
+    "caption": "材料工作台；原始截图，非1080p录像",
+    "evidenceKind": "规则/合成材料",
+    "sourceVersion": "e95504feed306e5cf5ee013a6e546976013639c0",
+    "rawUnmodified": true,
+    "usableAs1080pRecording": false
+  },
+  {
+    "id": "report-citation",
+    "path": "docs/submission/assets/report-citation.png",
+    "original": "docs/evidence/20261023-page-final/report-citation-1280.png",
+    "sha256": "673909b41e0c246df63c49ba647e64b7da874ef777c386d6b7398dd8c0a9e049",
+    "pixels": [
+      1265,
+      889
+    ],
+    "actualFormat": "JPEG",
+    "caption": "SQL引用、版本与行号；接受页面截图",
+    "evidenceKind": "规则/合成材料",
+    "sourceVersion": "e95504feed306e5cf5ee013a6e546976013639c0",
+    "rawUnmodified": true,
+    "usableAs1080pRecording": false
+  },
+  {
+    "id": "growth-desktop",
+    "path": "docs/submission/assets/growth-desktop.png",
+    "original": "docs/evidence/20261023-page-final/after-growth-1280.png",
+    "sha256": "407a4bc019f0f00ea9e017c72bcd294b211cbe725f1d03858e0b8caf3e0fcf90",
+    "pixels": [
+      1265,
+      889
+    ],
+    "actualFormat": "JPEG",
+    "caption": "补证任务与保存材料选择；接受页面截图",
+    "evidenceKind": "规则/合成材料",
+    "sourceVersion": "e95504feed306e5cf5ee013a6e546976013639c0",
+    "rawUnmodified": true,
+    "usableAs1080pRecording": false
+  },
+  {
+    "id": "enterprise-desktop",
+    "path": "docs/submission/assets/enterprise-desktop.png",
+    "original": "docs/evidence/20261023-page-final/enterprise-evidence-1280.png",
+    "sha256": "4afadfd41d5d53248088f61721511639f4d5f6bee44b6b2d4d5767cd732df39f",
+    "pixels": [
+      1265,
+      889
+    ],
+    "actualFormat": "JPEG",
+    "caption": "企业固定V2快照；学生新报告V4不会覆盖它",
+    "evidenceKind": "授权合成投递",
+    "sourceVersion": "e95504feed306e5cf5ee013a6e546976013639c0",
+    "rawUnmodified": true,
+    "usableAs1080pRecording": false
+  },
+  {
+    "id": "report-mobile",
+    "path": "docs/submission/assets/report-mobile.png",
+    "original": "docs/evidence/20261023-page-final/report-reader-390.png",
+    "sha256": "3aef1cad463e40d8de3369b97428e7d112c8f70dd35aa49a0a776864e1f67c2d",
+    "pixels": [
+      375,
+      811
+    ],
+    "actualFormat": "JPEG",
+    "caption": "手机逐项阅读；390 CSS视口，不是200%缩放",
+    "evidenceKind": "规则/合成材料",
+    "sourceVersion": "e95504feed306e5cf5ee013a6e546976013639c0",
+    "rawUnmodified": true,
+    "usableAs1080pRecording": false
+  },
+  {
+    "id": "agent-real-stop",
+    "path": "docs/submission/assets/agent-real-stop.png",
+    "original": "docs/evidence/20261022-agent-result-integration/actual-stop-1280.png",
+    "sha256": "e06f5d741ab1f1171e35cf18a2199b8183b37332ba461d09db821dedfe9fbd17",
+    "pixels": [
+      1265,
+      889
+    ],
+    "actualFormat": "JPEG",
+    "caption": "历史真实五项报告：模型选择停止",
+    "evidenceKind": "历史真实DeepSeek输出/旧页面构建",
+    "sourceVersion": "da728dc历史页面",
+    "rawUnmodified": true,
+    "usableAs1080pRecording": false
+  }
+]

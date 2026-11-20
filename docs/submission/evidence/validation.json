@@ -1,0 +1,74 @@
+{
+  "status": "pass",
+  "date": "2026-10-23",
+  "errors": [],
+  "pdf": {
+    "pages": 25,
+    "a4": true,
+    "replacementGlyphs": 0,
+    "allPagesRendered": true,
+    "outsidePageSpans": 0,
+    "visualReview": "all 25 rendered pages inspected in five contact sheets; figures reviewed at page scale; see visual-review.md"
+  },
+  "navigation": {
+    "documents": 8,
+    "localTargets": 29,
+    "missing": 0,
+    "externalURLsAndAnchors": "not automatically checked"
+  },
+  "sourceZIP": {
+    "commit": "f6bf1ed9c20fe0629976cd9505f2f1258146cedb",
+    "trackedFiles": 899,
+    "hashMismatches": 0,
+    "builderNavigationScope": {
+      "anchors_and_external_urls_checked": false,
+      "documents": [
+        "README.md",
+        "THIRD_PARTY_NOTICES.md",
+        "backend/README.md",
+        "demo/README.md",
+        "demo/complete-projects/campus-signup-v1/README.md",
+        "demo/evidence-function-call/README.md",
+        "demo/first-user/README.md",
+        "demo/market-scenarios/README.md",
+        "demo/market-scenarios/booking-quality/README.md",
+        "demo/market-scenarios/event-api/README.md",
+        "demo/market-scenarios/event-console/README.md",
+        "demo/open-source/README.md",
+        "docs/README.md",
+        "docs/guides/AI与数据边界.md",
+        "docs/guides/使用与启动.md",
+        "docs/guides/功能演示.md",
+        "docs/guides/工具与接入.md",
+        "docs/guides/比赛交付.md",
+        "docs/guides/证据与产品能力.md",
+        "docs/guides/评测与人工复核.md",
+        "jianli/README.md"
+      ],
+      "local_files_and_directories": true
+    },
+    "cleanInstallThisRound": false
+  },
+  "evidence": {
+    "rawFiles": 10,
+    "screenshots": 6,
+    "exactCopyHashes": true,
+    "sourceEntries": 15
+  },
+  "videoPlan": {
+    "shots": 8,
+    "plannedSeconds": 390,
+    "narrationChineseCharacters": 1032,
+    "newMP4": false,
+    "voiceOver": "user"
+  },
+  "sensitivePatternScan": {
+    "files": 38,
+    "hits": [],
+    "scope": "API-key/private-key shapes only, plus visual screenshot review; not exhaustive"
+  },
+  "productTestRerun": false,
+  "modelRequests": 0,
+  "databaseWrites": 0,
+  "sharedProductFilesChanged": false
+}
